@@ -673,7 +673,7 @@ export function adventureScreen() {
     const entries = availableAbilities(run);
     const body = el('div', { className: 'col gap-sm' },
       el('p', { className: 'small dim', text:
-        `Energy: ${run.energy} / ${MAX_ENERGY}. Rest banks 2 and softens the next hit; Strike banks 1 and still deals damage. Everything else spends what you have saved.` }),
+        `Energy: ${run.energy} / ${MAX_ENERGY}. Rest banks 2 but forfeits your attack; Strike banks 1 and still hits. Everything else spends what you have saved.` }),
       ...entries.map(entry => {
         const ability = entry.ability;
         const economy = ability.gain ? `banks ${ability.gain} energy`

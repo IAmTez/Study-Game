@@ -42,13 +42,15 @@ extension, and so on).
 
    | Move | Energy |
    | --- | --- |
-   | **Rest** | banks **+2** and halves the next hit you take, but you do not attack |
+   | **Rest** | banks **+2**, but you forfeit your attack for the turn |
    | **Strike** | banks **+1** and still deals damage |
    | Everything else | **spends** 3, 6 or 12 |
 
    Energy caps at 20 and comes from nowhere else — not from answering, not over
-   time. An ultimate is a decision you commit to several turns in advance. Moves
-   also stun, burn, poison, bleed, mark and shield.
+   time. An ultimate is a decision you commit to several turns in advance. Since
+   Strike banks a point *and* deals damage, Rest is the move you take to reach a
+   threshold one turn sooner, at the cost of that turn's damage. Moves also stun,
+   burn, poison, bleed, mark and shield.
 7. **Every tenth floor is a boss**, at the end of a build-up of lesser fights.
    Clearing one establishes a sanctum you can restart from after you die.
 

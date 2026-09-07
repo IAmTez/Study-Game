@@ -1,9 +1,9 @@
 /* Attack options offered after a correct answer.
 
    Energy is a small, slow pool. You only ever generate it by choosing a
-   generating move — Rest banks 2, Strike banks 1 — and every other move
-   spends it. That is the "save up for a better move" decision: a turn spent
-   resting is a turn you did not attack.
+   generating move — Rest banks 2, Strike banks 1 and still hits — and every
+   other move spends it. Resting buys the extra point by giving up the turn's
+   damage entirely, so it is worth it only to reach a threshold sooner.
 
    `cost` is energy spent, `gain` energy banked, `require` the energy you must
    already hold for the option to appear at all. `power` multiplies attack. */
@@ -17,7 +17,7 @@ export const ABILITIES = {
   rest: {
     id: 'rest', name: 'Rest', cost: 0, gain: 2, require: 0, power: 0, level: 1,
     effect: 'rest',
-    desc: 'Give up your attack to bank 2 energy and halve the next hit you take.'
+    desc: 'Bank 2 energy. You give up your attack for the turn.'
   },
 
   /* --- knight --- */

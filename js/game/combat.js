@@ -101,7 +101,6 @@ export function startCombat(run, enemy) {
     events: [],
     playerStatuses: run.statuses || {},
     guardStacks: 0,
-    braced: false,
     rewards: null,
     fled: false
   };
@@ -269,9 +268,7 @@ export function useAbility(run, combat, abilityId) {
 
   if (ability.effect === 'rest') {
     const gained = bankEnergy();
-    combat.braced = true;
-    combat.events.push({ type: 'brace' });
-    logLine(run, `You rest. +${gained} energy, and the next blow is halved.`, 'info');
+    logLine(run, `You rest and bank ${gained} energy, forgoing your attack.`, 'info');
     return resolveEnemyTurn(run, combat);
   }
 
@@ -406,7 +403,6 @@ export function resolveEnemyTurn(run, combat) {
 
       if (enemy.traits.includes('enrage') && enemy.hp / enemy.maxHp < 0.3) damage *= 1.35;
       if (getRole(run.roleId).id === 'knight') damage *= 0.75;
-      if (combat.braced) { damage *= 0.5; combat.braced = false; }
 
       damage = Math.max(1, Math.round(damage));
 

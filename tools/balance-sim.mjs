@@ -61,14 +61,20 @@ function fight(run, enemy, rng, accuracy) {
       const options = combatMod.availableAbilities(run);
       const affordable = options.filter(a => a.usable && a.ability.power > 0);
       const best = affordable.sort((a, b) => b.ability.power - a.ability.power)[0];
-      // Rest when badly hurt and holding nothing worth spending; otherwise hit
-      // with the strongest move currently affordable (Strike banks 1 by itself).
-      if (!best || best.ability.id === 'strike') {
-        const hurt = run.hp / state.derived(run).maxHp < 0.5;
-        combatMod.useAbility(run, combat, hurt ? 'rest' : 'strike');
-      } else {
+
+      if (best && best.ability.id !== 'strike') {
         combatMod.useAbility(run, combat, best.ability.id);
+        continue;
       }
+      /* Rest costs the turn's damage outright, so it only pays when the extra
+         point reaches an unlocked ability that Strike's single point would not. */
+      const target = options
+        .filter(o => !o.levelLocked && o.ability.cost > 0)
+        .sort((a, b) => b.ability.cost - a.ability.cost)[0];
+      const restReaches = target
+        && run.energy + 2 >= target.ability.cost
+        && run.energy + 1 < target.ability.cost;
+      combatMod.useAbility(run, combat, restReaches ? 'rest' : 'strike');
       continue;
     }
     break;
