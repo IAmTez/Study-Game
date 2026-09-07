@@ -6,6 +6,7 @@ import { SUBJECT as business } from './business.js';
 import { SUBJECT as design } from './design.js';
 import { SUBJECT as ancient } from './ancient.js';
 import { SUBJECT as english } from './english.js';
+import { makeRng } from '../../core/rng.js';
 
 export const BUILTIN_SUBJECTS = [geography, business, design, ancient, english];
 
@@ -22,6 +23,19 @@ export function normaliseQuestion(question, subject) {
   if (q.type === 'mc') {
     q.options = Array.isArray(q.options) ? q.options : [];
     q.answer = Number.isInteger(q.answer) ? q.answer : 0;
+
+    /* Question authors — human or generated — cluster the correct answer in
+       one slot without noticing. Left alone, the shipped banks put it second
+       three times out of four, which a player can exploit without knowing any
+       of the content. Shuffling here, seeded by the question id, spreads the
+       answer evenly while keeping each question stable across sessions so the
+       explanations stay true and revision feels consistent. */
+    if (q.options.length > 1 && q.answer < q.options.length) {
+      const rng = makeRng(`options:${q.id}`);
+      const order = rng.shuffle(q.options.map((_, i) => i));
+      q.options = order.map(i => q.options[i]);
+      q.answer = order.indexOf(q.answer);
+    }
   } else {
     q.accept = Array.isArray(q.accept) ? q.accept : [];
     q.keywords = Array.isArray(q.keywords) ? q.keywords : [];

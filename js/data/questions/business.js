@@ -269,7 +269,7 @@ export const SUBJECT = {
         'Recruitment, motivation, retention, redundancy',
       ],
       answer: 1,
-      explanation: 'The HSC processes are: acquisition (planning, recruitment, selection), development (induction, training, mentoring), maintenance (remuneration, benefits, workplace safety, compliance) and separation (voluntary or involuntary). Option A lists real activities but is not the four-stage framework the syllabus uses.'
+      explanation: 'The HSC processes are: acquisition (planning, recruitment, selection), development (induction, training, mentoring), maintenance (remuneration, benefits, workplace safety, compliance) and separation (voluntary or involuntary). The option listing planning, recruitment, selection, induction, training, appraisal and separation names real activities, but it is not the four-stage framework the syllabus uses.'
     },
     {
       id: 'bus-24', topic: 'Human Resources', difficulty: 2, type: 'mc',

@@ -172,7 +172,7 @@ export const SUBJECT = {
         '"Many critics have written about this text\'s themes."',
         ],
       answer: 2,
-      explanation: 'A personal informed response takes an actual position, acknowledges how the text produced it, and grounds it in a textual feature. The first option is unsupported preference, the second and fourth defer to authority. Markers explicitly reward a distinctive voice — provided it argues.'
+      explanation: 'A personal informed response takes an actual position, acknowledges how the text produced it, and grounds it in a textual feature. Saying the text was boring is unsupported preference; calling it a universally regarded masterpiece, or noting that many critics have written about it, defers to authority instead of arguing. Markers explicitly reward a distinctive voice — provided it argues.'
     },
     {
       id: 'eng-14', topic: 'Close Study of Literature', difficulty: 3, type: 'short',
@@ -422,7 +422,7 @@ export const SUBJECT = {
         'This paragraph will discuss the theme of belonging.',
       ],
       answer: 2,
-      explanation: 'A topic sentence should assert an arguable idea that advances the thesis. Option A narrates, B lists techniques with no claim, D announces intention. Option C makes a specific claim about meaning that the rest of the paragraph can prove with evidence and analysis.'
+      explanation: 'A topic sentence should assert an arguable idea that advances the thesis. Naming what happens in chapter four narrates; listing symbolism, imagery and metaphor names techniques without making a claim; announcing that the paragraph will discuss belonging states an intention. The sentence about departure reframing home makes a specific claim about meaning that the rest of the paragraph can prove with evidence and analysis.'
     },
     {
       id: 'eng-35', topic: 'Language, Identity and Culture', difficulty: 2, type: 'short',
