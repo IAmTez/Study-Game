@@ -408,5 +408,213 @@ export const SUBJECT = {
       answer: 2,
       explanation: 'Inputs are the resources fed into transformation — materials, machinery, money, manpower (labour) and information. Outputs are the goods or services delivered. Note that for a service business the customer is often an input too, since they participate in the transformation process.'
     },
+
+    /* ------- Syllabus dot-point wording and implications (post-trial drills) ------- */
+    {
+      id: 'bus-37', topic: 'Finance', difficulty: 3, type: 'mc',
+      prompt: 'Which of these is a METHOD OF INTERNATIONAL PAYMENT?',
+      options: ['Letter of credit', 'Hedging', 'A forward exchange contract', 'An interest rate swap'],
+      answer: 0,
+      explanation: 'Two separate syllabus dot points, and crossing them over costs marks. Methods of international payment are payment in advance, letter of credit, bill of exchange and clean payment. Hedging, derivatives, futures, options, swaps and forward contracts are methods of MANAGING FINANCIAL RISK in international markets. If a question asks for a method of payment, "hedging" scores nothing however well it is explained.'
+    },
+    {
+      id: 'bus-38', topic: 'Finance', difficulty: 3, type: 'mc',
+      prompt: 'Which method of international payment carries the HIGHEST risk for the seller?',
+      options: ['Clean payment', 'Payment in advance', 'Letter of credit', 'Bill of exchange'],
+      answer: 0,
+      explanation: 'Learn the four as a risk spectrum. Payment in advance — buyer pays before goods ship, so the buyer carries the risk. Letter of credit — the buyer\'s bank guarantees payment once conditions such as shipping documents are met, so risk is balanced; this is the safe recommendation in a report. Bill of exchange — a written order to pay on demand or at a future date, document against payment or acceptance, so risk is shared. Clean payment — goods ship first and the buyer pays later, so the seller carries the highest risk.'
+    },
+    {
+      id: 'bus-39', topic: 'Operations', difficulty: 2, type: 'mc',
+      prompt: 'A battery manufacturer uses lithium sourced overseas and employs overseas workers in its plants. Which classification is correct?',
+      options: [
+        'Lithium is a transformed resource; the workers are a transforming resource',
+        'Lithium is a transforming resource; the workers are a transformed resource',
+        'Both lithium and the workers are transformed resources',
+        'Both lithium and the workers are transforming resources',
+      ],
+      answer: 0,
+      explanation: 'Transformed resources are what gets CHANGED by the process: materials, information and customers. Transforming resources are what DOES the changing: human resources and facilities. Memory hook — transformed = the thing that ends up different. Getting this backwards is a straight zero on a two-mark question, so the hook is worth memorising.'
+    },
+    {
+      id: 'bus-40', topic: 'Operations', difficulty: 2, type: 'mc',
+      prompt: 'A business redesigns its packaging to use recycled materials after new waste regulations and customer pressure. Named precisely, the operational influence at work is:',
+      options: [
+        'Environmental sustainability',
+        'General changes to the law',
+        'Customer preference',
+        'Cost-based competition',
+      ],
+      answer: 0,
+      explanation: 'Name the influence from the syllabus list rather than describing it generically — that is where two marks went in the trial. The list: globalisation, technology, quality expectations, cost-based competition, government policies, legal regulation, environmental sustainability, and corporate social responsibility (with its distinction between legal compliance and ethical responsibility). "Law changes" described generically is not the same as naming legal regulation or environmental sustainability as the influence.'
+    },
+    {
+      id: 'bus-41', topic: 'Marketing', difficulty: 3, type: 'mc',
+      prompt: 'The global marketing dot point that pairs identical worldwide branding against adapting to local markets is:',
+      options: [
+        'Standardisation versus customisation',
+        'Opinion leaders and word of mouth',
+        'Intensive versus exclusive distribution',
+        'Skimming versus penetration pricing',
+      ],
+      answer: 0,
+      explanation: 'Standardisation — identical product, branding and promotion in every market, giving economies of scale, a consistent global brand and lower cost; Coca-Cola is the example. Customisation — adapting product, packaging or promotion per market to meet local preferences and regulations; McDonald\'s menu localisation is the example. Global branding and global pricing are the other two dot points. Opinion leaders belong to promotion and the communication process, not global marketing — naming them for a global marketing question loses marks even when the reasoning is sound.'
+    },
+    {
+      id: 'bus-42', topic: 'Human Resources', difficulty: 3, type: 'short',
+      prompt: 'Staff turnover has risen sharply at a business. State what this indicates AND draw out the implication for the business.',
+      accept: ['it indicates weak human resource effectiveness and it means recruitment and training costs of roughly 50 to 150 percent of salary plus lost corporate knowledge and reduced productivity while replacements get up to speed'],
+      keywords: [
+        ['recruit', 'training', 'replace', 'cost', 'hiring'],
+        ['knowledge', 'experience', 'productivity', 'output', 'strain', 'morale', 'profitab'],
+      ],
+      minKeywords: 2,
+      explanation: 'The circular answer — "high turnover shows HR is not effective" — caps at half marks. Draw out the effect on the business: recruitment and training costs of roughly 50–150% of the departing employee\'s salary, loss of corporate knowledge, reduced productivity while replacements get up to speed, and added strain on remaining staff, all of which reduce profitability. Australian staff turnover averages around 15% annually, which gives you a benchmark to compare against.'
+    },
+    {
+      id: 'bus-43', topic: 'Human Resources', difficulty: 3, type: 'short',
+      prompt: 'Name THREE indicators of HR effectiveness other than staff turnover, and give the business effect of ONE of them.',
+      accept: ['absenteeism accidents levels of disputation worker satisfaction corporate culture and benchmarking with absenteeism causing lost output and overtime cover costs'],
+      keywords: [
+        ['absentee', 'accident', 'disputation', 'dispute', 'satisfaction', 'culture', 'benchmark'],
+        ['lost output', 'overtime', 'cover', 'premium', 'downtime', 'reputation', 'days lost', 'productiv', 'liability'],
+      ],
+      minKeywords: 2,
+      explanation: 'The indicators: corporate culture (values, symbols, rituals), benchmarking key variables, staff turnover, absenteeism, accidents, levels of disputation, and worker satisfaction. Each needs its effect attached. Absenteeism — lost output, overtime and casual cover costs, and a signal of low morale. Accidents — WHS liability, higher workers\' compensation premiums, downtime and reputational damage. Disputation — measured as disputes per 1,000 employees and working days lost, disrupting operations and damaging the employer brand. Worker satisfaction — measured by surveys and exit interviews, and predictive of both turnover and productivity.'
+    },
+    {
+      id: 'bus-44', topic: 'Finance', difficulty: 3, type: 'mc',
+      prompt: 'A business has current assets of $680,000 and current liabilities of $850,000. Its current ratio and the correct interpretation are:',
+      options: [
+        '0.80:1 — well below the ~2:1 benchmark, so it cannot comfortably cover its short-term debts',
+        '1.25:1 — below the benchmark but adequate for most industries',
+        '0.80:1 — above the benchmark, indicating strong liquidity',
+        '1.25:1 — indicating the business holds too much idle cash',
+      ],
+      answer: 0,
+      explanation: 'Current ratio = current assets ÷ current liabilities = 680,000 ÷ 850,000 = 0.80:1. The calculation alone is not the mark — the comparison is. Against a benchmark of roughly 2:1 this is a serious liquidity problem: the business has 80 cents of current assets for every dollar due within twelve months. Calculating every ratio the stimulus allows, and benchmarking each one, is the fastest way to move a business report up a band.'
+    },
+    {
+      id: 'bus-45', topic: 'Finance', difficulty: 3, type: 'mc',
+      prompt: 'Total liabilities are $1,600,000 and total equity is $880,000. The debt to equity ratio and its meaning are:',
+      options: [
+        '1.82:1 — highly geared, so the business carries high financial risk',
+        '0.55:1 — conservatively financed with low risk',
+        '1.82:1 — below the benchmark, indicating low gearing',
+        '2.82:1 — the business is insolvent',
+      ],
+      answer: 0,
+      explanation: 'Debt to equity = total liabilities ÷ total equity = 1,600,000 ÷ 880,000 = 1.82:1. The benchmark is under 1:1, with lower meaning safer and less leveraged, so 1.82:1 is highly geared: the business relies on borrowed funds, faces heavy interest obligations, and is vulnerable if earnings fall or rates rise. High gearing is not automatically bad — it magnifies returns in good conditions — but paired with a current ratio of 0.80:1 it signals real financial distress.'
+    },
+    {
+      id: 'bus-46', topic: 'Finance', difficulty: 4, type: 'short',
+      prompt: 'A business has $235,000 in accounts receivable and poor liquidity. Name and explain ONE debtor management strategy, applying it to the figure.',
+      accept: ['debtor management by tightening credit terms and offering a discount for early payment would accelerate collection of the 235000 in receivables converting it to cash and lifting the current ratio'],
+      keywords: [
+        ['debtor', 'receivable', 'credit term', 'discount', 'collection', 'factoring'],
+        ['cash', 'liquidity', 'current ratio', 'convert', 'accelerat', 'improv'],
+      ],
+      minKeywords: 2,
+      explanation: 'The difference between listing and explaining. Listed: "request payment from accounts receivable." Explained: debtor management — tightening credit terms and offering a 2% discount for payment within 10 days — would accelerate collection of the $235,000 in accounts receivable; converting even half of this to cash would lift the current ratio from 0.80:1 toward 0.94:1, improving the ability to meet accounts payable without further borrowing. Name the syllabus strategy, define it, apply it to the stimulus figures, then state the effect on the business. Factoring — selling the receivables at a discount — is the alternative, faster but more costly.'
+    },
+    {
+      id: 'bus-47', topic: 'Finance', difficulty: 4, type: 'short',
+      prompt: 'State the four-step method for structuring a Section III business report.',
+      accept: ['turn the questions bullets into headings in order then calculate every ratio the stimulus allows then name define apply and state the effect of each strategy then recommend with justification linked to the question wording'],
+      keywords: [
+        ['heading', 'bullet', 'question', 'order', 'structure'],
+        ['ratio', 'calculat', 'figure', 'stimulus', 'benchmark'],
+        ['define', 'apply', 'explain', 'effect', 'strategy'],
+        ['recommend', 'justif', 'conclusion', 'link back'],
+      ],
+      minKeywords: 3,
+      explanation: 'Step 1 — turn the question\'s bullets into your headings, in the question\'s order, and copy them down before writing anything; the trial report answered two of three bullets. Step 2 — calculate every ratio the stimulus allows and compare each to its benchmark; this is the mathematical outcome and it is free marks. Step 3 — for each strategy: name the syllabus strategy, define it, apply it to the stimulus figures, state the effect on the business. Step 4 — recommendations restating the strategies with justification, linked back to the question wording. And answer your own questions: if you raise a choice such as niche versus mass market, resolve it.'
+    },
+    {
+      id: 'bus-48', topic: 'Human Resources', difficulty: 3, type: 'mc',
+      prompt: 'The specific training and development process that orients a new employee to the business, its culture and their role is called:',
+      options: ['Induction', 'Performance appraisal', 'Professional development', 'Benchmarking'],
+      answer: 0,
+      explanation: 'Be explicit with the syllabus term. "Stronger onboarding" describes the right idea in the wrong vocabulary; induction is the word the marking guidelines use. Induction sits in the acquisition/development stage of the employment cycle and links directly to corporate culture, since it is where values, symbols and rituals are first transmitted — which makes it the natural first paragraph in any HR-to-culture extended response.'
+    },
+    {
+      id: 'bus-49', topic: 'Human Resources', difficulty: 2, type: 'mc',
+      prompt: 'The four stages of the employment cycle, in order, are:',
+      options: [
+        'Acquisition, development, maintenance, separation',
+        'Recruitment, selection, training, appraisal',
+        'Planning, organising, leading, controlling',
+        'Induction, motivation, evaluation, redundancy',
+      ],
+      answer: 0,
+      explanation: 'Acquisition — identifying staffing needs, recruitment (internal versus external) and selection. Development — training, professional development, performance appraisal (developmental versus administrative) and career paths. Maintenance — communication and workplace culture, employee participation, monetary and non-monetary benefits, and legal compliance including WHS and anti-discrimination. Separation — voluntary (resignation, retirement, voluntary redundancy) versus involuntary (dismissal, retrenchment), with unfair dismissal risk. One process per paragraph is the natural structure for a 20-mark HR essay.'
+    },
+    {
+      id: 'bus-50', topic: 'Operations', difficulty: 3, type: 'mc',
+      prompt: 'Qantas outsourced about 1,700 ground-handling jobs in 2020 and the High Court ruled the action unlawful in 2023. The case is most useful as evidence that:',
+      options: [
+        'Outsourcing as a cost strategy carries legal, industrial and reputational risk, linking operations directly to human resources',
+        'Outsourcing always reduces costs without any offsetting disadvantage',
+        'Quality management systems prevent industrial disputes',
+        'Global sourcing is prohibited under Australian law',
+      ],
+      answer: 0,
+      explanation: 'One case study, several dot points — that is efficient revision. Operations: outsourcing as a cost leadership strategy, with advantages in cost and expertise and disadvantages in control, quality and backlash. HR: separation, levels of disputation as an effectiveness indicator, and the culture damage under Joyce that Hudson had to rebuild. Finance: heavy gearing from debt-funded fleet renewal, roughly $7 billion of accumulated COVID losses across FY20–22, then a recovery profit around $2.47 billion in FY23. Verify current figures before the exam.'
+    },
+    {
+      id: 'bus-51', topic: 'Finance', difficulty: 3, type: 'mc',
+      prompt: 'Recording an expense as an asset on the balance sheet, so that profit and asset values appear higher, is the limitation of financial reports known as:',
+      options: ['Capitalising expenses', 'Normalised earnings', 'Timing issues', 'Valuing assets'],
+      answer: 0,
+      explanation: 'The limitations to know: capitalising expenses (recording expenses as assets, inflating both profit and asset values); normalised earnings (removing one-off events such as asset sales, which can flatter the trend); valuing assets (historical cost versus market value, with goodwill particularly subjective); timing issues (shifting transactions between periods to window-dress results); debt repayments (the reports do not show capacity to repay, timing or covenants); and notes to the financial statements (critical detail such as contingent liabilities sitting outside the headline figures).'
+    },
+    {
+      id: 'bus-52', topic: 'Marketing', difficulty: 4, type: 'short',
+      prompt: 'A question begins with the verb "assess". What must the first sentence of your response do?',
+      accept: ['state the judgement explicitly in the first sentence and then justify it with evidence rather than building to a verdict at the end'],
+      keywords: [
+        ['judgement', 'verdict', 'decision', 'position', 'conclusion'],
+        ['first', 'opening', 'start', 'upfront', 'immediately', 'then justif', 'then support'],
+      ],
+      minKeywords: 2,
+      explanation: 'Make the judgement in the first sentence, then justify it — burying the verdict cost a mark in the trial even though the reasoning was sound. The verb glossary: Identify/Outline — name it with brief characteristics. Describe — features and characteristics. Explain — relate cause and effect, the why and how. Assess/Evaluate — a judgement, stated first, then justified. Recommend — reasons in favour of a specific course of action. Justify — argue the case with supporting evidence. Analyse — identify components and show their relationships.'
+    },
+    {
+      id: 'bus-53', topic: 'Finance', difficulty: 2, type: 'mc',
+      prompt: 'Return on equity is calculated as:',
+      options: [
+        'Net profit ÷ total equity',
+        'Net profit ÷ sales',
+        'Gross profit ÷ sales',
+        'Total expenses ÷ sales',
+      ],
+      answer: 0,
+      explanation: 'Return on equity = net profit ÷ total equity, with above 10% generally regarded as attractive. The rest of the bank: current ratio = current assets ÷ current liabilities (~2:1); debt to equity = total liabilities ÷ total equity (under 1:1); gross profit ratio = gross profit ÷ sales (industry-dependent); net profit ratio = net profit ÷ sales (higher means better cost control — note Woolworths and Coles sit around 2.5–4%, showing thin-margin retail); expense ratio = total expenses ÷ sales (lower is more efficient); accounts receivable turnover = sales ÷ accounts receivable (target around 30 days).'
+    },
+    {
+      id: 'bus-54', topic: 'Marketing', difficulty: 2, type: 'mc',
+      prompt: 'The steps of the marketing process, in order, begin with:',
+      options: [
+        'Situational analysis, then market research, then establishing market objectives',
+        'Market research, then situational analysis, then developing strategies',
+        'Identifying target markets, then market research, then situational analysis',
+        'Establishing market objectives, then situational analysis, then implementation',
+      ],
+      answer: 0,
+      explanation: 'Six steps in order: situational analysis (SWOT and product life cycle), market research, establishing market objectives, identifying target markets (mass, segmented or niche), developing marketing strategies, then implementation, monitoring and controlling. Questions frequently test the sequence, and it also gives you a ready-made structure for a marketing extended response.'
+    },
+    {
+      id: 'bus-55', topic: 'Operations', difficulty: 4, type: 'short',
+      prompt: 'Name the six operations performance objectives.',
+      accept: ['quality speed dependability flexibility customisation and cost'],
+      keywords: [
+        ['quality'],
+        ['speed', 'dependab', 'reliab'],
+        ['flexib', 'customis'],
+        ['cost'],
+      ],
+      minKeywords: 4,
+      explanation: 'Quality, speed, dependability, flexibility, customisation and cost. They frequently trade off against each other, which is the analytical point worth making: pursuing customisation usually raises cost and reduces speed, while cost leadership constrains flexibility. Naming the objective a strategy serves — and the objective it sacrifices — turns a description into analysis.'
+    },
   ]
 };

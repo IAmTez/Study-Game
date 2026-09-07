@@ -1,452 +1,517 @@
-/* NSW HSC English Standard — Common Module: Texts and Human Experiences,
-   Module A: Language, Identity and Culture, Module B: Close Study of Literature,
-   Module C: The Craft of Writing, plus techniques and exam skills.
+/* NSW HSC English Standard.
 
-   Questions are written to be text-agnostic where possible, since prescribed
-   texts vary between schools. */
+   Written against this course's prescribed texts: Kenneth Slessor's Selected
+   Poems for the Common Module, Rachel Perkins' One Night the Moon for
+   Module A, M.T. Anderson's FEED for Module B, and the Craft of Writing.
+
+   Quotations are the short phrases needed to identify a technique, in the
+   same form as a study note; the analysis is the point, not the text. */
 
 export const SUBJECT = {
   id: 'english',
   name: 'English Standard',
   short: 'ENG',
-  colour: '#b06fe0',
+  colour: '#c98bd6',
   syllabus: 'NSW HSC English Standard',
-  topics: ['Texts and Human Experiences', 'Language, Identity and Culture', 'Close Study of Literature', 'The Craft of Writing', 'Techniques'],
+  topics: ['Texts and Human Experiences — Slessor', 'Language, Identity and Culture — One Night the Moon', 'Close Study — FEED', 'The Craft of Writing'],
   questions: [
 
-    /* ---------------- Common Module ---------------- */
+    /* ---------------- Common Module: Slessor ---------------- */
     {
-      id: 'eng-01', topic: 'Texts and Human Experiences', difficulty: 1, type: 'mc',
-      prompt: 'The Common Module requires you to explore how texts represent:',
+      id: 'eng-01', topic: 'Texts and Human Experiences — Slessor', difficulty: 1, type: 'mc',
+      prompt: 'Which set correctly lists the prescribed Slessor poems?',
       options: [
-        'Individual and collective human experiences',
-        'The historical context of the composer only',
-        'The differences between prose and poetry',
-        'The influence of Australian identity on literature',
+        "'Wild Grapes', 'Gulliver', 'Out of Time', 'Vesper-Song of the Reverend Samuel Marsden', 'William Street', 'Beach Burial'",
+        "'Five Bells', 'South Country', 'Country Towns', 'Sleep', 'Waters', 'Elegy in a Botanic Gardens'",
+        "'Beach Burial', 'Five Bells', 'The Night-Ride', 'Winter Dawn', 'Last Trams', 'Cock-Crow'",
+        "'Out of Time', 'Five Bells', 'Sleep', 'William Street', 'Gulliver', 'Choker's Lane'",
       ],
       answer: 0,
-      explanation: 'The Common Module is "Texts and Human Experiences" — individual AND collective experiences, human qualities and emotions, anomalies, paradoxes and inconsistencies in human behaviour and motivations, and the way storytelling itself shapes and reflects lives. An essay that discusses only the individual is answering half the module.'
+      explanation: 'Six prescribed poems: \'Wild Grapes\', \'Gulliver\', \'Out of Time\', \'Vesper-Song of the Reverend Samuel Marsden\', \'William Street\' and \'Beach Burial\'. Slessor wrote \'Five Bells\' and \'Sleep\', but they are not on this prescription — writing about them wastes the essay. Choose two or three per essay, paired by concept.'
     },
     {
-      id: 'eng-02', topic: 'Texts and Human Experiences', difficulty: 2, type: 'mc',
-      prompt: 'In the Common Module, an "anomaly" or "paradox" in human behaviour refers to:',
+      id: 'eng-02', topic: 'Texts and Human Experiences — Slessor', difficulty: 2, type: 'mc',
+      prompt: 'In \'Wild Grapes\', the oxymoron "Acid and gipsy-sweet" conveys:',
       options: [
-        'A grammatical error in the text',
-        'A moment where behaviour contradicts expectation or a character contradicts themselves',
-        'A gap in the plot the composer failed to resolve',
-        'A difference between the text and its historical source',
-      ],
-      answer: 1,
-      explanation: 'Anomalies and paradoxes are contradictions and inconsistencies in human behaviour — the character who acts against their stated values, the collective that behaves in ways no individual member would. These moments are where the highest-band analysis lives, because they resist simple thematic statements about the text.'
-    },
-    {
-      id: 'eng-03', topic: 'Texts and Human Experiences', difficulty: 3, type: 'short',
-      prompt: 'Explain the difference between an individual and a collective human experience.',
-      accept: ['an individual experience belongs to one person while a collective experience is shared by a group or society'],
-      keywords: [
-        ['individual', 'one person', 'personal', 'single'],
-        ['collective', 'group', 'shared', 'community', 'society', 'many'],
-      ],
-      minKeywords: 2,
-      explanation: 'Individual experiences belong to a single person — a particular grief, a particular realisation. Collective experiences are shared by a group, community or society — war, migration, oppression, celebration. The strongest essays show the relationship BETWEEN them: how an individual experience is shaped by the collective, or how one person\'s story comes to represent many.'
-    },
-    {
-      id: 'eng-04', topic: 'Texts and Human Experiences', difficulty: 3, type: 'mc',
-      prompt: 'Which sentence makes the strongest thesis for a Common Module essay?',
-      options: [
-        'This essay will discuss human experiences in the text.',
-        'The text shows that human experiences are important and interesting.',
-        'By fracturing chronology, the text suggests that traumatic experience resists coherent narration, unsettling the reader\'s desire for resolution.',
-        'The composer uses many techniques to represent human experiences effectively.',
-      ],
-      answer: 2,
-      explanation: 'A strong thesis names a specific formal choice (fractured chronology), makes an arguable claim about meaning (trauma resists narration) and identifies an effect on the reader. The others announce intention, state the obvious, or gesture vaguely at "techniques". Markers reward a proposition someone could disagree with.'
-    },
-    {
-      id: 'eng-05', topic: 'Texts and Human Experiences', difficulty: 4, type: 'short',
-      prompt: 'Why is it insufficient to simply identify a technique in a body paragraph?',
-      accept: ['you must analyse how the technique creates meaning and connects to the module rather than just naming it'],
-      keywords: [
-        ['effect', 'meaning', 'how', 'why', 'creates', 'shapes', 'positions'],
-        ['analys', 'analyz', 'explain', 'link', 'connect', 'relate'],
-        ['module', 'thesis', 'argument', 'question', 'idea', 'responder', 'reader', 'audience'],
-      ],
-      minKeywords: 2,
-      explanation: 'Technique-spotting describes the text; analysis explains what the choice DOES — how it positions the responder, what meaning it constructs, and how that supports your thesis and the module concern. The reliable structure is: claim → evidence → analysis of effect → link back to the argument. Naming a metaphor earns nothing on its own.'
-    },
-    {
-      id: 'eng-06', topic: 'Texts and Human Experiences', difficulty: 5, type: 'short',
-      prompt: 'Explain how the FORM of a text can itself represent a human experience.',
-      accept: ['formal choices such as structure and perspective mirror the experience so form enacts meaning rather than just containing it'],
-      keywords: [
-        ['form', 'structure', 'chronolog', 'perspective', 'point of view', 'genre', 'stage', 'verse', 'fragment'],
-        ['mirror', 'reflect', 'enact', 'embod', 'replicate', 'parallel', 'mimic'],
-        ['experience', 'meaning', 'reader', 'audience', 'effect'],
-      ],
-      minKeywords: 2,
-      explanation: 'Form is an argument, not a container. Fragmented structure can enact the disorientation of trauma; a first-person unreliable narrator can make the reader experience self-deception rather than merely observe it; the constraints of a sonnet can perform the pressure of contained emotion. Writing about form this way is one of the clearest markers of a Band 6 response, because it treats the composer\'s decisions as meaningful rather than decorative.'
-    },
-
-    /* ---------------- Module A ---------------- */
-    {
-      id: 'eng-07', topic: 'Language, Identity and Culture', difficulty: 1, type: 'mc',
-      prompt: 'Module A (Language, Identity and Culture) focuses on how language:',
-      options: [
-        'Follows fixed grammatical rules across all cultures',
-        'Shapes and reflects personal and cultural identity',
-        'Has changed historically from Old to Modern English',
-        'Should be corrected to a single standard form',
-      ],
-      answer: 1,
-      explanation: 'Module A examines the reciprocal relationship: language expresses identity, and language also shapes it. Key concerns include how texts represent particular cultures, how language can include or exclude, and how the responder\'s own cultural assumptions affect their reading.'
-    },
-    {
-      id: 'eng-08', topic: 'Language, Identity and Culture', difficulty: 2, type: 'mc',
-      prompt: 'When a text includes untranslated words from a character\'s first language, the most likely effect is to:',
-      options: [
-        'Confuse the reader and weaken the text',
-        'Assert cultural identity and position the reader as an outsider to some degree',
-        'Demonstrate the composer\'s language proficiency',
-        'Make the text more difficult to publish',
-      ],
-      answer: 1,
-      explanation: 'Untranslated language refuses to make a culture entirely accessible on the dominant language\'s terms. It asserts the validity of that language, marks identity, and briefly repositions the reader as the outsider — a reversal that is often the point. Discuss the effect on the responder, not just the presence of the words.'
-    },
-    {
-      id: 'eng-09', topic: 'Language, Identity and Culture', difficulty: 3, type: 'short',
-      prompt: 'Explain what is meant by a text "positioning" the responder.',
-      accept: ['the composer uses language choices to shape how the reader interprets and judges what is represented'],
-      keywords: [
-        ['composer', 'author', 'writer', 'text', 'choices', 'language', 'technique'],
-        ['shape', 'influence', 'guide', 'direct', 'encourage', 'invite', 'construct'],
-        ['reader', 'responder', 'audience', 'view', 'judge', 'interpret', 'sympath', 'perspective'],
-      ],
-      minKeywords: 2,
-      explanation: 'Positioning is the way textual choices guide the responder towards particular judgements — whose perspective we occupy, who is granted interiority, what is withheld, what diction and tone imply. Saying "the composer positions the responder to sympathise with X through Y" is far stronger than "the reader feels sorry for X", because it credits the choice rather than the reaction.'
-    },
-    {
-      id: 'eng-10', topic: 'Language, Identity and Culture', difficulty: 4, type: 'mc',
-      prompt: 'A text represents a marginalised community using only the perspective of an outside observer. The most useful critical observation is that:',
-      options: [
-        'The text is factually inaccurate',
-        'The perspective controls whose voice is heard and whose is mediated, which shapes the culture\'s representation',
-        'The text should have been written by a member of the community',
-        'The text is unsuitable for study',
-      ],
-      answer: 1,
-      explanation: 'The analytical move is to interrogate the perspective rather than to judge the composer. Ask who narrates, who is spoken about rather than speaking, what the outsider notices and cannot notice, and how that mediation shapes the responder\'s understanding. That is a Module A argument; the other options are assertions, not analysis.'
-    },
-    {
-      id: 'eng-11', topic: 'Language, Identity and Culture', difficulty: 5, type: 'short',
-      prompt: 'Explain how a responder\'s own context can affect their reading of a text about culture.',
-      accept: ['a responders values and cultural background shape what they notice and how they judge the representation so meaning is not fixed'],
-      keywords: [
-        ['context', 'background', 'values', 'experience', 'culture', 'assumption', 'belief'],
-        ['reading', 'interpret', 'meaning', 'understand', 'notice', 'judge', 'respond'],
-        ['differ', 'vary', 'not fixed', 'change', 'personal', 'shift'],
-      ],
-      minKeywords: 2,
-      explanation: 'Meaning is produced in the encounter between text and responder. A reader whose experience the text represents may read recognition where an outside reader reads exoticism; a reader from a later era may find confronting what contemporaries found unremarkable. Acknowledging this is not relativism — it lets you argue precisely about WHO the text positions and how successfully.'
-    },
-
-    /* ---------------- Module B ---------------- */
-    {
-      id: 'eng-12', topic: 'Close Study of Literature', difficulty: 1, type: 'mc',
-      prompt: 'Module B (Close Study of Literature) primarily requires:',
-      options: [
-        'Comparison of two prescribed texts',
-        'Sustained, detailed analysis of a single text and a personal, informed response to it',
-        'Research into the composer\'s biography',
-        'Rewriting a section of the text in a different form',
-      ],
-      answer: 1,
-      explanation: 'Module B is depth on ONE text: its construction, content and language, developed into a personal and informed interpretation. The word "informed" matters — a personal response must be grounded in textual evidence and an understanding of context and form, not merely stated as preference.'
-    },
-    {
-      id: 'eng-13', topic: 'Close Study of Literature', difficulty: 3, type: 'mc',
-      prompt: 'Which best demonstrates a "personal, informed response" in Module B?',
-      options: [
-        '"I found this text boring and hard to relate to."',
-        '"The text is universally regarded as a masterpiece."',
-        '"The novel\'s refusal to resolve its central question initially frustrated me, but I came to read that refusal as its central argument about grief."',
-        '"Many critics have written about this text\'s themes."',
-        ],
-      answer: 2,
-      explanation: 'A personal informed response takes an actual position, acknowledges how the text produced it, and grounds it in a textual feature. Saying the text was boring is unsupported preference; calling it a universally regarded masterpiece, or noting that many critics have written about it, defers to authority instead of arguing. Markers explicitly reward a distinctive voice — provided it argues.'
-    },
-    {
-      id: 'eng-14', topic: 'Close Study of Literature', difficulty: 3, type: 'short',
-      prompt: 'Why is textual integrity a useful concept when studying a single text closely?',
-      accept: ['textual integrity means the parts work together as a unified whole so form and content support each other'],
-      keywords: [
-        ['unity', 'unified', 'whole', 'coherent', 'consistent', 'integrated', 'together'],
-        ['form', 'structure', 'language', 'content', 'meaning', 'part'],
-        ['support', 'reinforce', 'contribute', 'connect', 'relationship'],
-      ],
-      minKeywords: 2,
-      explanation: 'Textual integrity describes a text whose parts cohere — where form, structure and language work together to sustain meaning, and no element is merely decorative. It gives you an argumentative frame: instead of listing techniques, you show how a motif introduced in the opening is transformed by the close, and why that transformation carries the text\'s argument.'
-    },
-    {
-      id: 'eng-15', topic: 'Close Study of Literature', difficulty: 4, type: 'mc',
-      prompt: 'When integrating a critical reading of a text, the strongest approach is to:',
-      options: [
-        'Quote the critic and accept their view as authoritative',
-        'Use the critical view to sharpen or contest your own argument',
-        'List several critics to demonstrate wide reading',
-        'Avoid critics entirely and rely on personal opinion',
-      ],
-      answer: 1,
-      explanation: 'A critical perspective should do work in your argument — extend it, complicate it, or give you something to push against. Dropping in quotations to demonstrate reading adds length, not marks. In Standard English, a well-handled counter-reading of your own text is usually more valuable than a name-drop.'
-    },
-    {
-      id: 'eng-16', topic: 'Close Study of Literature', difficulty: 5, type: 'short',
-      prompt: 'Explain why quoting at length is usually weaker than quoting briefly.',
-      accept: ['short embedded quotations leave room for analysis while long quotations take up space without demonstrating understanding'],
-      keywords: [
-        ['short', 'brief', 'embed', 'integrat', 'concise', 'selective'],
-        ['analys', 'analyz', 'discuss', 'explain', 'unpack', 'room', 'space'],
-        ['long', 'length', 'fill', 'padding', 'without'],
-      ],
-      minKeywords: 2,
-      explanation: 'A long block quotation consumes space and demonstrates only that you can transcribe. Short quotations embedded in your own sentence prove selection — you have identified the precise words that matter — and leave the word count for analysis, which is what is actually marked. Aim to quote at the level of the phrase, and to analyse specific word choices within it.'
-    },
-
-    /* ---------------- Module C ---------------- */
-    {
-      id: 'eng-17', topic: 'The Craft of Writing', difficulty: 1, type: 'mc',
-      prompt: 'Module C (The Craft of Writing) assesses your ability to:',
-      options: [
-        'Analyse two texts comparatively',
-        'Compose imaginative, discursive and persuasive texts, and reflect on your own choices',
-        'Memorise and reproduce model essays',
-        'Research a topic and present findings',
-      ],
-      answer: 1,
-      explanation: 'Module C asks you to write — imaginative, discursive, persuasive or informative — drawing on the craft of studied model texts, and to reflect on your own compositional decisions. The reflection is examinable: you must be able to explain WHY you made a choice and what effect you intended.'
-    },
-    {
-      id: 'eng-18', topic: 'The Craft of Writing', difficulty: 2, type: 'mc',
-      prompt: 'A discursive text is best characterised as one that:',
-      options: [
-        'Argues a single position and refutes opposing views',
-        'Explores an idea from multiple angles, often in a personal and exploratory voice',
-        'Narrates a fictional sequence of events',
-        'Presents factual information in a neutral register',
-      ],
-      answer: 1,
-      explanation: 'Discursive writing explores rather than argues to a fixed conclusion. It can shift perspective, digress, use anecdote and address the reader directly, and it need not resolve. Persuasive writing, by contrast, drives towards a position. Confusing the two is the most common Module C error — a discursive question answered with a persuasive essay loses marks for form.'
-    },
-    {
-      id: 'eng-19', topic: 'The Craft of Writing', difficulty: 3, type: 'short',
-      prompt: 'What should a Module C reflection statement actually do?',
-      accept: ['explain the deliberate compositional choices you made and the effect you intended on the reader'],
-      keywords: [
-        ['choice', 'decision', 'technique', 'structure', 'form', 'language'],
-        ['why', 'explain', 'justify', 'purpose', 'intend', 'effect', 'deliberate'],
-        ['reader', 'audience', 'responder', 'influence', 'model', 'stimulus'],
-      ],
-      minKeywords: 2,
-      explanation: 'A reflection explains and justifies your compositional decisions: what you were trying to achieve, which specific choices serve that purpose, what effect you intended on the reader, and how studied model texts influenced you. It is not a plot summary of your own piece and not an apology for it. Quote your own writing and analyse it as you would any other text.'
-    },
-    {
-      id: 'eng-20', topic: 'The Craft of Writing', difficulty: 4, type: 'mc',
-      prompt: 'A creative response to the stimulus "the door was already open" is strongest when it:',
-      options: [
-        'Uses the phrase as the opening sentence and then ignores it',
-        'Integrates the stimulus so that it carries thematic weight in the piece',
-        'Repeats the phrase at the start of each paragraph',
-        'Explains the meaning of the stimulus in the final paragraph',
-      ],
-      answer: 1,
-      explanation: 'A stimulus must be integrated, not merely inserted. The strongest responses let it operate on more than one level — a literal detail that also carries the piece\'s central idea. Bolting it on and abandoning it signals a pre-written piece being forced onto the question, which markers detect immediately.'
-    },
-    {
-      id: 'eng-21', topic: 'The Craft of Writing', difficulty: 4, type: 'short',
-      prompt: 'Explain why "show, don\'t tell" improves imaginative writing.',
-      accept: ['showing through concrete detail lets the reader infer emotion which is more engaging than being told what to feel'],
-      keywords: [
-        ['detail', 'image', 'action', 'sensory', 'concrete', 'specific', 'dialogue', 'behaviour'],
-        ['infer', 'imply', 'work out', 'experience', 'engage', 'immers', 'themselves'],
-        ['tell', 'told', 'stating', 'state', 'named', 'abstract', 'emotion'],
-      ],
-      minKeywords: 2,
-      explanation: 'Naming an emotion asks the reader to accept a claim; rendering it through concrete detail, action and dialogue lets the reader infer it, which is both more convincing and more involving. "She was devastated" reports; "she kept setting the second place at the table" creates the reader\'s own realisation. Use telling deliberately for pace and compression, not by default.'
-    },
-    {
-      id: 'eng-22', topic: 'The Craft of Writing', difficulty: 5, type: 'short',
-      prompt: 'Explain how sentence-level rhythm can contribute to meaning in your own writing.',
-      accept: ['varying sentence length controls pace so short sentences create tension and long sentences create flow or accumulation'],
-      keywords: [
-        ['short', 'long', 'length', 'vary', 'variation', 'clause'],
-        ['pace', 'rhythm', 'tension', 'urgency', 'slow', 'fast', 'breath', 'flow'],
-        ['meaning', 'effect', 'emphas', 'reader', 'mirror', 'reinforce'],
-      ],
-      minKeywords: 2,
-      explanation: 'Syntax carries meaning. Short declaratives create urgency, abruptness and finality; long accumulating sentences create flow, or the exhausting pile-up of experience. A sentence that breaks its own pattern lands emphasis on whatever follows. Deliberate rhythm is exactly the kind of choice a reflection statement should be able to name and justify.'
-    },
-
-    /* ---------------- Techniques and exam skills ---------------- */
-    {
-      id: 'eng-23', topic: 'Techniques', difficulty: 1, type: 'mc',
-      prompt: '"The city groaned under the weight of another morning" primarily employs:',
-      options: ['Simile', 'Personification', 'Hyperbole', 'Onomatopoeia'],
-      answer: 1,
-      explanation: 'Personification gives human qualities ("groaned", "weight" as burden) to the non-human city. Note there is no "like" or "as", ruling out simile. Naming the technique is the first step; the marks come from explaining that the personification transfers human exhaustion onto the urban environment, making the setting an extension of the inhabitants\' state.'
-    },
-    {
-      id: 'eng-24', topic: 'Techniques', difficulty: 2, type: 'mc',
-      prompt: 'Juxtaposition is best defined as:',
-      options: [
-        'Repeating a word at the start of successive clauses',
-        'Placing two contrasting elements side by side to highlight difference',
-        'A direct comparison using "like" or "as"',
-        'An implied reference to another text',
-      ],
-      answer: 1,
-      explanation: 'Juxtaposition places contrasting elements together so each throws the other into relief. Distinguish from: anaphora (repetition at the start of clauses), simile (explicit comparison), allusion (implied reference), and antithesis (contrast in balanced grammatical structure). Precision with terminology is itself assessed.'
-    },
-    {
-      id: 'eng-25', topic: 'Techniques', difficulty: 2, type: 'short',
-      prompt: 'Define "motif" and explain how it differs from a theme.',
-      accept: ['a motif is a recurring image or detail while a theme is the underlying idea the motif helps develop'],
-      keywords: [
-        ['recur', 'repeat', 'repeated', 'returns', 'throughout'],
-        ['image', 'object', 'symbol', 'detail', 'element', 'phrase'],
-        ['theme', 'idea', 'concept', 'message', 'abstract', 'meaning'],
-      ],
-      minKeywords: 2,
-      explanation: 'A motif is a concrete recurring element — an image, object, phrase or sound — that accumulates meaning through repetition. A theme is the abstract idea the text explores. Motifs are how themes are built: tracing a motif\'s transformation across a text is a reliable way to construct a Module B argument about textual integrity.'
-    },
-    {
-      id: 'eng-26', topic: 'Techniques', difficulty: 3, type: 'mc',
-      prompt: 'In a film, a low-angle shot of a character most typically:',
-      options: [
-        'Makes them appear powerful or dominant',
-        'Suggests they are vulnerable or insignificant',
-        'Indicates a flashback is occurring',
-        'Signals the character is dishonest',
+        'Memory\'s paradox — pain and pleasure fused, so grief is treasured rather than discarded',
+        'The literal ripeness of the fruit in the orchard',
+        'The speaker\'s dislike of the countryside',
+        'The passage of the seasons in a working farm',
       ],
       answer: 0,
-      explanation: 'Low angle looks up at the subject, conferring power and dominance; high angle looks down, diminishing them. Other visual techniques worth having ready: framing, close-up (intimacy or intensity), long shot (isolation), lighting and chiaroscuro, colour palette, mise-en-scène, diegetic and non-diegetic sound, and editing pace.'
+      explanation: 'The oxymoron does the conceptual work: a taste both sour and sweet enacts how painful memories are preserved rather than released. The wider paradox in the poem is that the orchard is dead yet still fruits — absence produces presence — and Isabella persists in a memory that keeps its sharpness rather than softening into nostalgia.'
     },
     {
-      id: 'eng-27', topic: 'Techniques', difficulty: 3, type: 'mc',
-      prompt: 'Enjambment in poetry refers to:',
+      id: 'eng-03', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'mc',
+      prompt: 'The final line of \'Wild Grapes\' — "Kissed here — or killed here — but who remembers now?" — is best analysed as:',
       options: [
-        'A pause at the end of a line marked by punctuation',
-        'A sentence or phrase running over the line break without pause',
-        'The repetition of consonant sounds',
-        'A regular pattern of stressed and unstressed syllables',
-      ],
-      answer: 1,
-      explanation: 'Enjambment carries sense across the line break, creating momentum, spilling one idea into the next, or setting up a surprise when the next line redirects the meaning. Its opposite is the end-stopped line, which creates closure and control. The effect always depends on WHERE the break falls — analyse the specific word left hanging.'
-    },
-    {
-      id: 'eng-28', topic: 'Techniques', difficulty: 4, type: 'short',
-      prompt: 'Explain the effect of an unreliable first-person narrator.',
-      accept: ['the reader must question the narrators account and read against it creating irony and active interpretation'],
-      keywords: [
-        ['question', 'doubt', 'distrust', 'suspicious', 'against', 'beyond', 'behind'],
-        ['irony', 'gap', 'discrepan', 'contradict', 'inconsist'],
-        ['reader', 'responder', 'active', 'interpret', 'work out', 'engage'],
-      ],
-      minKeywords: 2,
-      explanation: 'An unreliable narrator opens a gap between what is said and what the reader concludes, producing dramatic irony and forcing active interpretation. It also makes the narrator\'s self-deception the real subject: we watch someone construct a version of themselves. In Common Module terms, it is a direct way of representing the inconsistencies in human behaviour and motivation.'
-    },
-    {
-      id: 'eng-29', topic: 'Techniques', difficulty: 4, type: 'mc',
-      prompt: 'A composer uses cumulative listing: "the noise, the heat, the endless queuing, the forms, the waiting." The most likely effect is to:',
-      options: [
-        'Create a sense of accumulation and overwhelm',
-        'Establish a formal, academic register',
-        'Provide factual clarification for the reader',
-        'Slow the pace to create calm',
+        'Alliterative antithesis and a rhetorical question, which the poem itself answers by performing the act of remembrance it doubts',
+        'A simple statement of the speaker\'s ignorance about local history',
+        'A metaphor for the violence of the natural world reclaiming farmland',
+        'An allusion to a specific historical crime in the district',
       ],
       answer: 0,
-      explanation: 'Cumulative listing (accumulation) piles items without hierarchy, replicating the experience of being overwhelmed and making the reader feel the weight rather than be told about it. Note the asyndeton — omitted conjunctions — which accelerates the list. Always tie the technique to the specific experience being represented.'
+      explanation: 'Two techniques and one paradox. The alliterative antithesis of "kissed" and "killed" collapses love and violence into indistinguishability in memory, and the rhetorical question asserts that time erases. But the poem is itself the remembering — it answers its own question by existing. That self-contradiction is precisely the "anomaly, paradox or inconsistency" the rubric asks you to name.'
     },
     {
-      id: 'eng-30', topic: 'Techniques', difficulty: 1, type: 'short',
-      prompt: 'What is the difference between tone and mood?',
-      accept: ['tone is the composers attitude conveyed by language while mood is the atmosphere the reader feels'],
+      id: 'eng-04', topic: 'Texts and Human Experiences — Slessor', difficulty: 2, type: 'mc',
+      prompt: 'In \'Gulliver\', the line "One hair I break, ten thousand hairs entwine me" uses hyperbole and antithesis to convey:',
+      options: [
+        'Futility — trivial constraints multiply faster than we can escape them',
+        'The physical strength of the giant compared with his captors',
+        'The speaker\'s pride in his ability to break free',
+        'The passage of time measured in individual moments',
+      ],
+      answer: 0,
+      explanation: 'The inconsistency of scale is the poem\'s engine: no single bond is strong, yet together the trivial threads of daily life overpower a giant. The accumulative catalogue "Love, hunger, drunkenness, neuralgia, debt" names those threads as ordinary life itself, so the entrapment is by the mundane — and the speaker rages while remaining bound, which is awareness without freedom.'
+    },
+    {
+      id: 'eng-05', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'short',
+      prompt: 'Identify the central paradox of \'Out of Time\' and name ONE technique that enacts it.',
+      accept: ['time both creates and destroys since the same current that carries the beautiful moment sweeps it away and the circular structure looping the last line to the first enacts inescapability'],
       keywords: [
-        ['tone', 'attitude', 'composer', 'writer', 'speaker', 'voice'],
-        ['mood', 'atmosphere', 'feeling', 'reader', 'audience', 'evoke', 'created'],
+        ['creates', 'destroy', 'cradle', 'kill', 'both', 'beautiful', 'sweep', 'preserve', 'lose'],
+        ['circular', 'loop', 'structure', 'sonnet', 'metaphor', 'personif', 'wave', 'knife', 'yacht', 'bubble'],
       ],
       minKeywords: 2,
-      explanation: 'Tone is the attitude of the composer or persona towards the subject, conveyed through diction, syntax and imagery — ironic, elegiac, indignant. Mood (atmosphere) is what the responder is made to feel — ominous, melancholy, tense. A text can have a detached tone and generate a distressing mood; that mismatch is often analytically productive.'
+      explanation: 'The paradox: time both creates and destroys — the same current that carries the beautiful moment is what sweeps it away. The dual metaphor carries it: "Time, the wave" against "Time, the bony knife, it runs me through" — cradle and killer in one figure. Structurally, the sonnet sequence loops its closing line back to its opening simile "Time flowing like a hundred yachts", so the form enacts inescapability while the poem itself preserves the very moment it declares lost. "Lensed in a bubble\'s ghostly camera" makes that preservation fragile by definition: the moment is beautiful because it cannot last.'
     },
     {
-      id: 'eng-31', topic: 'Texts and Human Experiences', difficulty: 2, type: 'mc',
-      prompt: 'In an unseen texts section, the most efficient first step is to:',
+      id: 'eng-06', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'mc',
+      prompt: 'The dramatic monologue form of \'Vesper-Song of the Reverend Samuel Marsden\' is significant because it:',
       options: [
-        'Write down every technique you can identify',
-        'Read the question to determine what is being asked, then read the text for that',
-        'Summarise the plot of the text',
-        'Compare the text to your prescribed text',
+        'Lets Marsden condemn himself in his own voice, so the irony is produced by the persona rather than stated by the poet',
+        'Allows Slessor to praise Marsden\'s missionary achievements directly',
+        'Creates a neutral, documentary account of colonial punishment',
+        'Signals that the speaker and the poet share the same values',
       ],
-      answer: 1,
-      explanation: 'Read the question first: it tells you what to look for and prevents you from annotating material you will not use. Then note the mark allocation — a 3-mark answer needs roughly one developed point with evidence and effect, a 5-mark answer two or three. Answer the question asked, not the one you prepared for.'
+      answer: 0,
+      explanation: 'Slessor never appears to judge; Marsden convicts himself. The savage irony sits in the gap between the hymn-like, jaunty rhythm and the brutal content — "Shall I not let God\'s leather in", "a tinker\'s litany of whips", "scourged to Paradise". The paradox is moral: prayer and piety voiced by a torturer, devotion and sadism in one persona, salvation reframed as brutality. Use it for questions about the darker human capacities or about self-deception.'
     },
     {
-      id: 'eng-32', topic: 'Texts and Human Experiences', difficulty: 3, type: 'mc',
-      prompt: 'A question asks you to "evaluate" a statement about your prescribed text. This requires you to:',
+      id: 'eng-07', topic: 'Texts and Human Experiences — Slessor', difficulty: 2, type: 'mc',
+      prompt: 'The refrain of \'William Street\', "You find this ugly, I find it lovely", functions primarily to:',
       options: [
-        'Describe the events of the text in order',
-        'Make and sustain a judgement about the statement\'s validity, supported by textual evidence',
-        'List the techniques the composer uses',
-        'Compare the text with a related text',
+        'Confront the reader directly, putting their assumptions rather than the street on trial',
+        'Describe the changing appearance of Kings Cross across the seasons',
+        'Establish the speaker as a detached, objective observer',
+        'Signal a shift from present tense to past tense narration',
       ],
-      answer: 1,
-      explanation: 'Evaluate = make a judgement of value or validity and sustain it. Compare with the other NESA directives: analyse (identify components and relationships), explain (make cause and effect clear), assess (determine value or significance), discuss (issues for and against), and explore (examine in detail). Misreading the verb is one of the most costly and most avoidable errors.'
+      answer: 0,
+      explanation: 'The direct address plus antithesis makes the reader the subject of the poem. The perceptual anomaly is that what society calls ugly the speaker declares lovely, locating beauty in grease, neon and vice — "grease that blesses onions with a hiss" sanctifies the profane through religious personification and sibilance. The respectable reader\'s values, not the street, are exposed as the real inconsistency.'
     },
     {
-      id: 'eng-33', topic: 'Texts and Human Experiences', difficulty: 4, type: 'short',
-      prompt: 'Why should an essay engage directly with the wording of the question rather than reciting a prepared response?',
-      accept: ['markers assess how well you address the specific question so a prepared essay that ignores its wording cannot score highly'],
+      id: 'eng-08', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'mc',
+      prompt: 'In \'Beach Burial\', "the sand joins them together, / Enlisted on the other front" is powerful chiefly because the word "enlisted":',
+      options: [
+        'Converts military conscription into communion, so death re-recruits enemies into a shared human condition',
+        'Confirms the sailors had all volunteered for service before dying',
+        'Identifies which side of the conflict the dead men fought for',
+        'Emphasises the military efficiency of the burial process',
+      ],
+      answer: 0,
+      explanation: 'Zoom to the single word — that is what separates analysis from retelling. "Enlisted" belongs to the vocabulary of the war that killed them, and Slessor turns it against itself: the "other front" is death, where the distinctions men killed for dissolve. Pair it with the opening sibilance "Softly and humbly to the Gulf of Arabs", which creates funereal tenderness before the reader even knows the cause, and the epitaph "\'Unknown seaman\' — the ghostly pencil / Wavers and fades", where commemoration is undone as it is written.'
+    },
+    {
+      id: 'eng-09', topic: 'Texts and Human Experiences — Slessor', difficulty: 4, type: 'short',
+      prompt: 'The Common Module rubric asks you to name an anomaly, paradox or inconsistency. State the one in \'Beach Burial\'.',
+      accept: ['men who died as enemies are united in death so identity is erased at the very moment of commemoration and gentle lulling sounds describe violent death'],
       keywords: [
-        ['specific', 'wording', 'directive', 'terms', 'asked', 'question'],
-        ['prepared', 'memoris', 'memoriz', 'pre written', 'generic', 'rehears'],
-        ['mark', 'address', 'respond', 'relevan', 'score', 'band'],
+        ['enem', 'united', 'together', 'joins', 'side', 'shared', 'common human'],
+        ['erase', 'anonym', 'unknown', 'identity', 'fades', 'commemorat', 'gentle', 'tender', 'soft'],
       ],
       minKeywords: 2,
-      explanation: 'Marking criteria reward a response to the question actually set. A memorised essay may contain accurate analysis and still sit in a middle band because it does not address the terms given. The workable approach is to prepare flexible arguments and evidence, then build the thesis around the question\'s specific wording — and to use that wording explicitly in your topic sentences.'
+      explanation: 'Two overlapping paradoxes. First, men who died as enemies are united by the sand and tide, which are indifferent to sides — enmity is undone by the thing that killed them. Second, the burial is tender yet anonymous: identity is erased at the very moment of commemoration, as the pencilled "Unknown seaman" wavers and fades. Add the tonal inconsistency — gentle, lulling sound patterning used to describe violent death. Naming the paradox explicitly is rubric language and earns marks on its own.'
     },
     {
-      id: 'eng-34', topic: 'Close Study of Literature', difficulty: 2, type: 'mc',
-      prompt: 'Which is the best topic sentence for a body paragraph?',
-      options: [
-        'In chapter four, the protagonist leaves home.',
-        'The composer uses symbolism, imagery and metaphor.',
-        'The protagonist\'s departure reframes home as something chosen rather than inherited, unsettling the text\'s earlier certainties about belonging.',
-        'This paragraph will discuss the theme of belonging.',
-      ],
-      answer: 2,
-      explanation: 'A topic sentence should assert an arguable idea that advances the thesis. Naming what happens in chapter four narrates; listing symbolism, imagery and metaphor names techniques without making a claim; announcing that the paragraph will discuss belonging states an intention. The sentence about departure reframing home makes a specific claim about meaning that the rest of the paragraph can prove with evidence and analysis.'
-    },
-    {
-      id: 'eng-35', topic: 'Language, Identity and Culture', difficulty: 2, type: 'short',
-      prompt: 'Give one reason a composer might use colloquial language or dialect in a text.',
-      accept: ['colloquial language creates authentic voice and signals a characters cultural or social identity'],
+      id: 'eng-10', topic: 'Texts and Human Experiences — Slessor', difficulty: 4, type: 'short',
+      prompt: 'For a question on "the endurance of the human spirit", what thesis about Slessor is more sophisticated than "resilience wins"?',
+      accept: ['for slessor the spirit endures as persistence within time death and hardship rather than triumph over them through memory shared mortality and stubborn vitality'],
       keywords: [
-        ['authentic', 'realistic', 'genuine', 'voice', 'natural'],
-        ['identity', 'culture', 'class', 'region', 'background', 'belong', 'community'],
-        ['character', 'relate', 'connect', 'reader', 'immediacy', 'intimacy'],
+        ['persist', 'not triumph', 'rather than triumph', 'within', 'continu', 'remain', 'endure in'],
+        ['memory', 'mortal', 'death', 'shared', 'collective', 'vitality', 'poetry', 'storytell'],
       ],
       minKeywords: 2,
-      explanation: 'Colloquialism and dialect create an authentic voice, situate a character within a specific culture, class or region, and can build intimacy with readers who share that idiom while marking distance for those who do not. In Module A terms, the choice asserts that this way of speaking is legitimate literary language — a claim about whose identity gets represented on its own terms.'
+      explanation: 'Argue that endurance in Slessor is persistence rather than victory — the spirit endures most powerfully at the points where it appears defeated. Isabella endures in the sharpness of memory (\'Wild Grapes\'); the drowned seamen endure in a humanity deeper than enmity (\'Beach Burial\'); the "dips and molls" of William Street endure through sheer appetite, living with "death at their elbows, hunger at their heels" yet "ranging the pavements of their pasturage", the pastoral metaphor granting their scavenging existence dignity. Poetry itself becomes the act that makes that endurance visible. Best trio for this question: \'Beach Burial\' + \'William Street\' + \'Wild Grapes\'.'
     },
     {
-      id: 'eng-36', topic: 'Techniques', difficulty: 5, type: 'mc',
-      prompt: 'A poem\'s final line breaks the regular metre it has maintained throughout. The most sophisticated reading is that:',
+      id: 'eng-11', topic: 'Texts and Human Experiences — Slessor', difficulty: 2, type: 'mc',
+      prompt: 'For a Section I unseen question worth 3 marks, the most reliable structure is:',
       options: [
-        'The poet made a technical error',
-        'The disruption enacts the poem\'s meaning at the level of form, giving the departure emphasis',
-        'The line should be read faster than the others',
-        'The poem is unfinished',
+        'Technique → effect → link to human experience, at roughly 2–3 sentences per mark',
+        'A summary of the text followed by your personal opinion',
+        'A list of every technique you can identify in the extract',
+        'A comparison with your prescribed text in every answer',
       ],
-      answer: 1,
-      explanation: 'A metrical pattern establishes an expectation; breaking it makes the reader feel the departure before analysing it. Where the break falls at a moment of rupture, loss or realisation in the poem\'s content, form and meaning coincide — the strongest kind of formal analysis, and exactly what textual integrity describes.'
+      answer: 0,
+      explanation: 'Name the technique, explain its effect on the reader, then link that effect to the human experience the question asks about — about 2–3 sentences per mark. Listing techniques without effects scores nothing, and unseen questions do not ask for your prescribed text unless they say so. Useful verb bank: positions, foregrounds, juxtaposes, subverts, elicits, evokes.'
+    },
+    {
+      id: 'eng-12', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'mc',
+      prompt: 'Which pairing of Slessor poems best suits a question about the individual versus the collective experience?',
+      options: [
+        "'Beach Burial' and 'William Street'",
+        "'Out of Time' and 'Wild Grapes'",
+        "'Vesper-Song' and 'Gulliver'",
+        "'Gulliver' and 'Out of Time'",
+      ],
+      answer: 0,
+      explanation: 'Pair by concept, not by preference. \'Beach Burial\' and \'William Street\' both handle collective experience — anonymous war dead, and the crowd of a city street. \'Out of Time\' with \'Wild Grapes\' handles time and memory; \'Vesper-Song\' with \'Gulliver\' handles the darker human capacities. Choosing the pairing that matches the question wording is half the essay planning.'
+    },
+    {
+      id: 'eng-13', topic: 'Texts and Human Experiences — Slessor', difficulty: 3, type: 'short',
+      prompt: 'Name THREE rubric terms from the Texts and Human Experiences module that should appear in a Slessor essay.',
+      accept: ['individual and collective experiences human qualities and emotions anomalies paradoxes and inconsistencies seeing the world differently and the role of storytelling'],
+      keywords: [
+        ['individual', 'collective'],
+        ['anomal', 'paradox', 'inconsist'],
+        ['qualities', 'emotion', 'motivation', 'storytell', 'differently', 'assumption'],
+      ],
+      minKeywords: 3,
+      explanation: 'The rubric language to weave in: individual and collective experiences; human qualities, emotions and motivations; anomalies, paradoxes and inconsistencies in human behaviour and motivations; how texts invite us to see the world differently and challenge assumptions; and the role of storytelling. Markers report that stronger responses select evidence purposefully from the most appropriate poems and move beyond retelling to a conceptual argument about the composer\'s purpose.'
+    },
+
+    /* ---------------- Module A: One Night the Moon ---------------- */
+    {
+      id: 'eng-14', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 1, type: 'mc',
+      prompt: 'One Night the Moon (2001) was directed by:',
+      options: ['Rachel Perkins', 'Warwick Thornton', 'Ivan Sen', 'Phillip Noyce'],
+      answer: 0,
+      explanation: 'Rachel Perkins, with music by Paul Kelly, Kev Carmody and Mairead Hannan. It is a 57-minute musical drama based on true events of 1932 — a child lost in the outback and the Aboriginal tracker, inspired by Alexander Riley, whose expertise was refused. Knowing the historical basis matters because the film\'s argument is about a real refusal with a real cost.'
+    },
+    {
+      id: 'eng-15', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 3, type: 'mc',
+      prompt: 'The "This Land Is Mine" sequence is the module\'s central scene because it:',
+      options: [
+        'Uses a contrapuntal duet across a fence line to juxtapose ownership against belonging in one composition',
+        'Provides the only dialogue scene between Jim and Albert',
+        'Explains the historical background of the 1932 disappearance',
+        'Is the only sequence shot in daylight',
+      ],
+      answer: 0,
+      explanation: 'The contrapuntal duet cross-cuts Jim and Albert riding the same fence line, each singing an opposed claim to the land. The fence divides the frame and the worldviews simultaneously, so the film\'s argument is delivered in film language rather than dialogue: Jim possesses the land, Albert belongs to it. In Module A a visual composition counts as a quotation — the split fence-line framing IS the evidence.'
+    },
+    {
+      id: 'eng-16', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 3, type: 'short',
+      prompt: 'Explain what Jim\'s refusal of Albert\'s tracking represents thematically.',
+      accept: ['the refusal of aboriginal knowledge systems and emilys death is the cost of that refusal'],
+      keywords: [
+        ['refus', 'reject', 'exclu', 'deni', 'racism', 'prejudice'],
+        ['knowledge', 'expertise', 'tracking', 'country', 'aboriginal', 'indigenous', 'skill'],
+        ['cost', 'death', 'dies', 'emily', 'consequence', 'too late', 'price'],
+      ],
+      minKeywords: 2,
+      explanation: 'Jim\'s "I don\'t want him on my land" refuses not a man but an entire knowledge system — Albert\'s embodied literacy of Country, set against Jim\'s colonial grammar of maps, boundaries and possession. Emily\'s death is the cost of that refusal, and Albert\'s eventual finding of her body vindicates the knowledge too late. The structural irony is that Jim\'s identity as provider and protector collapses precisely because possession of land proves meaningless without belonging to it, which is what destroys him.'
+    },
+    {
+      id: 'eng-17', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 2, type: 'mc',
+      prompt: 'Extreme long shots of figures dwarfed by ranges and sky primarily convey:',
+      options: [
+        'The land as vast and indifferent to colonial claims of control',
+        'The characters\' physical fitness and endurance',
+        'The historical accuracy of the film\'s outback setting',
+        'The passage of time during the search',
+      ],
+      answer: 0,
+      explanation: 'Scale is the argument. When the frame reduces people to specks, the fence lines and property boundaries they have drawn become visibly absurd against a landscape that does not recognise them. Pair it with the chiaroscuro low-key lighting of the homestead interiors after Emily disappears, where grief and moral darkness invade domestic space.'
+    },
+    {
+      id: 'eng-18', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 3, type: 'mc',
+      prompt: 'Rose\'s decision to defy Jim and engage Albert is significant because it:',
+      options: [
+        'Shows female agency crossing the racial line the film\'s male authority figures enforce',
+        'Confirms that Jim was correct about the danger of the search',
+        'Introduces the film\'s only comic relief',
+        'Resolves the conflict between the two men',
+      ],
+      answer: 0,
+      explanation: 'Rose acts where the sergeant and Jim have foreclosed the option, so the film locates moral clarity outside institutional authority. It also complicates any simple reading of settler culture as monolithic — the refusal is a choice individuals make, not an inevitability, which is what makes Jim culpable rather than merely typical.'
+    },
+    {
+      id: 'eng-19', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 2, type: 'mc',
+      prompt: 'The musical form itself contributes to the film\'s treatment of identity because song:',
+      options: [
+        'Externalises interior identity the characters cannot or will not speak aloud',
+        'Makes the historical events easier for a young audience to follow',
+        'Replaces the need for cinematography in conveying meaning',
+        'Signals that the events depicted are fictional',
+      ],
+      answer: 0,
+      explanation: 'These are people who do not talk about what they feel. Song carries what dialogue cannot, which is why the duet delivers the thematic conflict and Albert\'s mourning song delivers his grief. The counterpart is silence: the wordless stretches of Rose and Albert\'s search, and the finding of Emily, where music and silence carry meaning after language — including the police\'s words — has failed.'
+    },
+    {
+      id: 'eng-20', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 3, type: 'mc',
+      prompt: 'The recurring moon motif functions to represent:',
+      options: [
+        'The pull of the natural world and the innocence that settlers cannot fence',
+        'The passage of a single night in real time',
+        'The arrival of European surveying technology',
+        'Albert\'s tracking method, which relies on moonlight',
+      ],
+      answer: 0,
+      explanation: 'Emily is lured out by moonlight in the opening, and lunar imagery recurs across the film. The motif sets the natural world\'s pull against the human impulse to enclose: the moon is the one thing in the frame no fence can contain, and a child follows it out of a world of boundaries into one that has none.'
+    },
+    {
+      id: 'eng-21', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 4, type: 'short',
+      prompt: 'Write a thesis for: "How does Perkins use the language of film to represent the relationship between identity and place?"',
+      accept: ['perkins uses the composite language of film image music and silence to juxtapose two literacies of the same land showing that identity is constituted by the language a culture uses to know its place'],
+      keywords: [
+        ['composite', 'language of film', 'song', 'music', 'image', 'silence', 'cinemat'],
+        ['two literac', 'juxtapos', 'oppos', 'ownership', 'belonging', 'possession', 'country', 'custodian'],
+        ['identity', 'constitut', 'shape', 'construct'],
+      ],
+      minKeywords: 2,
+      explanation: 'Model thesis: identity is inseparable from the language a culture uses to know its place. Perkins deploys the composite language of the musical film — contrapuntal song, chiaroscuro lighting and the symbolism of fences — to juxtapose two literacies of the same land: Jim\'s colonial grammar of maps, boundaries and possession, and Albert\'s embodied reading of Country. By staging the duet across a fence line that divides both frame and worldview, she reveals that Jim\'s identity, built on ownership, is destroyed by the very knowledge he excludes, while Albert\'s belonging endures. The film therefore argues that language — spoken, sung and visual — does not merely express identity and culture but constitutes them.'
+    },
+    {
+      id: 'eng-22', topic: 'Language, Identity and Culture — One Night the Moon', difficulty: 2, type: 'mc',
+      prompt: 'Which technique contrast best captures the film\'s "two literacies of land"?',
+      options: [
+        'Jim\'s map and boundary riding against Albert reading tracks on the ground',
+        'The use of colour film against black-and-white archival inserts',
+        'Diegetic sound against non-diegetic sound',
+        'The homestead interior against the police station interior',
+      ],
+      answer: 0,
+      explanation: 'Jim reads the land through an imposed grid — the map, the fence, the survey. Albert reads it through embodied knowledge — tracks, ground, sign. Both are forms of literacy, which is why "two literacies" is a more precise formulation than "two cultures", and precision of that kind is what lifts a Module A paragraph.'
+    },
+
+    /* ---------------- Module B: FEED ---------------- */
+    {
+      id: 'eng-23', topic: 'Close Study — FEED', difficulty: 1, type: 'mc',
+      prompt: 'FEED (2002) was written by:',
+      options: ['M.T. Anderson', 'Cory Doctorow', 'Margaret Atwood', 'Neal Shusterman'],
+      answer: 0,
+      explanation: 'M.T. Anderson. It is a dystopian satire narrated by Titus, a teenager with the "feed" — a networked implant streaming advertising, chat and entertainment directly into consciousness. Violet, implanted late and dying from a malfunctioning feed, is the counter-voice. Module B assesses the distinctive qualities of THIS text plus your personal, informed response.'
+    },
+    {
+      id: 'eng-24', topic: 'Close Study — FEED', difficulty: 3, type: 'mc',
+      prompt: 'The novel\'s most distinctive quality is Titus\'s degraded narrative voice. Its central effect is that:',
+      options: [
+        'Form enacts theme — the impoverished prose is itself evidence of the cognitive decay the feed causes',
+        'It makes the novel easier to read for a teenage audience',
+        'It establishes Titus as an unreliable narrator who lies about events',
+        'It distinguishes the novel\'s dialogue from its narration',
+      ],
+      answer: 0,
+      explanation: 'The argument to make is that Anderson builds a narrator who cannot adequately narrate. Titus\'s limited lexicon — slang substituting for thought — means the prose demonstrates the claim rather than asserting it: when language is colonised by marketing, thinking itself contracts. Note the difference from unreliability: Titus is not lying, he genuinely lacks the interior resources to describe his world, which is worse.'
+    },
+    {
+      id: 'eng-25', topic: 'Close Study — FEED', difficulty: 3, type: 'mc',
+      prompt: 'The 2022 HSC extract came from the hospital section, where Titus wakes disconnected from the feednet. That section matters because:',
+      options: [
+        'Disconnection reveals dependence — his repetitive, circling syntax registers panic because he has no interior resources to fall back on',
+        'It is the only section narrated by Violet rather than Titus',
+        'It shows the feed being permanently removed from all characters',
+        'It provides the novel\'s only description of the natural world',
+      ],
+      answer: 0,
+      explanation: 'The hospital gives a brief life without the feed, and with it a glimpse of genuine connection between Titus and Violet. Analytically, the panic in the syntax proves the dependence: strip the feed away and there is very little person underneath. Practise linking a supplied passage outward to the whole novel, since the extract format can return.'
+    },
+    {
+      id: 'eng-26', topic: 'Close Study — FEED', difficulty: 3, type: 'mc',
+      prompt: 'Violet\'s "resistance" project is to:',
+      options: [
+        'Deliberately confuse her consumer profile by browsing incoherently, with the consequence that the corporation refuses to fund her feed repairs',
+        'Organise other teenagers into a political movement against the feed corporations',
+        'Have her feed surgically removed before it can fail',
+        'Publish a manifesto exposing the feed companies to the public',
+      ],
+      answer: 0,
+      explanation: 'She makes herself illegible as a customer, and the system\'s answer is chillingly commercial: an unprofitable profile is not worth repairing, so refusing to be a consumer costs her her life. This is where the satire turns tragic — the cost of the feed is measured in a person rather than an abstraction, and her death is what indicts both Titus and the reader.'
+    },
+    {
+      id: 'eng-27', topic: 'Close Study — FEED', difficulty: 4, type: 'short',
+      prompt: 'Explain how the novel makes the reader complicit, and why that matters for a Module B response.',
+      accept: ['we experience the feeds seductions through titus so his failures of empathy become recognisable as our own which is the basis of a personal informed response'],
+      keywords: [
+        ['through titus', 'first person', 'narrat', 'perspective', 'inside', 'experience'],
+        ['complicit', 'implicat', 'recognis', 'uncomfortab', 'our own', 'reader', 'my response', 'positions me'],
+      ],
+      minKeywords: 2,
+      explanation: 'Because the future arrives through Titus\'s eyes, we enjoy the feed\'s seductions before we judge them — so when he deletes Violet\'s messages and goes shopping for jeans while she deteriorates, his failure of empathy is uncomfortably recognisable rather than safely alien. Module B rewards personal voice, so say it directly: "the novel positions me to…", "my response is shaped by…". Complicity is the hinge between the text\'s distinctive qualities and your informed personal response, which is exactly what the module asks for.'
+    },
+    {
+      id: 'eng-28', topic: 'Close Study — FEED', difficulty: 3, type: 'mc',
+      prompt: 'The ad, news and pop-lyric fragments spliced into the chapters function to:',
+      options: [
+        'Mimic the feed\'s assault on the reader, reducing news of ecological and political collapse to background noise',
+        'Provide factual exposition the narrator is unable to give',
+        'Mark the passage of time between chapters',
+        'Introduce characters who do not otherwise appear',
+      ],
+      answer: 0,
+      explanation: 'The structural interruption is a technique, so treat it as one. It does to the reader what the feed does to Titus — constant intrusion — and the content matters: the dying ocean, vanishing forests and political crises appear only as fragments nobody attends to. Desensitisation is enacted formally rather than described.'
+    },
+    {
+      id: 'eng-29', topic: 'Close Study — FEED', difficulty: 3, type: 'mc',
+      prompt: 'The lesions motif is significant because the lesions are:',
+      options: [
+        'Normalised into fashion, so bodily decay is aestheticised rather than treated as a warning',
+        'A side effect of the feed that the corporations successfully cure',
+        'Confined to Violet, marking her out as different from her peers',
+        'A symptom of an infectious disease spread by physical contact',
+      ],
+      answer: 0,
+      explanation: 'The horror is the normalisation: characters turn open sores into a style, and a popular show makes them aspirational. Bodily decay joins ecological decay — the dying sea, corporate skies, filet mignon farms — as the repressed truth consumer culture converts into aesthetics rather than confronting. That conversion is the satire\'s method throughout.'
+    },
+    {
+      id: 'eng-30', topic: 'Close Study — FEED', difficulty: 4, type: 'short',
+      prompt: 'Explain the triple meaning of the novel\'s closing phrase "Everything must go".',
+      accept: ['it is a sale slogan and also names ecological collapse and violets death so consumer language becomes the only language available for grief'],
+      keywords: [
+        ['sale', 'slogan', 'advertis', 'clearance', 'retail'],
+        ['ecolog', 'environment', 'collapse', 'world', 'planet', 'nature'],
+        ['violet', 'death', 'dying', 'dies', 'her'],
+      ],
+      minKeywords: 3,
+      explanation: 'Three readings at once: a clearance-sale slogan, the ecological collapse the novel has kept in its margins, and Violet dying as Titus narrates to her. The devastation is that the novel ends in the register of advertising because that is the only language Titus has left — even his grief arrives pre-branded. Note the structural irony too: the four part titles (moon, eden, utopia, slumberland) chart an anti-journey from escape to sedation rather than growth.'
+    },
+    {
+      id: 'eng-31', topic: 'Close Study — FEED', difficulty: 2, type: 'mc',
+      prompt: 'In a Module B paragraph, the most important thing to anchor your analysis in is:',
+      options: [
+        'A distinctive quality of the text — voice, structure, satire or characterisation',
+        'A summary of the plot events in the section discussed',
+        'The author\'s biography and the year of publication',
+        'A comparison with another dystopian novel you have read',
+      ],
+      answer: 0,
+      explanation: 'Module B is about the text\'s distinctive qualities, so a paragraph anchored only in theme drifts into retelling. Recent HSC questions have been deliberately generic across all prescribed texts — "distinctive qualities" in 2022, "key features" in 2025 — which means preparation transfers, provided every paragraph names a quality and then shows the central idea being produced by it.'
+    },
+    {
+      id: 'eng-32', topic: 'Close Study — FEED', difficulty: 3, type: 'short',
+      prompt: 'State the function of the juxtaposition between Titus and Violet.',
+      accept: ['violets articulate allusive speech is the measure of an uncolonised mind so her decline dramatises the human cost of the feed and indicts titus'],
+      keywords: [
+        ['articulate', 'allusive', 'vocabulary', 'language', 'educated', 'precise', 'thinks'],
+        ['measure', 'contrast', 'against', 'cost', 'indict', 'what is lost', 'decline', 'death'],
+      ],
+      minKeywords: 2,
+      explanation: 'Violet functions as the novel\'s control variable. Implanted late, she retains an articulate, allusive register that Titus cannot access, so her speech measures precisely what the feed has taken from everyone else — the reader can only see Titus\'s poverty because Violet\'s fluency exists beside it. Her decline as the feed sustaining her fails converts that measurement into human cost, and her death indicts Titus\'s passivity and, through complicity, the reader\'s.'
+    },
+    {
+      id: 'eng-33', topic: 'Close Study — FEED', difficulty: 2, type: 'mc',
+      prompt: 'School™ is an example of the novel\'s use of:',
+      options: [
+        'Satiric irony — exaggerating a present trend, in this case corporate control of education, to critique it',
+        'Allegory, where each character represents an abstract virtue',
+        'Magic realism, where impossible events are treated as ordinary',
+        'Unreliable narration, where the narrator deliberately misleads',
+      ],
+      answer: 0,
+      explanation: 'Satire exaggerates the present rather than inventing a future. School™ trademarks education itself; parents select their children\'s features from a catalogue; a corporation offers customer-service condolences for a death it caused. The comedy curdles into horror precisely because each step is a small extension of something already recognisable.'
+    },
+
+    /* ---------------- Module C: The Craft of Writing ---------------- */
+    {
+      id: 'eng-34', topic: 'The Craft of Writing', difficulty: 2, type: 'mc',
+      prompt: 'In Module C, the smartest preparation is to:',
+      options: [
+        'Prepare ONE flexible core — persona, setting, central image and a turn — that can be delivered as either imaginative or discursive',
+        'Memorise one complete imaginative piece and reproduce it whatever the question asks',
+        'Prepare four separate pieces, one for each likely stimulus type',
+        'Write nothing in advance and improvise entirely from the stimulus',
+      ],
+      answer: 0,
+      explanation: 'One core, two forms. As imaginative, you dramatise it: scene, sensory detail, sparse dialogue, the turn shown through action or image, and a circular ending that returns to the opening image changed. As discursive, you explore it: open with the same moment as an anecdote, widen to consider the idea from two or three angles, bring in an observation or allusion, and land a considered rather than preachy position. Reproducing a memorised piece wholesale is explicitly penalised.'
+    },
+    {
+      id: 'eng-35', topic: 'The Craft of Writing', difficulty: 3, type: 'mc',
+      prompt: 'When a stimulus is provided, the right five minutes of planning asks:',
+      options: [
+        'Where does this stimulus sit inside MY core — plant it in the opening and echo it at the close',
+        'What entirely new story does this stimulus demand',
+        'How can I mention the stimulus once in the middle of the piece',
+        'Which prescribed text does this stimulus most resemble',
+      ],
+      answer: 0,
+      explanation: 'The pivot, not a restart. Plant the stimulus — image, quote or sentence — in your opening paragraph as an image or an idea, and echo it at the close so the piece is visibly shaped by it. Building an unfamiliar piece from scratch under time pressure sacrifices the crafted language the module actually marks.'
+    },
+    {
+      id: 'eng-36', topic: 'The Craft of Writing', difficulty: 3, type: 'short',
+      prompt: 'List the four components of a strong Module C reflection.',
+      accept: ['intent stating form audience and purpose then two or three specific language choices quoted from your own piece with technique and effect then the influence of a studied text then an evaluation of effectiveness'],
+      keywords: [
+        ['intent', 'purpose', 'audience', 'form'],
+        ['choice', 'technique', 'quote', 'own piece', 'language', 'device'],
+        ['influence', 'studied text', 'composer', 'borrow', 'adapt'],
+        ['evaluat', 'judgement', 'effective', 'success'],
+      ],
+      minKeywords: 3,
+      explanation: 'Four moves. Intent: one sentence naming form, audience and purpose. Choices — where the marks live: two or three specific language decisions, each QUOTED FROM YOUR OWN PIECE, with the technique named and the effect explained. Influence: one studied text that shaped a choice, naming the composer and the specific technique borrowed or adapted. Evaluation: a brief judgement of how effectively the piece met its purpose, using an evaluative verb such as "successfully positions" or "deliberately unsettles".'
+    },
+    {
+      id: 'eng-37', topic: 'The Craft of Writing', difficulty: 3, type: 'mc',
+      prompt: 'The practical implication of the reflection being worth close to half the marks is that you should:',
+      options: [
+        'Deliberately build 2–3 "reflectable" techniques into the piece so the reflection writes itself, and protect its time',
+        'Write the reflection first and then compose a piece to match it',
+        'Keep the creative piece to a single paragraph',
+        'Spend the full 40 minutes on the piece and summarise the reflection in one line',
+      ],
+      answer: 0,
+      explanation: 'Plant the material you intend to discuss — an extended metaphor, a structural choice, a deliberate shift in sentence length or person. Then guard the clock: plan 5 minutes, piece 22–25, reflection 8–10, check 2. An unfinished reflection bleeds marks that were easier to earn than anything in the creative piece.'
+    },
+    {
+      id: 'eng-38', topic: 'The Craft of Writing', difficulty: 2, type: 'mc',
+      prompt: 'If asked to draw on a studied text and free to choose, Slessor transfers well into Module C because he offers:',
+      options: [
+        'Sensory urban imagery for setting and an object holding memory as a plot device',
+        'Extended dialogue models for character interaction',
+        'A dystopian setting adaptable to speculative fiction',
+        'A film-language vocabulary for describing visual scenes',
+      ],
+      answer: 0,
+      explanation: '\'William Street\' models sensory urban description — neon, rain, grease, food smells — and \'Wild Grapes\' models an object that carries memory, which is a ready-made plot device. Either also works as the named "influence" in your reflection, which is why keeping Slessor as your Module C insurance saves preparation rather than adding to it.'
+    },
+    {
+      id: 'eng-39', topic: 'The Craft of Writing', difficulty: 2, type: 'mc',
+      prompt: 'A circular ending in an imaginative piece means:',
+      options: [
+        'Returning to the opening image or moment, changed by what has happened between',
+        'Ending the piece with an unresolved question',
+        'Repeating the first paragraph word for word at the close',
+        'Telling the story in reverse chronological order',
+      ],
+      answer: 0,
+      explanation: 'The return is what makes the change legible — same image, different meaning, so the reader feels the turn without being told about it. It also gives you something concrete to discuss in the reflection: name the structural choice, quote both instances, explain the effect.'
+    },
+    {
+      id: 'eng-40', topic: 'The Craft of Writing', difficulty: 3, type: 'mc',
+      prompt: 'In Paper 2, the single most important instruction before writing Module C is to:',
+      options: [
+        'Read both parts of the question, since the piece and the reflection may set different requirements',
+        'Decide immediately whether to write imaginative or discursive',
+        'Count the marks allocated to each part',
+        'Choose which prescribed text to reference',
+      ],
+      answer: 0,
+      explanation: 'Module C may come in two parts, and the second part frequently changes what the first one needs to contain — a nominated audience, a required form, or a text you must reference. Reading both first costs thirty seconds and prevents writing a piece the reflection cannot then discuss. The same discipline applies across Paper 2: all questions are unseen, so engage the actual command verb rather than recycling a prepared response.'
+    },
+    {
+      id: 'eng-41', topic: 'The Craft of Writing', difficulty: 4, type: 'short',
+      prompt: 'Write the opening sentence of a Module C reflection that states intent.',
+      accept: ['i crafted an imaginative piece for a reflective adult audience to convey how memory attaches itself to ordinary objects'],
+      keywords: [
+        ['imaginative', 'discursive', 'piece', 'wrote', 'crafted', 'composed'],
+        ['audience', 'reader'],
+        ['convey', 'purpose', 'explore', 'position', 'evoke', 'to '],
+      ],
+      minKeywords: 3,
+      explanation: 'The template names all three elements at once: form, audience, purpose. For example, "I crafted an imaginative piece for a reflective adult audience to convey how memory attaches itself to ordinary objects." One sentence, and the marker knows exactly what to assess the rest of the reflection against. Then move straight to your quoted choices, which is where the marks are concentrated.'
+    },
+    {
+      id: 'eng-42', topic: 'The Craft of Writing', difficulty: 2, type: 'mc',
+      prompt: 'A discursive piece differs from an imaginative one chiefly in that it:',
+      options: [
+        'Explores an idea from several angles in a crafted personal voice, rather than dramatising it as a scene',
+        'Must be written in third person rather than first',
+        'Requires a formal thesis and topic sentences like an essay',
+        'Cannot include personal anecdote or humour',
+      ],
+      answer: 0,
+      explanation: 'Discursive writing muses. It typically opens with a personal anecdote, widens to consider the idea from two or three angles, brings in an observation or allusion, and lands on a considered position without preaching. The voice is first person, conversational but crafted, and a wry tone is welcome — the difference from an essay is that it explores rather than argues to a predetermined conclusion.'
     },
   ]
 };

@@ -263,7 +263,26 @@ body.font-small { font-size: 16px; }
 .battle-rail {
   flex: 0 0 250px; display: flex; flex-direction: column; gap: 8px;
   overflow-y: auto;
+  /* Without this, a horizontally overflowing child scrolls the whole rail
+     sideways — panels and all — instead of just itself. */
+  overflow-x: hidden;
 }
+
+/* The control strip scrolls on its own axis, so dragging across it moves the
+   buttons rather than the section beneath them. */
+.rail-tabs {
+  flex: 0 0 auto;
+  display: flex; gap: 8px;
+  overflow-x: auto; overflow-y: hidden;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--stone-500) var(--stone-900);
+  overscroll-behavior-x: contain;
+}
+.rail-tabs > .btn { flex: 0 0 auto; }
+.rail-tabs::-webkit-scrollbar { height: 8px; }
+.rail-tabs::-webkit-scrollbar-track { background: var(--stone-900); }
+.rail-tabs::-webkit-scrollbar-thumb { background: var(--stone-500); }
 
 /* Item buttons in the rail stay compact so they all fit without scrolling. */
 .item-btn { padding: 8px 10px; font-size: 11px; }

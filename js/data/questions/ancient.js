@@ -1,7 +1,12 @@
 /* NSW HSC Ancient History.
 
-   Targeted at this course: the compulsory core (Cities of Vesuvius) plus
-   Persia, Xerxes, and the Greek Wars. */
+   Targeted at this course's four sections: the compulsory core study (Cities
+   of Vesuvius), the ancient society (Sparta), the personality (Xerxes) and
+   the historical period (The Greek World 500-440 BC).
+
+   Several questions deliberately drill the errors that cost marks in the
+   trial: ephors confused with the gerousia, Miltiades credited to
+   Themistocles, Sardis placed in Persia, and Egypt confused with Babylon. */
 
 export const SUBJECT = {
   id: 'ancient',
@@ -9,7 +14,7 @@ export const SUBJECT = {
   short: 'ANC',
   colour: '#d98f5a',
   syllabus: 'NSW HSC Ancient History',
-  topics: ['Cities of Vesuvius', 'Persia', 'Xerxes', 'The Greek Wars'],
+  topics: ['Cities of Vesuvius', 'Sparta', 'Xerxes', 'The Greek World 500–440 BC'],
   questions: [
 
     /* ---------------- Cities of Vesuvius (core) ---------------- */
@@ -175,16 +180,16 @@ export const SUBJECT = {
       answer: 1,
       explanation: 'A thermopolium served hot food and drink from dolia (large jars) set into a masonry counter — the Roman equivalent of a takeaway. Around 150 have been identified at Pompeii. Their number is evidence that many residents, especially in upper-floor apartments without kitchens, ate out routinely: an inference about daily life drawn from building function alone.'
     },
-    /* ---------------- Persia ---------------- */
+    /* ------- Xerxes: survey of the Persian empire ------- */
     {
-      id: 'per-01', topic: 'Persia', difficulty: 1, type: 'mc',
+      id: 'per-01', topic: 'Xerxes', difficulty: 1, type: 'mc',
       prompt: 'The Achaemenid Empire was founded by:',
       options: ['Darius I', 'Cyrus II (the Great)', 'Cambyses II', 'Xerxes I'],
       answer: 1,
       explanation: 'Cyrus II (559-530 BC) took Media in 550, Lydia around 546 and Babylon in 539, creating the largest empire the Near East had seen. Learn the sequence: Cyrus II, Cambyses II, Darius I, Xerxes I, Artaxerxes I.'
     },
     {
-      id: 'per-02', topic: 'Persia', difficulty: 2, type: 'mc',
+      id: 'per-02', topic: 'Xerxes', difficulty: 2, type: 'mc',
       prompt: 'The Cyrus Cylinder is significant to historians because it:',
       options: [
         'Lists the annual tribute owed by every satrapy',
@@ -196,7 +201,7 @@ export const SUBJECT = {
       explanation: 'Written in Akkadian and found at Babylon, it casts Cyrus as chosen by Marduk to restore order after the impious Nabonidus. It is royal propaganda in a conventional Babylonian form, not a "charter of human rights" as it is sometimes popularly described, though it does reflect a real policy of conciliating subject peoples.'
     },
     {
-      id: 'per-03', topic: 'Persia', difficulty: 2, type: 'mc',
+      id: 'per-03', topic: 'Xerxes', difficulty: 2, type: 'mc',
       prompt: 'A satrapy was:',
       options: [
         'An elite Persian infantry regiment',
@@ -208,7 +213,7 @@ export const SUBJECT = {
       explanation: 'Darius I organised the empire into roughly twenty satrapies with fixed tribute. Power was deliberately split: the satrap governed, but a garrison commander and a royal secretary reported separately to the King, and travelling inspectors (the "King\'s Eye") checked on them all.'
     },
     {
-      id: 'per-04', topic: 'Persia', difficulty: 2, type: 'short',
+      id: 'per-04', topic: 'Xerxes', difficulty: 2, type: 'short',
       prompt: 'What was the Royal Road, and what was it for?',
       accept: ['a highway from susa to sardis with staging posts that let royal messengers cross the empire quickly'],
       keywords: [
@@ -220,7 +225,7 @@ export const SUBJECT = {
       explanation: 'The Royal Road ran roughly 2,700 km from Susa to Sardis with over a hundred staging posts holding fresh horses and riders. Herodotus says a royal courier could cover it in about nine days where an ordinary traveller took ninety. It is the clearest example of Persian administrative practicality: the empire was held together by communication as much as by armies.'
     },
     {
-      id: 'per-05', topic: 'Persia', difficulty: 3, type: 'mc',
+      id: 'per-05', topic: 'Xerxes', difficulty: 3, type: 'mc',
       prompt: 'The Behistun inscription matters to historians of Persia mainly because it:',
       options: [
         'Is Darius I\'s own trilingual account of his seizure of the throne, and provided the key to deciphering cuneiform',
@@ -232,7 +237,7 @@ export const SUBJECT = {
       explanation: 'Carved high on a cliff in Old Persian, Elamite and Babylonian, it recounts Darius defeating Gaumata and the rebels. Its trilingual form allowed Rawlinson to decipher cuneiform. As evidence it is self-justification: Darius presents himself as restoring Arta (truth and order) against the Drauga (the Lie), which is exactly what a usurper would need to say.'
     },
     {
-      id: 'per-06', topic: 'Persia', difficulty: 3, type: 'mc',
+      id: 'per-06', topic: 'Xerxes', difficulty: 3, type: 'mc',
       prompt: 'Which of these was NOT an administrative reform of Darius I?',
       options: [
         'A standardised gold coinage, the daric',
@@ -244,7 +249,7 @@ export const SUBJECT = {
       explanation: 'Persian administration worked through local languages and institutions, not against them: Aramaic served as the imperial lingua franca, Elamite was used in the Persepolis tablets, and local law and cult were generally left intact. Darius\'s reforms were fiscal and infrastructural - coinage, standardised weights, fixed tribute, roads, a canal from the Nile to the Red Sea.'
     },
     {
-      id: 'per-07', topic: 'Persia', difficulty: 3, type: 'short',
+      id: 'per-07', topic: 'Xerxes', difficulty: 3, type: 'short',
       prompt: 'Explain the role of Ahuramazda in Achaemenid kingship.',
       accept: ['the king ruled by the favour of ahuramazda who granted him the throne and authority to uphold order against the lie'],
       keywords: [
@@ -256,7 +261,7 @@ export const SUBJECT = {
       explanation: 'Royal inscriptions open with a formula: Ahuramazda is the great god who created the earth and made Darius (or Xerxes) king. The King rules "by the favour of Ahuramazda" and his duty is to uphold Arta - truth and order - against the Drauga, the Lie. This is not the same as Persian kings being worshipped as gods; it legitimises rule and frames rebellion as cosmic disorder.'
     },
     {
-      id: 'per-08', topic: 'Persia', difficulty: 3, type: 'mc',
+      id: 'per-08', topic: 'Xerxes', difficulty: 3, type: 'mc',
       prompt: 'The Apadana staircase reliefs at Persepolis depict:',
       options: [
         'The Persian army defeating the Greeks at Thermopylae',
@@ -268,7 +273,7 @@ export const SUBJECT = {
       explanation: 'Twenty-three delegations file up the stairs in distinctive dress, each bringing characteristic gifts - Lydians with vessels, Indians with gold dust, Nubians with an okapi. They are led by hand by Persian ushers, not driven. The programme presents empire as willing, ordered, cooperative tribute rather than conquest: an image of Persian ideology, and a superb source for the empire\'s diversity.'
     },
     {
-      id: 'per-09', topic: 'Persia', difficulty: 4, type: 'mc',
+      id: 'per-09', topic: 'Xerxes', difficulty: 4, type: 'mc',
       prompt: 'The Persepolis Fortification Tablets are important because they show that:',
       options: [
         'Persepolis was built by slave labour, confirming Greek accounts',
@@ -280,7 +285,7 @@ export const SUBJECT = {
       explanation: 'These Elamite administrative tablets record rations issued to work gangs and travellers. They show a paid, organised, ethnically mixed workforce - with women receiving rations, and higher rates for skilled work and after childbirth. That directly undercuts the Greek stereotype of an empire of slaves, and is a good example of documentary evidence correcting a hostile literary tradition.'
     },
     {
-      id: 'per-10', topic: 'Persia', difficulty: 4, type: 'short',
+      id: 'per-10', topic: 'Xerxes', difficulty: 4, type: 'short',
       prompt: 'Give TWO reasons Herodotus must be used cautiously as a source for Persia.',
       accept: ['he was greek writing after the wars for a greek audience and relied on oral informants he could not verify'],
       keywords: [
@@ -292,14 +297,14 @@ export const SUBJECT = {
       explanation: 'Standard points: he was Greek, writing a generation or more later for a Greek audience shaped by victory; he could not read Persian and depended on oral informants of uneven reliability; his numbers are demonstrably inflated (a Persian army of over five million is impossible logistically); and he writes within a moralising tradition of hubris and divine retribution. He remains indispensable - he names sources, reports variants, and preserves detail found nowhere else - but he is a Greek account of Persia, not a Persian one.'
     },
     {
-      id: 'per-11', topic: 'Persia', difficulty: 2, type: 'mc',
+      id: 'per-11', topic: 'Xerxes', difficulty: 2, type: 'mc',
       prompt: 'Which Persian capital was the ceremonial centre, used especially for the New Year festival?',
       options: ['Susa', 'Ecbatana', 'Persepolis', 'Pasargadae'],
       answer: 2,
       explanation: 'Persepolis was ceremonial and symbolic; Susa was the main administrative capital; Ecbatana was the cool summer residence; Pasargadae was Cyrus\'s foundation and held his tomb; Babylon remained a major centre. The court moved between them seasonally, which is itself a statement about how the empire was governed.'
     },
     {
-      id: 'per-12', topic: 'Persia', difficulty: 4, type: 'mc',
+      id: 'per-12', topic: 'Xerxes', difficulty: 4, type: 'mc',
       prompt: 'The "Immortals" were:',
       options: [
         'Priests of Ahuramazda who attended the King',
@@ -311,7 +316,7 @@ export const SUBJECT = {
       explanation: 'Herodotus explains the name: any man lost was immediately replaced, so the corps never fell below ten thousand. The term is Greek and may rest on a misunderstanding of a Persian word; no Persian source uses it. They were the core of a much larger army drawn as levies from across the satrapies - which is why Persian forces were diverse in equipment and, in Greek eyes, unwieldy.'
     },
     {
-      id: 'per-13', topic: 'Persia', difficulty: 1, type: 'short',
+      id: 'per-13', topic: 'Xerxes', difficulty: 1, type: 'short',
       prompt: 'Name the Achaemenid kings from Cyrus II to Xerxes I, in order.',
       accept: ['cyrus cambyses darius xerxes'],
       keywords: [['cyrus'], ['cambyses'], ['darius'], ['xerxes']],
@@ -319,7 +324,7 @@ export const SUBJECT = {
       explanation: 'Cyrus II (559-530), Cambyses II (530-522), Darius I (522-486), Xerxes I (486-465). Bardiya/Gaumata briefly holds power in 522 before Darius seizes the throne - the event the Behistun inscription exists to justify. Getting this spine secure makes every other date in the period easier to place.'
     },
     {
-      id: 'per-14', topic: 'Persia', difficulty: 5, type: 'short',
+      id: 'per-14', topic: 'Xerxes', difficulty: 5, type: 'short',
       prompt: 'Assess Persian policy towards the religions of subject peoples.',
       accept: ['the persians generally supported local cults because it secured cooperation though tolerance was pragmatic rather than principled'],
       keywords: [
@@ -501,16 +506,16 @@ export const SUBJECT = {
       explanation: 'Herodotus supplies motives freely - avenging Marathon, the urging of Mardonius and the Aleuadae, a dream compelling him, the ambition to make Persian territory bounded only by the sky. These are narrative devices, staged in an invented council debate. The Persian record is silent on policy: royal inscriptions state that the King upholds order by the favour of Ahuramazda, and list lands, but never argue a strategy. What can be inferred is the imperial logic - Ionia was Persian, Athens and Eretria had backed its revolt, and unfinished business on a frontier invited settlement. A strong answer concludes that his actions are recoverable and his reasoning largely is not.'
     },
 
-    /* ---------------- The Greek Wars ---------------- */
+    /* ---------------- The Greek World 500–440 BC ---------------- */
     {
-      id: 'grw-01', topic: 'The Greek Wars', difficulty: 1, type: 'mc',
+      id: 'grw-01', topic: 'The Greek World 500–440 BC', difficulty: 1, type: 'mc',
       prompt: 'The Ionian Revolt against Persian rule began in 499 BC and was led initially by:',
       options: ['Themistocles of Athens', 'Aristagoras of Miletus', 'Leonidas of Sparta', 'Miltiades of Athens'],
       answer: 1,
       explanation: 'Aristagoras, tyrant of Miletus, launched the revolt after a failed expedition against Naxos left him exposed. He sought help in Greece: Sparta refused, Athens sent twenty ships and Eretria five. Sardis was burned in 498; the revolt was crushed at the naval battle of Lade in 494 and Miletus destroyed.'
     },
     {
-      id: 'grw-02', topic: 'The Greek Wars', difficulty: 2, type: 'mc',
+      id: 'grw-02', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'mc',
       prompt: 'Herodotus calls the Athenian ships sent to the Ionian Revolt "the beginning of evils" because:',
       options: [
         'They were lost with all hands in a storm',
@@ -522,21 +527,21 @@ export const SUBJECT = {
       explanation: 'It is a signposted turning point in the Histories. Athenian and Eretrian involvement in burning Sardis brought them to Darius\'s attention - Herodotus has him shoot an arrow skyward praying for vengeance and order a servant to repeat "Master, remember the Athenians" at every meal. Whether or not that is literally true, it marks where a provincial revolt becomes a war between Persia and Greece.'
     },
     {
-      id: 'grw-03', topic: 'The Greek Wars', difficulty: 1, type: 'mc',
+      id: 'grw-03', topic: 'The Greek World 500–440 BC', difficulty: 1, type: 'mc',
       prompt: 'The battle of Marathon was fought in:',
       options: ['499 BC', '490 BC', '480 BC', '479 BC'],
       answer: 1,
       explanation: 'Marathon, 490 BC, ended Darius\'s punitive expedition under Datis and Artaphernes, which had already destroyed Eretria. Keep the two invasions distinct: Darius sends the expedition defeated at Marathon in 490; Xerxes leads the full invasion of 480-479 (Thermopylae, Artemisium and Salamis in 480; Plataea and Mycale in 479).'
     },
     {
-      id: 'grw-04', topic: 'The Greek Wars', difficulty: 3, type: 'mc',
+      id: 'grw-04', topic: 'The Greek World 500–440 BC', difficulty: 3, type: 'mc',
       prompt: 'At Marathon, the Athenian commander usually credited with the decisive plan was:',
       options: ['Callimachus', 'Miltiades', 'Aristides', 'Themistocles'],
       answer: 1,
       explanation: 'Miltiades, who knew Persian methods from service in the Chersonese, is credited with persuading the generals to attack and with thinning the Athenian centre so the strengthened wings could envelop the Persian flanks. Callimachus, the polemarch, held formal command and died in the fighting. Herodotus gives Athenian losses as 192 against 6,400 Persians - the disparity is plausible in outline, since most casualties in ancient battles came during the rout.'
     },
     {
-      id: 'grw-05', topic: 'The Greek Wars', difficulty: 2, type: 'short',
+      id: 'grw-05', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'short',
       prompt: 'Why did the Spartans arrive at Marathon too late for the battle?',
       accept: ['they were celebrating the carneia festival and religious law prevented them marching until it ended'],
       keywords: [
@@ -547,7 +552,7 @@ export const SUBJECT = {
       explanation: 'The Spartans were observing the Carneia, a festival of Apollo during which they would not march. They set out once it ended and arrived after the battle, viewing the Persian dead. Whether the religious scruple was genuine or a convenient excuse is a standard exam debate; note that Herodotus, whose sympathies are not anti-Spartan, reports it without cynicism. The messenger Pheidippides had run the roughly 240 km to Sparta to ask - the later legend of a run to Athens to announce victory is not in Herodotus.'
     },
     {
-      id: 'grw-06', topic: 'The Greek Wars', difficulty: 3, type: 'mc',
+      id: 'grw-06', topic: 'The Greek World 500–440 BC', difficulty: 3, type: 'mc',
       prompt: 'Themistocles\'s naval building programme of about 483/2 BC was funded by:',
       options: [
         'Tribute from the Delian League',
@@ -559,7 +564,7 @@ export const SUBJECT = {
       explanation: 'A rich new strike at Laurion produced a surplus that was to be distributed to citizens. Themistocles persuaded the assembly to build triremes instead - ostensibly against Aegina. That fleet, around 200 ships, decided Salamis. It is the single most consequential political decision of the period, and it also shifted power inside Athens towards the poorer citizens who rowed the ships.'
     },
     {
-      id: 'grw-07', topic: 'The Greek Wars', difficulty: 2, type: 'mc',
+      id: 'grw-07', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'mc',
       prompt: 'The Hellenic League, formed at Corinth in 481 BC, gave overall command:',
       options: [
         'To Athens, as the largest naval power',
@@ -571,7 +576,7 @@ export const SUBJECT = {
       explanation: 'Sparta held command on land and sea despite Athens supplying most of the ships - Athens conceded rather than fracture the alliance, and Herodotus notes the other Greeks would not serve under Athenian command. Only around 31 states joined; many stayed neutral or medised. Remembering how small the coalition was makes the victory look less inevitable.'
     },
     {
-      id: 'grw-08', topic: 'The Greek Wars', difficulty: 2, type: 'mc',
+      id: 'grw-08', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'mc',
       prompt: 'The Greek position at Thermopylae was turned when:',
       options: [
         'The Persian fleet landed troops behind the pass',
@@ -583,7 +588,7 @@ export const SUBJECT = {
       explanation: 'Ephialtes, a local, guided Hydarnes and the Immortals along the Anopaea path overnight; the Phocians posted to guard it were brushed aside. Leonidas dismissed most of the allies and held with the 300 Spartans, the Thespians and the Thebans. Militarily Thermopylae was a defeat that cost Persia several days; its lasting significance is as a moral exemplar - Simonides\'s epitaph, "tell them in Lakedaimon", was already doing that work within a generation.'
     },
     {
-      id: 'grw-09', topic: 'The Greek Wars', difficulty: 3, type: 'short',
+      id: 'grw-09', topic: 'The Greek World 500–440 BC', difficulty: 3, type: 'short',
       prompt: 'Explain why the Greeks held Thermopylae and Artemisium at the same time.',
       accept: ['the pass and the strait had to be held together because losing either would let the persians outflank the other position'],
       keywords: [
@@ -595,7 +600,7 @@ export const SUBJECT = {
       explanation: 'The two positions were interdependent. Holding the pass was pointless if the Persian fleet could sail past and land troops in the Greek rear; holding the strait was pointless if the army broke through and took the fleet\'s base from the landward side. The Persian advance depended on the fleet supplying the army, so the strategy aimed to stall both at a narrow point where numbers counted for least. When Thermopylae fell, Artemisium was abandoned the same night.'
     },
     {
-      id: 'grw-10', topic: 'The Greek Wars', difficulty: 3, type: 'mc',
+      id: 'grw-10', topic: 'The Greek World 500–440 BC', difficulty: 3, type: 'mc',
       prompt: 'The Delphic oracle\'s advice that Athens would be saved by a "wooden wall" was interpreted by Themistocles to mean:',
       options: [
         'The palisade around the Acropolis should be rebuilt',
@@ -607,7 +612,7 @@ export const SUBJECT = {
       explanation: 'Others read the wooden wall as the Acropolis palisade, and those who stayed were killed when the Acropolis was stormed. Themistocles argued it meant the ships, and that the oracle\'s "divine Salamis" pointed to a battle there. Athens was evacuated to Troezen, Aegina and Salamis - a decision recorded in the disputed Troezen inscription, the so-called Themistocles Decree, whose authenticity is a live scholarly debate.'
     },
     {
-      id: 'grw-11', topic: 'The Greek Wars', difficulty: 4, type: 'mc',
+      id: 'grw-11', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'mc',
       prompt: 'Themistocles secured battle at Salamis on his terms by:',
       options: [
         'Blockading the Persian fleet inside the Bay of Phaleron',
@@ -619,7 +624,7 @@ export const SUBJECT = {
       explanation: 'With the allied commanders arguing for withdrawal to the Isthmus, Themistocles sent Sicinnus to Xerxes claiming the Greeks were about to break up and that he himself favoured Persia. The Persians blocked both exits overnight and committed to fighting in the narrows - which removed the Greeks\' option to retreat and made their preferred battlefield unavoidable. It is manipulation of his own side as much as of the enemy.'
     },
     {
-      id: 'grw-12', topic: 'The Greek Wars', difficulty: 4, type: 'short',
+      id: 'grw-12', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'short',
       prompt: 'Explain why the narrow straits at Salamis favoured the Greek fleet.',
       accept: ['the narrows stopped the persians using their greater numbers and suited the heavier greek ships fighting at close quarters'],
       keywords: [
@@ -631,14 +636,14 @@ export const SUBJECT = {
       explanation: 'In open water the Persian fleet could use its numbers to outflank and its more manoeuvrable ships to execute the diekplous. In the straits neither was possible: the line could not extend, ships fouled one another, and a swell reportedly troubled the higher Persian decks. The heavier Greek triremes suited a close, crowded fight of ramming and boarding. Herodotus\'s figure of 1,207 Persian ships is certainly inflated, but the relevant point stands - superior numbers became a liability in a space too small to deploy them.'
     },
     {
-      id: 'grw-13', topic: 'The Greek Wars', difficulty: 2, type: 'mc',
+      id: 'grw-13', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'mc',
       prompt: 'The Greek land victory at Plataea in 479 BC was commanded by:',
       options: ['Themistocles of Athens', 'Pausanias of Sparta', 'Aristides of Athens', 'Leotychidas of Sparta'],
       answer: 1,
       explanation: 'Pausanias, regent for the young Spartan king, commanded the largest Greek army yet assembled; Mardonius was killed and the Persian camp stormed. The naval victory at Mycale followed in the same year, sparking a renewed Ionian revolt. Plataea, not Salamis, ended the Persian presence in mainland Greece - though Salamis gets the attention because it saved the campaign from being lost in 480.'
     },
     {
-      id: 'grw-14', topic: 'The Greek Wars', difficulty: 3, type: 'mc',
+      id: 'grw-14', topic: 'The Greek World 500–440 BC', difficulty: 3, type: 'mc',
       prompt: 'The Serpent Column dedicated at Delphi after the wars is valuable evidence because it:',
       options: [
         'Records Xerxes\'s terms of surrender',
@@ -650,7 +655,7 @@ export const SUBJECT = {
       explanation: 'Made from melted Persian spoils and inscribed with the 31 states that resisted, it is contemporary, official and physical - a check on the literary tradition. It also shows how few states actually fought. Pausanias had a boastful personal couplet inscribed and the Spartans erased it, which tells you something about how the credit was contested straight away.'
     },
     {
-      id: 'grw-15', topic: 'The Greek Wars', difficulty: 4, type: 'mc',
+      id: 'grw-15', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'mc',
       prompt: 'The Delian League, founded in 478/7 BC, was established primarily to:',
       options: [
         'Govern Athens\'s internal affairs after the war',
@@ -662,7 +667,7 @@ export const SUBJECT = {
       explanation: 'Its aim was to carry on the war and take revenge for what Greece had suffered, with the treasury on Delos and Aristides assessing each member\'s contribution in ships or money. Athens converted it into an empire within a generation: secession was suppressed by force, and the treasury moved to Athens in 454. Thucydides makes the growth of Athenian power from this league the underlying cause of the Peloponnesian War.'
     },
     {
-      id: 'grw-16', topic: 'The Greek Wars', difficulty: 5, type: 'short',
+      id: 'grw-16', topic: 'The Greek World 500–440 BC', difficulty: 5, type: 'short',
       prompt: 'Assess the main reasons for the Greek victory over Persia.',
       accept: ['greek success rested on choosing narrow terrain that negated persian numbers superior hoplite equipment at close quarters themistocles naval strategy and persian supply strain'],
       keywords: [
@@ -675,7 +680,7 @@ export const SUBJECT = {
       explanation: 'Argue on several levels. Tactical: at Thermopylae, Artemisium, Salamis and Plataea the Greeks fought where Persian numbers and cavalry could not be brought to bear, and heavier hoplite armour told at close quarters. Strategic: Themistocles built the fleet, read the oracle to fit it, and forced the decisive battle into the narrows. Logistical: a huge force operating far from home, dependent on a fleet for supply, could not sustain a long campaign once that fleet was beaten. Political: the coalition, though small and quarrelsome, held together at the decisive moments. Weigh them rather than list them - and note that from Persepolis this was a failed operation on a distant frontier, not the catastrophe the Greek tradition made of it.'
     },
     {
-      id: 'grw-17', topic: 'The Greek Wars', difficulty: 5, type: 'mc',
+      id: 'grw-17', topic: 'The Greek World 500–440 BC', difficulty: 5, type: 'mc',
       prompt: 'The strongest caution to apply to the Greek "freedom versus despotism" framing of the wars is that:',
       options: [
         'It was invented by nineteenth-century historians and has no ancient basis',
@@ -685,6 +690,381 @@ export const SUBJECT = {
       ],
       answer: 1,
       explanation: 'The framing is genuinely ancient - Aeschylus and Herodotus both work with it - but it is the victors\' account. The states defending "freedom" held slaves, many Greeks medised willingly, and within a generation Athens was coercing its own allies with the fleet built to resist Persia. From the Persian side this was a frontier setback, unrecorded in the royal inscriptions. Recognising the framing as a construction, without pretending it was invented later, is what a high-band answer does.'
-    }
+    },
+
+    /* ---------------- Sparta: society to the Battle of Leuctra 371 BC ---------------- */
+    {
+      id: 'spa-01', topic: 'Sparta', difficulty: 1, type: 'mc',
+      prompt: 'The Spartan gerousia consisted of:',
+      options: [
+        '28 elders aged over 60, elected for life, plus the two kings — 30 members in total',
+        'Five magistrates elected annually from the whole citizen body',
+        'All Spartiate males over the age of 30',
+        'The two kings and their appointed military advisers',
+      ],
+      answer: 0,
+      explanation: 'The gerousia was 28 gerontes over 60, elected for life by acclamation in the ekklesia, plus the two kings — 30 in all. Its powers were probouleutic (it prepared the business the assembly voted on) and judicial (it tried capital cases, including charges against kings). Do not confuse it with the ephorate: the gerousia is the council of elders, the ephors are the five annual magistrates.'
+    },
+    {
+      id: 'spa-02', topic: 'Sparta', difficulty: 2, type: 'mc',
+      prompt: 'The ephors differed from the gerousia in that they were:',
+      options: [
+        'Five magistrates elected annually from the whole Spartiate body, holding executive and supervisory power over the kings',
+        'Thirty elders holding office for life who prepared business for the assembly',
+        'A permanent priesthood responsible for the state cults',
+        'The commanders of the Spartan army in the field',
+      ],
+      answer: 0,
+      explanation: 'Five ephors, elected annually from all Spartiates and not eligible for immediate re-election — so unlike the gerousia the office was open and short-term. Their powers: presiding over the gerousia and ekklesia, supervising the kings (two accompanied a king on campaign, and they could arrest and prosecute one), controlling foreign policy and the agoge, expelling foreigners (xenelasia), and declaring war on the helots each year. Learn the institutions as a table — this distinction alone cost three marks in the trial.'
+    },
+    {
+      id: 'spa-03', topic: 'Sparta', difficulty: 3, type: 'short',
+      prompt: 'Set out the four Spartan institutions and give ONE power of each.',
+      accept: ['two kings led the army and held priesthoods the gerousia of 28 elders plus the kings prepared business and tried capital cases the five ephors supervised the kings and controlled foreign policy and the ekklesia of spartiates over 30 voted on proposals'],
+      keywords: [
+        ['king', 'dyarch', 'agiad', 'eurypontid'],
+        ['gerousia', 'elder', 'geront', '28', 'council'],
+        ['ephor', 'five', '5 '],
+        ['ekklesia', 'apella', 'assembly'],
+      ],
+      minKeywords: 4,
+      explanation: 'Kings — two, from the Agiad and Eurypontid houses; military command abroad, state priesthoods, certain judicial powers, ceremonial privileges. Gerousia — 28 elders over 60 elected for life plus the two kings; probouleutic function and the court for capital cases. Ephors — five, elected annually from all Spartiates; supervision of the kings, presidency of the gerousia and assembly, foreign policy, oversight of the agoge, annual declaration of war on the helots. Ekklesia (apella) — all Spartiates over 30; voted by shouting on proposals put to it but could not debate them, and under the rider to the Great Rhetra the kings and gerousia could set aside a "crooked" decision. Writing this as four labelled points guarantees the marker finds all of them.'
+    },
+    {
+      id: 'spa-04', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'The rider attached to the Great Rhetra is historically significant because it:',
+      options: [
+        'Allowed the kings and gerousia to set aside a decision of the assembly they judged "crooked", limiting popular power',
+        'Gave the ekklesia the right to debate and amend proposals',
+        'Established the ephorate as a check on the kings',
+        'Abolished the dual kingship in favour of a single ruler',
+      ],
+      answer: 0,
+      explanation: 'The Great Rhetra survives through Plutarch\'s Lycurgus 6, quoting a Delphic oracle. It sets out the tribes, the gerousia, and the assembly\'s power to decide — and then the rider lets the kings and elders overturn a decision they consider crooked. The rider matters because it shows the Spartan constitution was not democratic despite the assembly\'s formal sovereignty: the elite retained a veto. It is also a source problem, since Plutarch wrote some seven centuries later.'
+    },
+    {
+      id: 'spa-05', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'Herodotus 6.56–58 sets out the powers and privileges of the Spartan kings. Name the FOUR strands.',
+      accept: ['military command religious priesthoods and sacrifices judicial powers over heiresses adoptions and roads and privileges and honours including double portions and elaborate funerals'],
+      keywords: [
+        ['militar', 'army', 'command', 'war', 'campaign'],
+        ['relig', 'priest', 'sacrifice', 'zeus', 'oracle', 'pythioi'],
+        ['judic', 'legal', 'heiress', 'patrouch', 'adopt', 'road', 'court'],
+        ['privileg', 'honour', 'double portion', 'funeral', 'front seat', 'booty'],
+      ],
+      minKeywords: 4,
+      explanation: 'Four strands, and the trial question wanted all four. Military: command of the army on campaign, though from the fifth century only one king campaigned at a time. Religious: the priesthoods of Zeus Lakedaimon and Zeus Ouranios, sacrifice before crossing the frontier and before battle, and custody of oracles through the Pythioi. Judicial: jurisdiction over heiresses (patrouchoi), adoptions and the public roads. Privileges and honours: double portions at the common meals, front seats at festivals, a share of war booty, and the elaborate state funeral Herodotus describes at 6.58. Citing Herodotus 6.56–58 by number is the specificity that lifts the answer.'
+    },
+    {
+      id: 'spa-06', topic: 'Sparta', difficulty: 2, type: 'mc',
+      prompt: 'The helots were:',
+      options: [
+        'A state-owned subject population, largely Messenian and Laconian, who farmed Spartiate land allotments',
+        'Free non-citizens who ran Sparta\'s crafts and trade and served in the army',
+        'Foreign mercenaries hired to garrison the Spartan frontier',
+        'Spartiates who had lost citizen status by failing to pay their mess dues',
+      ],
+      answer: 0,
+      explanation: 'Helots were owned by the state rather than by individuals, and worked the kleroi so that Spartiates could train full-time — the whole system rests on them. The second option describes the perioikoi, "dwellers around": free, non-citizen, running crafts and trade and fighting in the army. The last describes the hypomeiones or "inferiors", Spartiates demoted for failing to contribute to their syssition.'
+    },
+    {
+      id: 'spa-07', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'The ephors declared war on the helots at the start of each year of office. The purpose of this was to:',
+      options: [
+        'Allow a helot to be killed without incurring religious pollution',
+        'Recruit helots into the army as light infantry',
+        'Collect the annual tribute owed by the Messenian communities',
+        'Formally renew the treaty between Sparta and its perioikic towns',
+      ],
+      answer: 0,
+      explanation: 'Reported by Aristotle via Plutarch (Lycurgus 28). Killing a helot would otherwise be homicide and bring pollution; a standing declaration of war made it an act of war instead. Combined with the krypteia — young Spartiates sent into the countryside to kill helots by night — it shows terror as a deliberate instrument of control, and the constant fear of helot revolt explains Sparta\'s reluctance to campaign far from home.'
+    },
+    {
+      id: 'spa-08', topic: 'Sparta', difficulty: 2, type: 'mc',
+      prompt: 'The agoge began at what age, and what happened to a Spartiate who failed to maintain his syssition contributions?',
+      options: [
+        'Age 7; he lost full citizen status and became one of the hypomeiones or "inferiors"',
+        'Age 12; he was exiled from Laconia permanently',
+        'Age 7; he was demoted to the perioikoi and moved to a coastal town',
+        'Age 18; he was required to serve an additional term in the krypteia',
+      ],
+      answer: 0,
+      explanation: 'Boys entered the agoge at seven, were organised into herds under the paidonomos and older eirens, and continued in the common messes into their thirties. Membership of a syssition required a fixed contribution of produce from a man\'s kleros; failure to pay meant loss of full citizenship. This is the mechanism behind oliganthropia — as land concentrated in fewer hands, the pool of qualifying Spartiates shrank steadily.'
+    },
+    {
+      id: 'spa-09', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'Name TWO archaeological sites or find-types that provide evidence for Spartan religion.',
+      accept: ['the sanctuary of artemis orthia with its lead figurines and masks and the amyklaion sanctuary of apollo plus the menelaion and the temple of athena chalkioikos'],
+      keywords: [
+        ['artemis orthia', 'orthia', 'lead figurine', 'mask', 'ivory'],
+        ['amyklaion', 'amyklai', 'apollo', 'menelaion', 'menelaus', 'helen', 'chalkioikos', 'bronze house', 'athena'],
+      ],
+      minKeywords: 2,
+      explanation: 'This is where nine marks went in the trial: the answer named the right ideas but no named archaeology. The sanctuary of Artemis Orthia on the Eurotas produced tens of thousands of lead votive figurines, terracotta masks and carved ivory, evidence both of cult practice and of the wealth of archaic Sparta before the supposed austerity. The Amyklaion, the sanctuary of Apollo at Amyklai with the Throne of Apollo, hosted the Hyakinthia. The Menelaion was a hero shrine to Menelaus and Helen. The temple of Athena Chalkioikos, Athena of the Bronze House, stood on the acropolis — and is where the regent Pausanias was walled in and starved. Pair every claim about Spartan religion with one of these.'
+    },
+    {
+      id: 'spa-10', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'The three major Spartan festivals were the:',
+      options: [
+        'Hyakinthia, Gymnopaedia and Karneia',
+        'Panathenaia, Dionysia and Thesmophoria',
+        'Olympia, Pythia and Isthmia',
+        'Eleusinia, Lenaia and Anthesteria',
+      ],
+      answer: 0,
+      explanation: 'Hyakinthia — Apollo and Hyakinthos at Amyklai, mourning turning to celebration. Gymnopaedia — a summer festival of naked youths dancing and competing in the agora. Karneia — Apollo Karneios, and militarily consequential: it is the reason Sparta sent only Leonidas and his advance force to Thermopylae and arrived too late for Marathon. The second option lists Athenian festivals; the third lists the panhellenic games.'
+    },
+    {
+      id: 'spa-11', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'Explain how religion functioned as an instrument of the Spartan state, not just as private belief.',
+      accept: ['kings held priesthoods and sacrificed before crossing the frontier and before battle while oracles were controlled through the pythioi and festivals such as the karneia could delay campaigns so religion legitimised royal authority and shaped military decisions'],
+      keywords: [
+        ['king', 'priest', 'sacrific', 'frontier', 'battle', 'omen'],
+        ['oracle', 'delphi', 'pythioi', 'festival', 'karneia', 'delay', 'campaign'],
+        ['legitim', 'authority', 'control', 'state', 'political', 'decision'],
+      ],
+      minKeywords: 2,
+      explanation: 'Religion was constitutional machinery. The kings held the priesthoods of Zeus Lakedaimon and Zeus Ouranios and sacrificed before crossing the frontier and again before battle, so an unfavourable omen could halt an army — royal religious authority was therefore also military authority. Oracular consultation ran through the Pythioi, two royal appointees, giving the kings control of the channel to Delphi. Festivals overrode strategy: the Karneia delayed the Spartan response to both Marathon and Thermopylae. And the archaeology grounds it — Artemis Orthia\'s lead figurines and masks, the Amyklaion, the Menelaion, Athena Chalkioikos. Claim, named source, what it proves: that formula is what the marker rewarded elsewhere in the paper.'
+    },
+    {
+      id: 'spa-12', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'Compared with women elsewhere in Greece, Spartan women were distinctive chiefly in that they:',
+      options: [
+        'Trained physically, married later, and could own and inherit land in their own right',
+        'Voted in the assembly and held magistracies',
+        'Underwent the agoge alongside boys from the age of seven',
+        'Were forbidden to take part in public religious festivals',
+      ],
+      answer: 0,
+      explanation: 'Physical training, marriage around eighteen rather than in the early teens, and above all property rights — Aristotle (Politics II) complains that by the fourth century women held around two-fifths of Spartan land, and treats their licence as a cause of Sparta\'s decline. They did not vote, hold office or go through the agoge. Note the source caution: nearly everything we have is written by hostile or admiring outsiders, so "Spartan women" as we meet them are partly a literary construct.'
+    },
+    {
+      id: 'spa-13', topic: 'Sparta', difficulty: 2, type: 'mc',
+      prompt: 'The poetry of Tyrtaeus is useful to historians of Sparta because it:',
+      options: [
+        'Is contemporary seventh-century material that shows the values the state promoted during the Messenian wars',
+        'Provides a detailed narrative of the Spartan constitution written by a king',
+        'Records the daily administration of the syssitia and the kleroi',
+        'Is the only source written by a helot',
+      ],
+      answer: 0,
+      explanation: 'Tyrtaeus is close to contemporary, which almost nothing else about archaic Sparta is. His exhortations to stand fast in the phalanx, and the Eunomia poem on good order, show what Spartans were told to value during the Second Messenian War. Alcman\'s Partheneion — maiden songs for female choruses — is the companion evidence for religion and for women\'s public role. Both are literary, so they show ideals rather than practice, which is the limitation to state.'
+    },
+    {
+      id: 'spa-14', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'What is the "Spartan mirage", and why is it the central source problem for this topic?',
+      accept: ['it is the idealised image of sparta created by admiring outsiders because sparta produced almost no written record of its own so nearly all our evidence is external late or hostile'],
+      keywords: [
+        ['idealis', 'image', 'myth', 'construct', 'distort', 'romantic', 'admir'],
+        ['outsider', 'non-spartan', 'xenophon', 'plutarch', 'plato', 'aristotle', 'external', 'late'],
+        ['no written', 'produced little', 'own record', 'silence', 'secre'],
+      ],
+      minKeywords: 2,
+      explanation: 'The mirage spartiate, Ollier\'s term, is the idealised picture of Sparta transmitted by writers who were not Spartan: Xenophon, who lived there and admired it; Plato and Aristotle, using it as a political model or warning; and Plutarch, writing around 700 years later. Sparta itself produced almost no literature or documentary record and actively discouraged outside contact, so the historian is always working from external, often late, often ideologically motivated accounts. Every claim about Spartan society should therefore be attributed and dated — say who says it and when — rather than asserted flatly.'
+    },
+    {
+      id: 'spa-15', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'Xenophon\'s Constitution of the Lacedaemonians must be used with caution mainly because he:',
+      options: [
+        'Was an admiring Athenian exile living under Spartan patronage, so his account is idealising',
+        'Wrote several centuries after the events he describes',
+        'Never visited Laconia and relied entirely on hearsay',
+        'Was a helot writing to expose Spartan cruelty',
+      ],
+      answer: 0,
+      explanation: 'Xenophon is the closest thing to an insider account, which is precisely the problem: an Athenian exile settled on a Spartan estate, with his sons educated in the agoge. He is invaluable on institutions and practice and unreliable on judgement. Plutarch is the one writing centuries later. Pairing Xenophon\'s admiration against Aristotle\'s criticism in Politics II gives you the two-sided source handling the top bands require.'
+    },
+    {
+      id: 'spa-16', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'At the Battle of Leuctra in 371 BC:',
+      options: [
+        'Epaminondas and the Thebans defeated Sparta and killed King Cleombrotus, ending Spartan hegemony',
+        'Sparta defeated Athens, ending the Peloponnesian War',
+        'Sparta crushed a Messenian helot revolt and re-established control of Messenia',
+        'A Persian-funded coalition forced Sparta to accept the King\'s Peace',
+      ],
+      answer: 0,
+      explanation: 'Leuctra is the terminal point of this topic. Epaminondas massed the Theban left fifty shields deep against the Spartan right and broke it, killing King Cleombrotus. The defeat ended Spartan hegemony and led to the liberation of Messenia, which removed the helot base the whole system depended on. Sparta could not recover because of oliganthropia: Spartiate numbers had fallen from around 8,000 at the time of the Persian Wars to roughly 1,000 by Leuctra.'
+    },
+    {
+      id: 'spa-17', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'Explain oliganthropia and how it contributed to Spartan decline.',
+      accept: ['a shortage of full spartiate citizens caused by land concentrating in fewer hands so men could not meet their syssition contributions and lost citizen status leaving too few hoplites to sustain hegemony'],
+      keywords: [
+        ['shortage', 'decline in numbers', 'few', 'manpower', 'citizen numbers', 'oliganthropia'],
+        ['land', 'kleros', 'property', 'inherit', 'wealth', 'concentrat', 'syssition', 'contribut'],
+        ['status', 'hypomeiones', 'inferior', 'lost citizen', 'army', 'hoplite', 'hegemony'],
+      ],
+      minKeywords: 2,
+      explanation: 'Oliganthropia is the shortage of full citizens. The mechanism matters more than the label: Spartiate status required a land allotment large enough to fund a fixed contribution to a syssition. As land concentrated through inheritance — Aristotle blames women\'s inheritance rights and the failure to redistribute — more men fell below the threshold and were demoted to hypomeiones. Numbers fell from about 8,000 to roughly 1,000 by Leuctra, so a single defeat could not be absorbed. Combine it with the earthquake of 464 and the losses at Sphacteria, and Sparta\'s system proves rigid rather than resilient.'
+    },
+    {
+      id: 'spa-18', topic: 'Sparta', difficulty: 2, type: 'mc',
+      prompt: 'The perioikoi differed from the helots in that they:',
+      options: [
+        'Were free, lived in their own communities, ran crafts and trade, and served in the Spartan army',
+        'Were owned by individual Spartiates rather than by the state',
+        'Held full Spartiate citizenship but lived outside Sparta itself',
+        'Were foreign residents forbidden to bear arms',
+      ],
+      answer: 0,
+      explanation: 'The perioikoi, "dwellers around", were free inhabitants of Laconian and Messenian towns who managed the economic activity Spartiates were barred from — crafts, trade, manufacture, including armour — and fought as hoplites alongside them. They lacked political rights at Sparta. Their loyalty is a useful counterweight to the picture of a society held together purely by terror: unlike the helots, the perioikoi rarely revolted.'
+    },
+    {
+      id: 'spa-19', topic: 'Sparta', difficulty: 3, type: 'mc',
+      prompt: 'The Spartan earthquake of about 464 BC is significant because it:',
+      options: [
+        'Triggered a major Messenian helot revolt, and Sparta\'s dismissal of the Athenian relief force under Cimon soured relations between the two states',
+        'Destroyed the sanctuary of Artemis Orthia, ending the cult',
+        'Forced Sparta to abandon the dual kingship',
+        'Prompted the Persians to launch a third invasion of Greece',
+      ],
+      answer: 0,
+      explanation: 'The earthquake devastated Sparta and the helots of Messenia seized the moment to revolt, besieging Mount Ithome. Sparta called for allied help, then sent Cimon\'s 4,000 Athenian hoplites home — reportedly fearing their revolutionary sympathies. The insult led directly to Cimon\'s ostracism, an Athenian alliance with Argos, and the drift toward the First Peloponnesian War. It is the clearest example of Spartan domestic vulnerability shaping Greek international politics.'
+    },
+    {
+      id: 'spa-20', topic: 'Sparta', difficulty: 4, type: 'short',
+      prompt: 'Give TWO ways the Spartan system prioritised military readiness over economic development.',
+      accept: ['spartiates were barred from crafts and trade so the economy was left to perioikoi and helots while iron currency and austerity discouraged accumulation and full time training was funded by helot labour on the kleroi'],
+      keywords: [
+        ['barred', 'forbidden', 'not allowed', 'no trade', 'no craft', 'full time', 'training', 'agoge'],
+        ['helot', 'kleros', 'perioikoi', 'labour', 'farm', 'land'],
+        ['currency', 'iron', 'coin', 'austerity', 'wealth', 'luxury', 'accumulat'],
+      ],
+      minKeywords: 2,
+      explanation: 'Spartiates were prohibited from crafts, trade and agriculture, so all productive activity fell to perioikoi and helots — the citizen body was in effect a standing army maintained by other people\'s labour on the kleroi. Sparta also refused minted silver coinage, retaining cumbersome iron spits, which discouraged the accumulation and exchange that built wealth elsewhere in Greece. The consequence is the historical judgement worth making: the system delivered unmatched hoplite quality but no economic depth and no mechanism for replacing citizen losses, which is why it could not survive Leuctra.'
+    },
+
+    /* ------- Targeted fixes for errors that cost trial marks ------- */
+    {
+      id: 'anc-37', topic: 'The Greek World 500–440 BC', difficulty: 2, type: 'mc',
+      prompt: 'Sardis, burned in 498 BC, was:',
+      options: [
+        'The Lydian satrapal capital in western Asia Minor, burned during the Ionian Revolt',
+        'A Persian royal capital in the empire\'s heartland, sacked during the Persian Wars',
+        'An Athenian colony on the coast of Thrace',
+        'The Persian naval base from which Xerxes launched the invasion of 480 BC',
+      ],
+      answer: 0,
+      explanation: 'Sardis was the satrapal capital of Lydia in western Asia Minor and the western terminus of the Royal Road — not a city in Persia proper, and not a Persian War battle. Athenian and Eretrian forces burned it in 498 BC during the Ionian Revolt, and Herodotus 5.97 calls those twenty ships the beginning of evils. The Persian royal capitals were Persepolis, Susa, Ecbatana and Babylon. Placing Sardis in Persia is a factual slip that undercuts an otherwise sound answer.'
+    },
+    {
+      id: 'anc-38', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'short',
+      prompt: 'Explain the mechanism by which Miltiades\' tactics won Marathon. Say what he did and why it worked.',
+      accept: ['he thinned the greek centre and reinforced the wings so the stronger persian centre pushed through into a deliberate trap and was enveloped from both sides converting numerical inferiority into a tactical advantage'],
+      keywords: [
+        ['thin', 'weak', 'centre', 'wing', 'strengthen', 'reinforc'],
+        ['envelop', 'both sides', 'flank', 'surround', 'trap', 'close in', 'double'],
+      ],
+      minKeywords: 2,
+      explanation: 'Naming a factor is not explaining it — this is the habit that cost the essay marks. Miltiades thinned the Greek centre and reinforced the wings, so the stronger Persian centre pushed through into a deliberate trap and the Greek wings wheeled inward to envelop it from both sides. Leadership converted numerical inferiority into a tactical advantage; that is the "how and why" sentence. Add Herodotus 6.117 for the casualty figures, roughly 6,400 Persian dead to 192 Athenian, with a note on Herodotean exaggeration. And note the person: it was Miltiades, who persuaded the polemarch Callimachus to give the deciding vote — not Themistocles, whose contribution came a decade later.'
+    },
+    {
+      id: 'anc-39', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'short',
+      prompt: 'Thermopylae was a defeat. Explain how a leadership essay converts it into evidence for Greek victory.',
+      accept: ['leonidas chose a pass that neutralised persian cavalry and numbers and the delay plus the propaganda value bought time to evacuate attica and preserved the fleet so themistocles could win at salamis'],
+      keywords: [
+        ['pass', 'narrow', 'terrain', 'cavalry', 'numbers', 'neutralis', 'chose'],
+        ['delay', 'time', 'evacuat', 'attica', 'fleet', 'preserv', 'morale', 'propaganda'],
+        ['salamis', 'themistocles', 'later', 'victory'],
+      ],
+      minKeywords: 2,
+      explanation: 'The marker\'s note was explicit: "this was a loss, so you needed to state how there was victory later due to Themistocles, at Salamis." The chain: the pass was chosen because it neutralised Persian cavalry and numerical superiority; when Ephialtes betrayed the Anopaea path, Leonidas dismissed the allies and held with a rearguard of 300 Spartiates, 700 Thespians and 400 Thebans; the delay and the enormous propaganda value bought the evacuation of Attica and preserved the fleet intact for Salamis. A tactical defeat converted into strategic benefit — which is a leadership decision, not an accident. Get the numbers right: Leonidas led about 7,000 allies initially and dismissed most before the final stand.'
+    },
+    {
+      id: 'anc-40', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'short',
+      prompt: 'A leadership essay must handle counter-factors such as terrain and hoplite armour. What is the framing that keeps them relevant?',
+      accept: ['frame each counter factor as the product of a leadership decision since commanders chose thermopylae salamis and plataea and themistocles forced the naval engagement that broke persian supply'],
+      keywords: [
+        ['leadership decision', 'commanders chose', 'chose', 'decision', 'through leadership', 'because they'],
+        ['terrain', 'narrow', 'battlefield', 'supply', 'fleet', 'armour', 'hoplite'],
+      ],
+      minKeywords: 2,
+      explanation: 'The marker wrote that listing terrain, hoplite armour and Persian numbers "doesn\'t link to leadership unless you say it was strategy by the leaders" — so make every counter-factor operate through a leadership decision. Terrain mattered because commanders chose Thermopylae, Salamis and Plataea. Persian supply lines bit because Themistocles forced the naval engagement that broke Persian control of the sea. The Hellenic League held because Eurybiades deferred to Themistocles\' plan. Concede that leadership was necessary but not sufficient, then argue the other factors operated through it — that concession-then-reframe is what the top bands reward.'
+    },
+    {
+      id: 'anc-41', topic: 'Xerxes', difficulty: 3, type: 'mc',
+      prompt: 'Which contrast between Egypt and Babylon under Xerxes is correct?',
+      options: [
+        'Egypt kept its religious autonomy and local cults while Xerxes dropped "King of Babylon" from his titulary after the Babylonian revolts',
+        'Babylon kept its religious autonomy while Egypt\'s temples were closed and its cults suppressed',
+        'Both provinces lost their religious institutions entirely after their revolts',
+        'Neither province revolted during Xerxes\' reign',
+      ],
+      answer: 0,
+      explanation: 'Keep the two straight — confusing them was flagged in the trial. Egypt: revolted 486–484 BC, inherited from Darius\' final year, crushed by Xerxes with his brother Achaemenes installed as satrap; temples and local cults continued, and what changed was that Xerxes dropped the pharaonic titulary his father had used. Babylon: revolted around 484 and again in 482 under Bel-shimanni and then Shamash-eriba, suppressed by Megabyzus; Xerxes dropped "King of Babylon" from his titles, and later Greek tradition claims the Marduk statue was removed or melted — a claim modern scholars doubt.'
+    },
+    {
+      id: 'anc-42', topic: 'Xerxes', difficulty: 3, type: 'mc',
+      prompt: 'Besides Atossa\'s Cyrus bloodline and Artobazanes being born before Darius became king, Herodotus 7.3 adds that Darius was influenced by:',
+      options: [
+        'Demaratus, the exiled Spartan king, who advised that a son born after his father became king takes precedence',
+        'Mardonius, who argued that Xerxes was the better military commander',
+        'The Magi, who interpreted a dream in Xerxes\' favour',
+        'Artabanus, who counselled against choosing the elder son',
+      ],
+      answer: 0,
+      explanation: 'This is the addition the trial answer was missing. Herodotus 7.3 has Demaratus, the exiled Spartan king at the Persian court, advising Darius that among the Spartans a son born after his father became king takes precedence over an elder brother born before. The complete answer combines four elements: Atossa\'s descent from Cyrus, Artobazanes being born before Darius took the throne, Demaratus\' advice, and Xerxes\' own claim in the Harem Inscription (XPf) that Ahuramazda\'s will made him greatest after his father — Greek succession intrigue against serene royal propaganda.'
+    },
+    {
+      id: 'anc-43', topic: 'Xerxes', difficulty: 4, type: 'short',
+      prompt: 'Give TWO pieces of evidence you could use to argue AGAINST the view that Xerxes ended Persian religious tolerance.',
+      accept: ['the daiva inscription names no place or date and uses stock royal phrasing so it may be timeless rhetoric while the persepolis fortification tablets record rations and offerings for non persian cults and egypt kept its religious autonomy'],
+      keywords: [
+        ['no place', 'no date', 'stock', 'formula', 'timeless', 'rhetoric', 'phrasing', 'earlier inscription'],
+        ['fortification tablet', 'tablet', 'ration', 'offering', 'elamite', 'babylonian', 'local cult', 'funding'],
+        ['egypt', 'autonomy', 'temple', 'continued'],
+      ],
+      minKeywords: 2,
+      explanation: 'The marker noted you are allowed to disagree with a source, and that saying so explicitly is what moves this from 9/15. Against Source J\'s reading of Xerxes ending a laissez-faire approach: the Daiva Inscription (XPh) names no place and no date and uses stock royal phrasing found in earlier Achaemenid inscriptions, so it may be timeless royal rhetoric rather than a record of an event. The Persepolis Fortification Tablets show continued state funding of local cults, with rations for non-Persian religious personnel and offerings to Elamite and Babylonian deities alongside Ahuramazda. Egypt retained its religious autonomy. Briant and Kuhrt read the daiva episode as an assertion of royal order over "the Lie" rather than a programme of persecution. Set the source against the Persepolis evidence and then reach a judgement.'
+    },
+    {
+      id: 'anc-44', topic: 'The Greek World 500–440 BC', difficulty: 4, type: 'short',
+      prompt: 'Give TWO pieces of evidence that the Delian League had become an Athenian empire by 440 BC.',
+      accept: ['naxos was subjugated around 470 contrary to custom and thasos was crushed in 465 for athenian economic interest while the treasury moved from delos to athens in 454 and tribute funded the parthenon'],
+      keywords: [
+        ['naxos', 'thasos', 'revolt', 'coerc', 'subjugat', 'crushed', 'walls razed'],
+        ['treasury', '454', 'delos to athens', 'quota', 'tribute list', 'parthenon', 'athena', 'sixtieth'],
+        ['ships', 'money', 'phoros', 'demilitaris', 'cleruch', 'garrison', 'imposed democrac'],
+      ],
+      minKeywords: 2,
+      explanation: 'Coercion: Naxos around 470 was, in Thucydides 1.98, the first ally enslaved contrary to established custom; Thasos in 465 was besieged over mines and trade — Athenian economic interest, not the Persian war — its walls razed and fleet confiscated. Financial control: the treasury moved from Delos to Athens in 454, a sixtieth of tribute was dedicated to Athena, and tribute financed the Parthenon from 447; the epigraphic quota lists show allies as tribute-payers rather than partners. Structural control: Cimon\'s practice of commuting ship contributions to money demilitarised the allies while concentrating naval power in Athens (Plutarch, Cimon 11), reinforced by cleruchies, garrisons, imposed democracies and legal cases transferred to Athens. Note the historiographical debate: Thucydides blames allied laziness plus Athenian ambition, while Meiggs traces a gradual pragmatic slide rather than a plan.'
+    },
+    {
+      id: 'anc-45', topic: 'Cities of Vesuvius', difficulty: 4, type: 'short',
+      prompt: 'Explain ONE value of statues as evidence at Pompeii and Herculaneum, using a named example.',
+      accept: ['statues carry inscriptions so the statue of eumachia dedicated by the fullers shows a woman as public priestess and patron of a trade guild which is direct evidence of female status and patronage'],
+      keywords: [
+        ['inscription', 'dedicat', 'honorific', 'epigraph'],
+        ['eumachia', 'balbus', 'nonius', 'augustales', 'freedmen'],
+        ['status', 'patron', 'priestess', 'career', 'benefactor', 'guild', 'mobility', 'women'],
+      ],
+      minKeywords: 2,
+      explanation: 'The marker wanted the value explained through named evidence, not asserted. The key move: statues carry inscriptions, and the inscription is the historical evidence. The statue of Eumachia in her building on the forum, dedicated by the fullers, shows a woman as public priestess and patron of a trade guild — direct evidence of female status, patronage, and the link between economic and social power. At Herculaneum, Marcus Nonius Balbus has multiple statues plus an honorific inscription recording his career as proconsul and benefactor, and a funerary altar recording honours voted by the town council. Statues of freedmen and Augustales evidence routes of social mobility for ex-slaves. Then the limitations: idealised portrait types show status rather than likeness; only those who could afford or be voted a statue appear, so slaves, the poor and most women are invisible; and Bourbon-era removal stripped many of their original context.'
+    },
+    {
+      id: 'anc-46', topic: 'Cities of Vesuvius', difficulty: 3, type: 'mc',
+      prompt: 'The 2010 collapse of the Schola Armaturarum is significant because it:',
+      options: [
+        'Triggered UNESCO warnings and led to the €105m EU-funded Great Pompeii Project',
+        'Destroyed the last unexcavated third of the site',
+        'Proved that the AD 62 earthquake damage had never been repaired',
+        'Ended all tourist access to Pompeii for a decade',
+      ],
+      answer: 0,
+      explanation: 'The collapse of the Schola Armaturarum — called the House of the Gladiator in some marking guidelines — was the scandal that forced action. It brought UNESCO warnings and produced the Great Pompeii Project, roughly €105 million of EU funding for stabilisation, drainage and monitoring, under which the Regio V discoveries since 2018 were made: the thermopolium with its painted menu, the leopard fresco, and the Civita Giuliana chariot and slave room. It is the pivot of any answer on the costs and benefits of continued excavation.'
+    },
+    {
+      id: 'anc-47', topic: 'Cities of Vesuvius', difficulty: 4, type: 'short',
+      prompt: 'Give ONE benefit and ONE cost of continued excavation at Pompeii, then state a judgement.',
+      accept: ['regio v discoveries and the vesuvius challenge reading carbonised papyri add knowledge but every newly exposed structure adds a permanent maintenance burden so benefits outweigh costs only where excavation is paired with funded conservation'],
+      keywords: [
+        ['regio v', 'thermopolium', 'chariot', 'slave room', 'papyri', 'vesuvius challenge', 'dna', 'ct', 'discover', 'knowledge'],
+        ['maintenance', 'conserv', 'collapse', 'exposure', 'weather', 'burden', 'cost', 'unexcavated', 'tourist'],
+        ['judgement', 'outweigh', 'only where', 'provided', 'therefore', 'conclude', 'should'],
+      ],
+      minKeywords: 2,
+      explanation: 'Three paragraphs: benefits, costs, judgement — the trial answer ran them together in one block, which capped it at 6/10. Benefits: the Regio V discoveries since 2018, the Vesuvius Challenge virtually unrolling the Herculaneum papyri, DNA and CT analysis of the casts overturning assumptions about family groupings, and tourism revenue funding conservation. Costs: the Schola Armaturarum collapse in 2010, every newly exposed structure adding a permanent maintenance burden, weather, vegetation and over 2.5 million annual visitors — which is why roughly a third of Pompeii is deliberately left unexcavated for future methods. Judgement: commit in the opening line and hold it — that benefits outweigh costs only where excavation is paired with funded conservation, which is exactly the Great Pompeii Project model. And quote cleanly: one short phrase from a source, then explain it, rather than stitching fragments together.'
+    },
   ]
 };

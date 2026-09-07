@@ -874,8 +874,9 @@ export function adventureScreen() {
           ? el('div', { className: 'tiny gold', text: combat.enemy.traits.join(' · ') }) : null));
     }
 
-    // Controls lead the rail so nothing important sits below a scroll.
-    const controls = el('div', { className: 'row gap-sm' },
+    // Controls lead the rail so nothing important sits below a scroll. The
+    // strip scrolls horizontally on its own rather than dragging the section.
+    const controls = el('div', { className: 'rail-tabs' },
       button('Bag', () => go('inventory'), { className: 'btn--sm btn--center' }),
       button('Craft', () => go('crafting'), { className: 'btn--sm btn--center' }),
       button('Log', showLog, { className: 'btn--sm btn--ghost btn--center' }),

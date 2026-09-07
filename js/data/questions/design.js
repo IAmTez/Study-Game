@@ -450,5 +450,201 @@ export const SUBJECT = {
       answer: 1,
       explanation: 'Risk assessment happens before the process: identify the hazard, assess likelihood and consequence, then apply controls using the hierarchy — elimination, substitution, isolation, engineering controls, administrative controls, and PPE last. It is both a legal WHS obligation and required folio evidence.'
     },
+
+    /* ------- Innovation case studies and command-verb drills (post-trial) ------- */
+    {
+      id: 'dnt-37', topic: 'Innovation and Emerging Technologies', difficulty: 2, type: 'mc',
+      prompt: 'The first multi-channel cochlear implant surgery was performed in 1978 by:',
+      options: [
+        'Professor Graeme Clark at the University of Melbourne',
+        'James Dyson at the University of Bath',
+        'Professor Fiona Wood in Perth',
+        'Dr Barry Marshall in Western Australia',
+      ],
+      answer: 0,
+      explanation: 'Graeme Clark, motivated by his deaf father, performed the first multi-channel cochlear implant surgery in 1978. It was commercialised through the Nucleus group under Paul Trainor from 1981, and Cochlear Ltd listed on the ASX in 1995. Always name the designer, the date and one hard statistic — that specificity is what separates a band 6 case study from a general description.'
+    },
+    {
+      id: 'dnt-38', topic: 'Innovation and Emerging Technologies', difficulty: 3, type: 'mc',
+      prompt: 'Clark\'s multi-channel implant was the invention. Which of these is the INNOVATION?',
+      options: [
+        'The behind-the-ear processor, the off-the-ear Kanso and smartphone streaming — improvements to the existing idea, commercialised',
+        'The initial discovery that electrical stimulation of the auditory nerve produces sound perception',
+        'The decision by Cochlear Ltd to list on the ASX in 1995',
+        'The patenting of the original multi-channel electrode array',
+      ],
+      answer: 0,
+      explanation: 'Invention is a wholly new product or process; innovation is the improvement or novel application of an existing idea, commercialised. Cochlear is the ideal case for the distinction because each generation since 1978 is innovation on the original invention — culminating in the Nucleus Nexa System launched in June 2025, the first "smart" cochlear implant with upgradeable firmware, the product of about 20 years of R&D. Listing on the ASX is entrepreneurial activity, and patenting is IP protection.'
+    },
+    {
+      id: 'dnt-39', topic: 'Innovation and Emerging Technologies', difficulty: 3, type: 'mc',
+      prompt: 'Cochlear reinvests about 12% of sales revenue in R&D — $292 million in FY25 — and holds over 2,300 patents. The relationship between those two facts is that:',
+      options: [
+        'The patent portfolio protects market position, so the returns it secures fund the continued R&D',
+        'Patents are required by law before a business may claim R&D expenditure',
+        'Each patent generates a fixed royalty that is reinvested automatically',
+        'Patent numbers are a direct measure of a product\'s clinical effectiveness',
+      ],
+      answer: 0,
+      explanation: 'The patents are the moat. They keep competitors out for the 20-year term, which sustains a global market share held above 60% and premium "gold standard" positioning rather than price competition, and those returns fund the roughly 12% of sales reinvested each year — over $3 billion since listing, across 100+ global research programs. That circular relationship between IP protection and R&D capacity is exactly what an "evaluate the importance of IP protection to innovation" question wants.'
+    },
+    {
+      id: 'dnt-40', topic: 'Innovation and Emerging Technologies', difficulty: 2, type: 'mc',
+      prompt: 'James Dyson built how many prototypes before his dual cyclone vacuum design worked?',
+      options: ['5,127', '127', '512', '15,270'],
+      answer: 0,
+      explanation: '5,127 prototypes over roughly five years, 1979–1984. It is the definitive evidence for any question about the iterative nature of the design process, or the role of research and testing — and it maps directly onto your own MDP test-print cycle, which makes it easy to deploy alongside your folio evidence.'
+    },
+    {
+      id: 'dnt-41', topic: 'Innovation and Emerging Technologies', difficulty: 3, type: 'mc',
+      prompt: 'Every major vacuum manufacturer refused to license Dyson\'s design. The reason usually given is that they:',
+      options: [
+        'Earned ongoing revenue from selling replacement bags, which a bagless machine would destroy — a case of planned obsolescence',
+        'Doubted that cyclonic separation was technically possible at domestic scale',
+        'Were prevented from licensing by existing patents held by Hoover',
+        'Considered the transparent bin visually unappealing to consumers',
+      ],
+      answer: 0,
+      explanation: 'The bag was the profit stream, so the incumbents had no interest in a machine that eliminated it — a clean example of planned obsolescence shaping which innovations reach market. Dyson\'s response is the entrepreneurship: he launched the G-Force in Japan in 1986, used the royalties to fund his own company, and released the DC01 in the UK in 1993, where it became the country\'s best-selling vacuum. He later won a patent battle against Hoover in 2000.'
+    },
+    {
+      id: 'dnt-42', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
+      prompt: 'Define emerging technologies. A full-mark definition needs TWO distinct elements.',
+      accept: ['technologies in the early stages of development or adoption that are not yet widely established but have the potential to significantly disrupt industries and change how people live and work such as artificial intelligence or additive manufacturing'],
+      keywords: [
+        ['early stage', 'not yet', 'new', 'recent', 'developing', 'emerging', 'not widely', 'not established'],
+        ['potential', 'significant', 'disrupt', 'change', 'transform', 'impact society', 'way we live', 'industr'],
+      ],
+      minKeywords: 2,
+      explanation: 'Two distinct elements, or the answer caps at half marks. Element one — what it IS: a technology in the early stages of development or adoption, not yet widely established. Element two — what makes it SIGNIFICANT: the potential to substantially disrupt existing industries and change the way people live and work. Then add an example if there is room: artificial intelligence, additive manufacturing, smart materials. Saying "recent", "new" and "unknown to the market" is one element repeated three times. The general rule for a 2-mark define: what it is, plus what makes it significant.'
+    },
+    {
+      id: 'dnt-43', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
+      prompt: 'Explain how additive manufacturing accelerates innovation. Show the mechanism, not just cause and effect.',
+      accept: ['additive manufacturing lets designers prototype complex geometries in hours rather than weeks so more iterations fit the same budget and time which raises the chance of finding a successful solution'],
+      keywords: [
+        ['prototype', 'iterat', 'test', 'model', 'print'],
+        ['hours', 'faster', 'quick', 'cheap', 'cost', 'budget', 'time', 'weeks'],
+        ['more', 'increase', 'so ', 'which mean', 'leading to', 'therefore', 'likelihood', 'chance', 'success'],
+      ],
+      minKeywords: 3,
+      explanation: 'Explain means show the mechanism — chain every claim in three links: emerging technology, the new capability it creates, the innovation that becomes possible. Additive manufacturing lets designers prototype complex geometries in hours rather than weeks, SO more design iterations fit within the same budget and timeline, INCREASING the likelihood of arriving at a successful solution. The counter-case is equally chainable: generative AI produces outputs based on patterns in existing work, SO over-reliance may lead to derivative rather than original solutions. Stating an outcome without the middle link is what caps these at two marks.'
+    },
+    {
+      id: 'dnt-44', topic: 'Designing and Producing', difficulty: 3, type: 'short',
+      prompt: 'Outline THREE considerations when selecting resources for a design project.',
+      accept: ['cost so materials fit the budget sustainability so materials are recyclable or renewable with low embodied energy and ethical sourcing so suppliers use fair labour practices'],
+      keywords: [
+        ['cost', 'budget', 'price', 'afford'],
+        ['sustainab', 'recycl', 'renewable', 'embodied energy', 'environment', 'life cycle'],
+        ['ethic', 'labour', 'child labour', 'fair', 'working condition', 'supplier'],
+      ],
+      minKeywords: 3,
+      explanation: 'When a question names a number, physically number your response so the marker finds all three, and develop them evenly — one strong point plus two mentions caps the mark. 1. Cost — materials must fit the project budget; exceeding it forces compromises elsewhere or makes the product unviable for the target market. 2. Sustainability — recyclable or renewable materials with low embodied energy reduce environmental impact across the life cycle. 3. Ethical sourcing — suppliers with fair labour practices, avoiding child labour and unsafe conditions, protecting workers and brand reputation. Others in the bank: availability and lead time, suitability of material properties to function, durability, and safety in use.'
+    },
+    {
+      id: 'dnt-45', topic: 'Major Design Project', difficulty: 4, type: 'short',
+      prompt: 'A question asks you to EVALUATE your MDP against its criteria for success. What two things must appear that a "describe" answer would omit?',
+      accept: ['an explicit judgement on the degree of success stated up front and an acknowledged limitation of what has not yet been achieved'],
+      keywords: [
+        ['judgement', 'verdict', 'degree', 'how successful', 'largely', 'overall', 'extent'],
+        ['limitation', 'not yet', 'shortfall', 'weakness', 'outstanding', 'further', 'improve', 'descoped'],
+      ],
+      minKeywords: 2,
+      explanation: 'Evaluate demands a verdict on the DEGREE of success plus credible limitations — describing how each criterion was addressed is a "describe" answer. Two sentences to drop into any MDP evaluation. Opening judgement: "My MDP has been largely successful against its criteria for success, fully meeting X and Y, with Z requiring further development." Closing limitation: "However, [criterion] has not yet been fully achieved — [what is outstanding] — which will be addressed through [next step]." Admitting a shortfall makes the evaluation credible rather than promotional. Add end-user feedback as evidence too: "testing with [user] confirmed the mount remained stable on webbing during movement" turns a claim into verified evidence.'
+    },
+    {
+      id: 'dnt-46', topic: 'Designing and Producing', difficulty: 3, type: 'mc',
+      prompt: 'Which factor is MOST likely to cause a design solution to fail?',
+      options: [
+        'An unclear design brief',
+        'Expensive research and testing',
+        'Extensive consultation with end users',
+        'Multiple rounds of prototyping',
+      ],
+      answer: 0,
+      explanation: 'The design brief defines the problem, the criteria and the constraints, so if it is unclear everything downstream — research, ideation, evaluation — aims at the wrong target and the solution can be well executed yet still fail because it solves the wrong problem. Expensive research and testing is a budget pressure, not a cause of design failure; thorough testing generally makes success MORE likely, with cost as the trade-off. When every option looks plausible, ask which one attacks the foundation of the design process rather than a resource constraint — failure questions point back to the brief, the criteria or the user.'
+    },
+    {
+      id: 'dnt-47', topic: 'Design Theory', difficulty: 2, type: 'mc',
+      prompt: 'A florist designs an arrangement for a wedding. The design factor given highest priority is:',
+      options: ['Aesthetics', 'Durability', 'Ergonomics', 'Obsolescence'],
+      answer: 0,
+      explanation: 'Match the design factor to the user and the context — this is the skill multiple choice tests every year. A short-lived decorative product for a single event prioritises visual appeal, not durability or ergonomics. By the same logic, a product for young children prioritises safety through non-toxic, durable materials over cost or aesthetics, and a wearable fitness device prioritises ergonomics and data privacy.'
+    },
+    {
+      id: 'dnt-48', topic: 'Design Theory', difficulty: 2, type: 'mc',
+      prompt: 'Which tool is used to track project progress against time, as opposed to analysing a situation or an environmental impact?',
+      options: ['Gantt chart', 'SWOT analysis', 'Life cycle analysis', 'Venn diagram'],
+      answer: 0,
+      explanation: 'A Gantt chart sequences tasks against deadlines and exposes the critical path, so it is the scheduling tool. SWOT is situational analysis, life cycle analysis is a cradle-to-grave environmental assessment, and a Venn diagram is for comparison. Knowing which tool does which job is worth an easy multiple choice mark most years.'
+    },
+    {
+      id: 'dnt-49', topic: 'Designing and Producing', difficulty: 3, type: 'short',
+      prompt: 'Outline the role of prototyping in the development of a design project. Answer "role of", not just what a prototype is.',
+      accept: ['prototyping lets a designer test and evaluate a concept in physical or functional form identifying faults early so modifications are made before final production which reduces risk and cost and each prototype informs the next iteration'],
+      keywords: [
+        ['test', 'evaluat', 'trial', 'try'],
+        ['fault', 'issue', 'problem', 'refine', 'improve', 'modif', 'iterat'],
+        ['early', 'before', 'risk', 'cost', 'final production', 'commit'],
+      ],
+      minKeywords: 2,
+      explanation: 'Go beyond the definition and answer the role directly: prototyping tests and refines design concepts in physical or functional form, identifying faults and areas for refinement early so improvements are made before the expense of final production. Mention iteration explicitly — each prototype informs the next evolution of the design. Ground it in your own folio: testing a 3D-printed case prototype to check tolerances before committing to the final print, or the 45° rotated strap holes on your mount.'
+    },
+    {
+      id: 'dnt-50', topic: 'Design Theory', difficulty: 3, type: 'mc',
+      prompt: 'A patent protects an invention for 20 years. Design registration in Australia protects the visual appearance of a product for:',
+      options: ['10 years', '20 years', '5 years', 'The life of the designer plus 70 years'],
+      answer: 0,
+      explanation: 'Patents — 20 years, protecting how something works. Design registration — 10 years, protecting how it looks. Trademarks — renewable indefinitely, protecting brand identifiers. Copyright — automatic on creation, life of the author plus 70 years, protecting original expression. Licensing lets another party use protected IP for a fee, which is exactly what every vacuum manufacturer refused Dyson.'
+    },
+    {
+      id: 'dnt-51', topic: 'Designing and Producing', difficulty: 2, type: 'mc',
+      prompt: 'Quality assurance differs from quality control in that assurance:',
+      options: [
+        'Is a system designed to PREVENT defects, while control INSPECTS to detect them',
+        'Inspects finished products, while control designs the production system',
+        'Applies only to services, while control applies only to goods',
+        'Is carried out by an external auditor, while control is carried out internally',
+      ],
+      answer: 0,
+      explanation: 'Assurance is preventative and systemic — building processes so defects do not occur. Control is detective — inspecting output to find defects that have already occurred. The design implication is that assurance is cheaper, because a defect caught by inspection has already consumed materials and time, and rework is most expensive late in production. That is why action plans embed QA checkpoints rather than relying on final inspection.'
+    },
+    {
+      id: 'dnt-52', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
+      prompt: 'Discuss the long-term environmental impact of lithium-ion rechargeable versus alkaline single-use batteries. Give a point for EACH and a judgement.',
+      accept: ['lithium ion is rechargeable hundreds of times so far fewer units are manufactured and discarded but lithium and cobalt mining depletes resources and uses huge water volumes while alkaline single use means continuous manufacturing energy and landfill volume so lithium ion has lower cumulative impact if recycled properly'],
+      keywords: [
+        ['rechargeab', 'hundreds', 'reus', 'fewer unit', 'lifespan'],
+        ['mining', 'lithium', 'cobalt', 'extraction', 'water', 'recycl', 'landfill', 'toxic', 'fire'],
+        ['single-use', 'single use', 'disposab', 'continuous', 'manufactur', 'volume'],
+      ],
+      minKeywords: 2,
+      explanation: 'Discuss means both sides for both options, then a judgement. Lithium-ion for: rechargeable hundreds of times, so far fewer units are manufactured and discarded over the product\'s life, and it enables renewable and cordless technology. Lithium-ion against: lithium and cobalt mining depletes finite resources, damages ecosystems and consumes huge volumes of water; the cells are hard to recycle and pose fire and toxicity risks in landfill. Alkaline for: less toxic than older chemistries, with some recycling streams available. Alkaline against: single use means continuous manufacturing energy and massive cumulative landfill volume per unit of energy delivered. Judgement: over the long term lithium-ion has the lower cumulative impact PROVIDED it is recycled properly; alkaline\'s disposability makes it worse at scale.'
+    },
+    {
+      id: 'dnt-53', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
+      prompt: 'Name TWO impacts of AI on designers that a top-band extended response must cover beyond efficiency gains.',
+      accept: ['employment and role change as entry level tasks are automated shifting designers toward curation and judgement plus ethical and legal implications including copyright of ai generated work bias in training data and the energy cost of compute'],
+      keywords: [
+        ['employment', 'job', 'displace', 'role', 'entry level', 'automat', 'curat', 'judgement', 'prompt'],
+        ['ethic', 'copyright', 'ip', 'intellectual property', 'bias', 'responsib', 'legal'],
+        ['energy', 'compute', 'data centre', 'environment', 'water', 'democratis', 'concentrat'],
+      ],
+      minKeywords: 2,
+      explanation: 'Efficiency alone is a band 4 answer. Employment and role change: automation of entry-level design tasks creates job displacement risk, especially in developing economies, and shifts the designer\'s role toward curation, prompting and judgement. Ethical and legal implications: copyright and IP ownership of AI-generated work, bias in training data, and where responsibility sits when an AI-assisted design fails. Environmental and social lens: the energy and water cost of AI compute in data centres, and the tension between democratising design tools and concentrating power in a few technology companies. Reference the stimulus directly, use cause-and-effect connectives, and conclude with a genuine judgement — that is what earned 15/15 in the trial.'
+    },
+    {
+      id: 'dnt-54', topic: 'Design Theory', difficulty: 3, type: 'short',
+      prompt: 'Describe ONE ethical issue in managing personal data collected by a product.',
+      accept: ['privacy means designers must obtain informed consent collect only what is needed and store data securely because mismanagement such as selling data without consent or a breach violates users privacy rights and trust'],
+      keywords: [
+        ['privacy', 'consent', 'security', 'secure', 'confidential'],
+        ['collect', 'store', 'share', 'sell', 'third part', 'access', 'breach'],
+        ['trust', 'right', 'violat', 'harm', 'misuse', 'unauthorised'],
+      ],
+      minKeywords: 2,
+      explanation: 'Pick ONE issue and develop it rather than listing several. Privacy: designers and companies collecting personal data have an ethical obligation to obtain informed consent, collect only what is needed, and store it securely against unauthorised access. Link back to management by naming the consequence of mishandling — selling data to third parties without clear consent, or weak security leading to a breach, violates users\' privacy rights and destroys trust. A concrete example anchors it: a fitness app sharing location data with advertisers without meaningful consent.'
+    },
   ]
 };

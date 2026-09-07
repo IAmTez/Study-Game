@@ -68,16 +68,26 @@ answer. Everything else is clicked.
 
 ## Subjects
 
-Five NSW HSC subjects ship with the game, 36 questions each (180 total), tagged by
-topic and by difficulty tier 1–5:
+Five NSW HSC subjects ship with the game — 304 questions in total, tagged by topic
+and by difficulty tier 1–5, and written against the specific prescribed texts and
+case studies of this course rather than the syllabus in general:
 
-| Subject | Modules covered |
-| --- | --- |
-| Geography | Ecosystems at Risk · Urban Places · People and Economic Activity · Skills |
-| Business Studies | Operations · Marketing · Finance · Human Resources |
-| Design & Technology | Designing and Producing · Innovation · Major Design Project · Design Theory |
-| Ancient History | Cities of Vesuvius · Ancient Societies · Personalities · Historical Periods |
-| English Standard | Texts and Human Experiences · Language, Identity and Culture · Close Study · The Craft of Writing |
+| Subject | Modules covered | Qs |
+| --- | --- | --- |
+| Geography | Rural and Urban Places · Ecosystems and Global Biodiversity · Global Sustainability — Tourism · Geographical Skills | 62 |
+| Business Studies | Operations · Marketing · Finance · Human Resources | 55 |
+| Design & Technology | Designing and Producing · Innovation and Emerging Technologies · Major Design Project · Design Theory | 54 |
+| Ancient History | Cities of Vesuvius · Sparta · Xerxes · The Greek World 500–440 BC | 91 |
+| English Standard | Slessor · One Night the Moon · FEED · The Craft of Writing | 42 |
+
+Case studies are named rather than generic: Bellingen and Green Square, Kosciuszko
+and the Great Barrier Reef, Taronga; Cochlear and Dyson; Eumachia, the Daiva
+Inscription, the Great Rhetra. A number of questions drill exam technique directly
+— explaining a mechanism instead of naming a link, stating a judgement before
+justifying it, and serving the command verb the question actually uses.
+
+Correct answers are shuffled deterministically per question id at load, so no
+option position is more likely to be right than any other.
 
 ### Adding your own
 
