@@ -92,11 +92,11 @@ export function statsScreen() {
           statRow('Time played', duration(meta.timePlayedMs + (Date.now() - game.sessionStart)))),
         panel('Strongest topics', ...strongRows),
         runPanel,
-        button('Back', () => go(run ? 'dungeon' : 'menu'), { className: 'btn--center' }))),
+        button('Back', () => go(run ? 'adventure' : 'menu'), { className: 'btn--center' }))),
   );
 
   function onKeyDown(event) {
-    if (event.key === 'Escape') { event.preventDefault(); go(run ? 'dungeon' : 'menu'); }
+    if (event.key === 'Escape') { event.preventDefault(); go(run ? 'adventure' : 'menu'); }
   }
 
   return {

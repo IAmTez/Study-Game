@@ -156,16 +156,15 @@ export function settingsScreen() {
           button('Manage subjects', () => go('subjects'), { className: 'btn--center mt' })),
         panel('Controls',
           el('div', { className: 'small dim', style: { lineHeight: '2.2' } },
-            el('div', {}, el('span', { className: 'kbd', text: 'WASD' }), ' / ', el('span', { className: 'kbd', text: '↑↓←→' }), ' move'),
             el('div', {}, el('span', { className: 'kbd', text: 'I' }), ' inventory'),
             el('div', {}, el('span', { className: 'kbd', text: 'C' }), ' crafting'),
             el('div', {}, el('span', { className: 'kbd', text: 'Esc' }), ' back / menu'),
             el('div', {}, el('span', { className: 'kbd', text: 'Ctrl+Enter' }), ' submit a short answer'))),
-        button('Back', () => go(game.run ? 'dungeon' : 'menu'), { className: 'btn--center' }))),
+        button('Back', () => go(game.run ? 'adventure' : 'menu'), { className: 'btn--center' }))),
   );
 
   function onKeyDown(event) {
-    if (event.key === 'Escape') { event.preventDefault(); go(game.run ? 'dungeon' : 'menu'); }
+    if (event.key === 'Escape') { event.preventDefault(); go(game.run ? 'adventure' : 'menu'); }
   }
 
   return {

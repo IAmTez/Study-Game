@@ -6,7 +6,9 @@ import { getRole } from '../data/roles.js';
 import { ITEMS, getItem } from '../data/items.js';
 import { emit } from '../core/bus.js';
 
-export const MAX_ENERGY = 120;
+/* Energy is a small pool built one or two points at a time, so an ultimate is
+   a decision made several turns in advance rather than a per-turn resource. */
+export const MAX_ENERGY = 20;
 
 /* ---------------------------------------------------------------
    Defaults

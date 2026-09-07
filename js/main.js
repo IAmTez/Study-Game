@@ -2,8 +2,7 @@
 
 import { register, go } from './ui/screens.js';
 import { menuScreen, roleScreen } from './ui/menu.js';
-import { dungeonScreen } from './ui/dungeon.js';
-import { combatScreen } from './ui/combat.js';
+import { adventureScreen } from './ui/adventure.js';
 import { inventoryScreen } from './ui/inventory.js';
 import { craftingScreen } from './ui/crafting.js';
 import { statsScreen } from './ui/stats.js';
@@ -17,8 +16,7 @@ import { toast } from './ui/dom.js';
 
 register('menu', menuScreen);
 register('roles', roleScreen);
-register('dungeon', dungeonScreen);
-register('combat', combatScreen);
+register('adventure', adventureScreen);
 register('inventory', inventoryScreen);
 register('crafting', craftingScreen);
 register('stats', statsScreen);

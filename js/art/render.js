@@ -1,8 +1,8 @@
 /* Canvas rendering for the 16x16 sprite grids.
 
    Sprites are rasterised once per (name, scale, tint) into an offscreen
-   canvas and cached — the dungeon redraws ~300 tiles a frame, so re-reading
-   the character grids every time would be wasteful. */
+   canvas and cached — the battle scene redraws every frame, so re-reading the
+   character grids each time would be wasteful. */
 
 import { SPRITES } from './sprites.js';
 

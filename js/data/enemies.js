@@ -1,4 +1,4 @@
-/* Enemy templates. Concrete stats are derived per-floor in game/dungeon.js —
+/* Enemy templates. Concrete stats are derived per-floor in game/stages.js —
    these are the shapes, not the numbers. */
 
 export const ENEMIES = [

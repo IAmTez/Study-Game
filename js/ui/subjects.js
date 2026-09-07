@@ -237,11 +237,11 @@ export function subjectsScreen() {
       el('div', { className: 'grow screen-scroll' }, panel('Subjects', listBox)),
       el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 380px' } },
         panel('Add your own material', importBox),
-        button('Back', () => go(game.run ? 'dungeon' : 'menu'), { className: 'btn--center' }))),
+        button('Back', () => go(game.run ? 'adventure' : 'menu'), { className: 'btn--center' }))),
   );
 
   function onKeyDown(event) {
-    if (event.key === 'Escape') { event.preventDefault(); go(game.run ? 'dungeon' : 'menu'); }
+    if (event.key === 'Escape') { event.preventDefault(); go(game.run ? 'adventure' : 'menu'); }
   }
 
   return {

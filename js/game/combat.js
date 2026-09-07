@@ -1,5 +1,9 @@
 /* Combat state machine.
 
+   Energy is never granted by answering — only by choosing a generating move
+   (Rest banks 2, Strike banks 1). Answering well decides *whether* you act and
+   how hard the blow lands; what you spend is up to you.
+
    The loop is driven by answering questions:
      choose-question -> answering -> result -> (correct) choose-action
                                             -> (wrong)   enemy attacks
@@ -160,11 +164,6 @@ export function submitAnswer(run, combat, response) {
   rememberQuestion(run, question.id);
 
   if (result.verdict === VERDICT.CORRECT || result.verdict === VERDICT.PARTIAL) {
-    const share = result.verdict === VERDICT.CORRECT ? 1 : 0.5;
-    const gained = Math.round(combat.current.energy * share * stats.energyGain);
-    run.energy = Math.min(MAX_ENERGY, run.energy + gained);
-    combat.events.push({ type: 'energy', amount: gained });
-
     if (role.id === 'cleric' && result.verdict === VERDICT.CORRECT) {
       const heal = Math.max(1, Math.round(stats.maxHp * 0.06));
       run.hp = Math.min(stats.maxHp, run.hp + heal);
@@ -175,9 +174,10 @@ export function submitAnswer(run, combat, response) {
       run.hp = Math.min(stats.maxHp, run.hp + 5);
     }
 
+    const bonus = Math.round(((combat.current?.damageBonus || 1) - 1) * 100);
     logLine(run, result.verdict === VERDICT.CORRECT
-      ? `Correct. +${gained} energy.`
-      : `Partially correct. +${gained} energy, weakened attack.`,
+      ? `Correct.${bonus ? ` Your next blow lands at ${bonus > 0 ? '+' : ''}${bonus}%.` : ''}`
+      : 'Partially correct. Your attack lands at half force.',
       result.verdict === VERDICT.CORRECT ? 'good' : 'info');
     combat.phase = PHASE.RESULT;
     combat.nextPhase = PHASE.ACTION;
@@ -255,15 +255,27 @@ export function useAbility(run, combat, abilityId) {
 
   const ability = entry.ability;
   const enemy = combat.enemy;
+  const stats = derived(run);
   run.energy = Math.max(0, run.energy - (ability.cost || 0));
 
-  if (ability.effect === 'brace') {
-    run.energy = Math.min(MAX_ENERGY, run.energy + 14);
+  /* Generating moves bank a flat amount, plus whatever the role and gear add. */
+  const bankEnergy = () => {
+    if (!ability.gain) return 0;
+    const gained = ability.gain + (stats.energyGain || 0);
+    run.energy = Math.min(MAX_ENERGY, run.energy + gained);
+    combat.events.push({ type: 'energy', amount: gained });
+    return gained;
+  };
+
+  if (ability.effect === 'rest') {
+    const gained = bankEnergy();
     combat.braced = true;
     combat.events.push({ type: 'brace' });
-    logLine(run, 'You brace. +14 energy, and the next blow is halved.', 'info');
+    logLine(run, `You rest. +${gained} energy, and the next blow is halved.`, 'info');
     return resolveEnemyTurn(run, combat);
   }
+
+  const banked = bankEnergy();
 
   const hits = ability.effect === 'double' ? 2 : 1;
   let total = 0;
@@ -276,7 +288,7 @@ export function useAbility(run, combat, abilityId) {
     combat.events.push({ type: 'attack', side: 'player', amount: damage, crit, ability: ability.name });
   }
 
-  logLine(run, `${ability.name} hits ${enemy.name} for ${total}.`, 'good');
+  logLine(run, `${ability.name} hits ${enemy.name} for ${total}.${banked ? ` +${banked} energy.` : ''}`, 'good');
 
   /* --- ability side effects --- */
   const role = getRole(run.roleId);
@@ -287,9 +299,8 @@ export function useAbility(run, combat, abilityId) {
     case 'poison':    applyStatus(enemy, 'poison', ability.id === 'toxic_bloom' ? 5 : 4); break;
     case 'mark':      applyStatus(enemy, 'mark', 3); break;
     case 'guard':     combat.guardStacks += 2; break;
-    case 'refund':    run.energy = Math.min(MAX_ENERGY, run.energy + 8); break;
+    case 'refund':    run.energy = Math.min(MAX_ENERGY, run.energy + 2); break;
     case 'lifesteal': {
-      const stats = derived(run);
       const heal = Math.max(1, Math.round(total * 0.4));
       run.hp = Math.min(stats.maxHp, run.hp + heal);
       combat.events.push({ type: 'heal', side: 'player', amount: heal });
@@ -297,7 +308,6 @@ export function useAbility(run, combat, abilityId) {
       break;
     }
     case 'cleanse': {
-      const stats = derived(run);
       clearHarmfulStatuses({ statuses: combat.playerStatuses });
       const heal = Math.max(1, Math.round(stats.maxHp * 0.15));
       run.hp = Math.min(stats.maxHp, run.hp + heal);

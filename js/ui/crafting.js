@@ -84,12 +84,12 @@ export function craftingScreen() {
       el('div', { className: 'grow screen-scroll' }, panel('Recipes', list)),
       el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 320px' } },
         panel('Details', detail),
-        button('Back to the tunnels', () => go('dungeon'), { className: 'btn--center' }),
+        button('Back to the fight', () => go('adventure'), { className: 'btn--center' }),
         button('Inventory', () => go('inventory'), { className: 'btn--ghost btn--center' }))),
   );
 
   function onKeyDown(event) {
-    if (event.key === 'Escape' || event.key === 'c' || event.key === 'C') { event.preventDefault(); go('dungeon'); }
+    if (event.key === 'Escape' || event.key === 'c' || event.key === 'C') { event.preventDefault(); go('adventure'); }
   }
 
   return {

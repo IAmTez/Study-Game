@@ -87,6 +87,12 @@ function pickWeighted(rng, candidates, targetTier, recent, exclude) {
   return rng.weighted(entries).q;
 }
 
+/* How hard a blow each difficulty tier buys you, and the XP it is worth.
+   Energy no longer comes from questions, so the tier you pick is a pure
+   damage gamble: an easy card is a safe, weak hit. */
+export const TIER_DAMAGE = [1, 0.85, 1.0, 1.2, 1.45, 1.75];
+export const TIER_XP = [1, 0.8, 1.0, 1.2, 1.45, 1.75];
+
 /**
  * Three questions to choose between: one below the floor's tier, one at it and
  * one above. Picking the harder card is the risk/reward decision each turn.
@@ -114,8 +120,8 @@ export function pickQuestionChoices(rng, floor, count = 3) {
       question,
       offeredTier: t,
       /* Reward scales with the tier you actually chose. */
-      energy: Math.round(6 + t * 4),
-      damageBonus: 1 + (t - 1) * 0.12
+      damageBonus: TIER_DAMAGE[t],
+      xpBonus: TIER_XP[t]
     });
   }
 

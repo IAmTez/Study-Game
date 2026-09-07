@@ -21,7 +21,7 @@ globalThis.Object_keys_ls = () => [...store.keys()];
 
 const state = await import('../js/game/state.js');
 const combatMod = await import('../js/game/combat.js');
-const dungeon = await import('../js/game/dungeon.js');
+const stages = await import('../js/game/stages.js');
 const { makeRng } = await import('../js/core/rng.js');
 const { ROLES } = await import('../js/data/roles.js');
 const items = await import('../js/data/items.js');
@@ -58,9 +58,17 @@ function fight(run, enemy, rng, accuracy) {
         const potion = ['elixir', 'large_potion', 'small_potion', 'study_ration'].find(id => state.countItem(run, id) > 0);
         if (potion) { combatMod.useItemInCombat(run, combat, potion); continue; }
       }
-      const usable = combatMod.availableAbilities(run).filter(a => a.usable && a.ability.power > 0);
-      const best = usable.sort((a, b) => b.ability.power - a.ability.power)[0];
-      combatMod.useAbility(run, combat, (best || { ability: { id: 'strike' } }).ability.id);
+      const options = combatMod.availableAbilities(run);
+      const affordable = options.filter(a => a.usable && a.ability.power > 0);
+      const best = affordable.sort((a, b) => b.ability.power - a.ability.power)[0];
+      // Rest when badly hurt and holding nothing worth spending; otherwise hit
+      // with the strongest move currently affordable (Strike banks 1 by itself).
+      if (!best || best.ability.id === 'strike') {
+        const hurt = run.hp / state.derived(run).maxHp < 0.5;
+        combatMod.useAbility(run, combat, hurt ? 'rest' : 'strike');
+      } else {
+        combatMod.useAbility(run, combat, best.ability.id);
+      }
       continue;
     }
     break;
@@ -91,25 +99,22 @@ function simulate(roleId, accuracy, maxFloor = 60, seed = 0) {
   let floor = 1;
   for (; floor <= maxFloor; floor++) {
     run.floor = floor;
-    const map = dungeon.generateFloor(run.seed, floor);
-    // Fight roughly two thirds of the floor's enemies, then descend.
-    const targets = map.enemies.slice(0, Math.max(1, Math.ceil(map.enemies.length * 0.66)));
-    for (const enemy of targets) {
-      if (!fight(run, enemy, rng, accuracy)) return { floor, level: run.level, died: true };
-      run.statuses = {};
-      autoEquip(run);
-    }
-    // Chests found on the way through.
-    for (const chest of map.chests) {
-      for (const drop of loot.rollChest(rng, { luck: state.derived(run).luck, floor })) {
-        state.addItem(run, drop.item.id, drop.count);
+    const floorState = stages.generateFloor(run.seed, floor);
+    for (const stage of floorState.stages) {
+      if (stage.kind === 'combat') {
+        if (!fight(run, stage.enemy, rng, accuracy)) return { floor, level: run.level, died: true };
+        run.statuses = {};
+        autoEquip(run);
+      } else if (stage.kind === 'treasure') {
+        for (const drop of loot.rollChest(rng, { luck: state.derived(run).luck, floor })) {
+          state.addItem(run, drop.item.id, drop.count);
+        }
+        autoEquip(run);
+      } else if (stage.kind === 'shrine') {
+        const stats = state.derived(run);
+        run.hp = Math.min(stats.maxHp, run.hp + Math.round(stats.maxHp * 0.45));
+        run.energy = Math.min(20, run.energy + 4);
       }
-    }
-    autoEquip(run);
-    // Altar every third floor.
-    if (floor % 3 === 0) {
-      const stats = state.derived(run);
-      run.hp = Math.min(stats.maxHp, run.hp + Math.round(stats.maxHp * 0.45));
     }
   }
   return { floor: maxFloor, level: run.level, died: false };

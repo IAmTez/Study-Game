@@ -17,7 +17,7 @@ export function menuScreen() {
   const items = [];
 
   if (run) {
-    items.push(button('Continue Run', () => { sfx.confirm(); go('dungeon'); }, {
+    items.push(button('Continue Run', () => { sfx.confirm(); go('adventure'); }, {
       className: 'btn--primary btn--center span-2',
       sub: `${derived(run).role.name} · Level ${run.level} · Floor ${run.floor}`
     }));
@@ -135,7 +135,7 @@ export function roleScreen() {
             button('Descend', () => {
               sfx.descend();
               createRun(selected, { fromSanctum: startFromSanctum });
-              go('dungeon');
+              go('adventure');
             }, { className: 'btn--primary btn--center', sub: 'Enter the sewers' }),
             button('Back', () => go('menu'), { className: 'btn--ghost btn--center' }))),
         panel('Reminders',

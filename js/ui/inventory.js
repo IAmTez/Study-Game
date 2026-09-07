@@ -175,12 +175,12 @@ export function inventoryScreen() {
       el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 320px' } },
         panel('Equipped', equipment),
         panel('Details', detail),
-        button('Back to the tunnels', () => go('dungeon'), { className: 'btn--center' }),
+        button('Back to the fight', () => go('adventure'), { className: 'btn--center' }),
         button('Crafting', () => go('crafting'), { className: 'btn--ghost btn--center' }))),
   );
 
   function onKeyDown(event) {
-    if (event.key === 'Escape' || event.key === 'i' || event.key === 'I') { event.preventDefault(); go('dungeon'); }
+    if (event.key === 'Escape' || event.key === 'i' || event.key === 'I') { event.preventDefault(); go('adventure'); }
   }
 
   return {

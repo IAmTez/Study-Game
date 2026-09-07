@@ -23,8 +23,8 @@ export const ITEMS = {
   /* ---------------- consumables ---------------- */
   study_ration: I({
     id: 'study_ration', name: 'Study Ration', sprite: 'shroom', kind: 'consumable', rarity: 'common',
-    desc: 'Cold sewer mushroom stew. Restores 22 HP and 10 energy.',
-    use: { heal: 22, energy: 10 }, floorMin: 1
+    desc: 'Cold sewer mushroom stew. Restores 22 HP and 2 energy.',
+    use: { heal: 22, energy: 2 }, floorMin: 1
   }),
   small_potion: I({
     id: 'small_potion', name: 'Minor Salve', sprite: 'potion_hp', kind: 'consumable', rarity: 'common',
@@ -41,12 +41,12 @@ export const ITEMS = {
   }),
   energy_draught: I({
     id: 'energy_draught', name: 'Energy Draught', sprite: 'potion_energy', kind: 'consumable', rarity: 'common',
-    desc: 'Grants 28 energy immediately.', use: { energy: 28 }, floorMin: 1
+    desc: 'Banks 5 energy immediately.', use: { energy: 5 }, floorMin: 1
   }),
   focus_tonic: I({
     id: 'focus_tonic', name: 'Focus Tonic', sprite: 'potion_energy', kind: 'consumable', rarity: 'rare',
-    desc: 'Grants 70 energy — enough to reach an ultimate in one gulp.',
-    use: { energy: 70 }, floorMin: 5
+    desc: 'Banks 12 energy — a full ultimate in one gulp.',
+    use: { energy: 12 }, floorMin: 5
   }),
   antidote: I({
     id: 'antidote', name: 'Antidote', sprite: 'potion_cure', kind: 'consumable', rarity: 'common',
@@ -112,7 +112,7 @@ export const ITEMS = {
   archivists_quill: I({
     id: 'archivists_quill', name: "Archivist's Quill", sprite: 'sword', kind: 'weapon', rarity: 'epic',
     desc: 'Sharpened to a needle. Cuts arguments and flesh alike.',
-    stats: { atk: 18, energyGain: 0.15 }, floorMin: 10
+    stats: { atk: 18, energyGain: 1 }, floorMin: 10
   }),
   sovereigns_edge: I({
     id: 'sovereigns_edge', name: "Sovereign's Edge", sprite: 'sword', kind: 'weapon', rarity: 'legendary',
@@ -149,7 +149,7 @@ export const ITEMS = {
   }),
   scholars_lens: I({
     id: 'scholars_lens', name: "Scholar's Lens", sprite: 'ring', kind: 'trinket', rarity: 'uncommon',
-    desc: 'Reading is faster. Energy comes quicker.', stats: { energyGain: 0.2 }, floorMin: 3
+    desc: 'Reading is faster. Every generating move banks 1 extra energy.', stats: { energyGain: 1 }, floorMin: 3
   }),
   ratking_crown: I({
     id: 'ratking_crown', name: 'Rat King Crown', sprite: 'amulet', kind: 'trinket', rarity: 'rare',
@@ -157,12 +157,12 @@ export const ITEMS = {
   }),
   tide_charm: I({
     id: 'tide_charm', name: 'Tide Charm', sprite: 'amulet', kind: 'trinket', rarity: 'epic',
-    desc: 'You breathe easier in the flooded sections.', stats: { maxHp: 45, def: 5, energyGain: 0.15 }, floorMin: 12
+    desc: 'You breathe easier in the flooded sections.', stats: { maxHp: 45, def: 5, energyGain: 1 }, floorMin: 12
   }),
   infinite_index: I({
     id: 'infinite_index', name: 'The Infinite Index', sprite: 'book', kind: 'trinket', rarity: 'legendary',
     desc: 'Every question you have ever answered, catalogued. Correct answers restore 5 HP.',
-    stats: { energyGain: 0.35, luck: 0.3, atk: 6 }, special: 'index', floorMin: 20
+    stats: { energyGain: 1, luck: 0.3, atk: 6 }, special: 'index', floorMin: 20
   })
 };
 
