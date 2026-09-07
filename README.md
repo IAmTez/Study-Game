@@ -10,8 +10,12 @@ drawn in code.
 
 ## Running it
 
-ES modules need to be served over HTTP, so opening `index.html` from the file system
-will not work. From the project root:
+**The quick way:** open `dist/sewers-of-study.html`. It is the whole game bundled
+into one file — no server, no install, just double-click it.
+
+**From source:** the playable source is a set of ES modules, which browsers only
+load over HTTP, so `index.html` will not work straight off the file system. From the
+project root:
 
 ```bash
 python3 -m http.server 8000
@@ -19,7 +23,12 @@ python3 -m http.server 8000
 ```
 
 Any static server works (`npx serve`, `php -S localhost:8000`, a VS Code Live Server
-extension, and so on).
+extension, and so on). After changing anything under `js/` or `css/`, rebuild the
+single-file version with:
+
+```bash
+node tools/bundle.mjs
+```
 
 ## How it plays
 
@@ -141,6 +150,8 @@ js/import/            file readers (ZIP/DOCX, PDF) and the study-material parser
 js/ui/adventure.js    the battle scene, camera pans and the turn UI
 js/ui/                menu, inventory, crafting, stats, settings, subjects
 tools/balance-sim.mjs headless difficulty check
+tools/bundle.mjs      inlines everything into dist/sewers-of-study.html
+dist/                 the built single-file game
 ```
 
 ## Art direction
