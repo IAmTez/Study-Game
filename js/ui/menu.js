@@ -1,6 +1,6 @@
 /* Title screen and role selection. */
 
-import { el, panel, button, toast, modal, closeModal, statRow, setChildren} from './dom.js';
+import { el, panel, button, toast, modal, closeModal, setChildren } from './dom.js';
 import { go } from './screens.js';
 import { ROLES } from '../data/roles.js';
 import { spriteElement } from '../art/render.js';
@@ -95,10 +95,9 @@ export function roleScreen() {
     },
       spriteElement(role.sprite, 4),
       el('div', { className: 'role-name', text: role.name }),
-      el('div', { className: 'role-desc', text: role.blurb }),
-      el('div', { className: 'role-perk', text: `${role.perk.name}: ${role.perk.desc}` }),
+      el('div', { className: 'role-perk', text: role.perk.name }),
       el('div', { className: 'tiny dim', text:
-        `HP ${role.stats.maxHp}  ATK ${role.stats.atk}  DEF ${role.stats.def}  ENERGY x${role.stats.energyGain}` }));
+        `HP ${role.stats.maxHp} · ATK ${role.stats.atk} · DEF ${role.stats.def}` }));
     return card;
   });
 
@@ -109,9 +108,11 @@ export function roleScreen() {
       el('div', { className: 'gold', text: role.name }),
       el('div', { className: 'small dim', text: role.blurb }),
       el('div', { className: 'small good', text: `${role.perk.name} — ${role.perk.desc}` }),
-      el('div', { className: 'tiny dim mt', text: 'Abilities unlock as you level and as you bank energy:' }),
-      ...role.abilities.map(id => el('div', { className: 'tiny', text: `· ${id.replace(/_/g, ' ')}` })),
-    );
+      el('div', { className: 'tiny dim', text:
+        `HP ${role.stats.maxHp} · ATK ${role.stats.atk} · DEF ${role.stats.def}`
+        + (role.stats.energyGain ? ` · +${role.stats.energyGain} energy per Rest or Strike` : '') }),
+      el('div', { className: 'tiny dim mt', text: 'Moves, unlocked by level and banked energy:' }),
+      el('div', { className: 'tiny', text: role.abilities.map(id => id.replace(/_/g, ' ')).join(' · ') }));
   }
   updateSummary();
 
@@ -121,30 +122,22 @@ export function roleScreen() {
         el('span', { text: `Start from your sanctum (floor ${game.meta.sanctum + 1}) instead of floor 1` }))
     : null;
 
-  const node = el('div', { className: 'screen col gap-lg' },
-    panel('Choose your role',
-      el('p', { className: 'small dim mb', text:
-        'Your role is fixed for the whole run. It sets your health, damage, how fast energy builds, and one passive that changes how you play.' }),
-      el('div', { className: 'role-grid' }, ...cards)),
-    el('div', { className: 'row gap-lg' },
+  const grid = panel('Choose your role', el('div', { className: 'role-grid' }, ...cards));
+  grid.classList.add('panel--fill');
+
+  const node = el('div', { className: 'screen col gap-sm' },
+    grid,
+    el('div', { className: 'row gap-sm', style: { flex: '0 0 auto' } },
       el('div', { className: 'grow' }, panel('Selected', summary)),
-      el('div', { className: 'col grow' },
-        panel('Begin',
-          sanctumToggle,
-          el('div', { className: 'col gap-sm mt' },
-            button('Descend', () => {
-              sfx.descend();
-              createRun(selected, { fromSanctum: startFromSanctum });
-              go('adventure');
-            }, { className: 'btn--primary btn--center', sub: 'Enter the sewers' }),
-            button('Back', () => go('menu'), { className: 'btn--ghost btn--center' }))),
-        panel('Reminders',
-          statRow('Questions available', questionPool().length),
-          statRow('Active subjects', enabledSubjects().length),
-          statRow('Boss every', '10 floors'),
-          el('p', { className: 'tiny dim mt', text:
-            'Answer correctly to attack. Answer wrongly and the enemy attacks you. Partially correct short answers still land a weakened hit.' })))),
-  );
+      el('div', { className: 'col gap-sm', style: { flex: '0 0 320px' } },
+        sanctumToggle,
+        button('Descend', () => {
+          sfx.descend();
+          createRun(selected, { fromSanctum: startFromSanctum });
+          go('adventure');
+        }, { className: 'btn--primary btn--center',
+             sub: `${questionPool().length} questions across ${enabledSubjects().length} subjects · boss every 10 floors` }),
+        button('Back', () => go('menu'), { className: 'btn--ghost btn--center' }))));
 
   return { node };
 }

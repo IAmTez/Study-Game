@@ -2,7 +2,7 @@
 
 import { el, panel, button, toast, modal, closeModal } from './dom.js';
 import { go } from './screens.js';
-import { game, saveSettings, saveAll, defaultMeta, defaultSettings } from '../game/state.js';
+import { game, saveSettings, saveAll, defaultMeta } from '../game/state.js';
 import { invalidatePool, questionPool } from '../game/questions.js';
 import * as storage from '../core/storage.js';
 import { setVolumes, sfx } from '../core/audio.js';

@@ -156,7 +156,17 @@ dist/                 the built single-file game
 
 ## Art direction
 
-The two layers are deliberately different. Backdrops are painted at full canvas
+**Type.** Two faces, split by job. Press Start 2P handles chrome only — titles,
+labels, buttons, the on-canvas battle boxes. It is beautiful and enormously wide,
+so using it for question text forced everything small and made the panels scroll;
+Pixelify Sans carries anything actually read, at a size you can sit with.
+
+**Layout.** The battle screen is three fixed bands that always add up to the
+viewport — status strip, scene, console — so playing never turns into scrolling a
+web page. The scene canvas sizes itself to whatever height is left and scales the
+world to match, so a wide window simply sees more tunnel rather than black bars.
+
+**Sprites and backdrops.** The two layers are deliberately different. Backdrops are painted at full canvas
 resolution — gradients, layered translucency, reflected lamplight, animated sludge —
 one palette per biome, rotating every ten floors through brickwork, flooded mains,
 spore galleries, ossuary, drowned court and sunken archive. Characters, items and

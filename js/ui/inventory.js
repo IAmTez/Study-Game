@@ -5,7 +5,6 @@ import { go } from './screens.js';
 import {
   game, derived, inventoryEntries, equip, unequip, removeItem, countItem, saveRun, MAX_ENERGY
 } from '../game/state.js';
-import { rarityMeta } from '../data/items.js';
 import { sfx } from '../core/audio.js';
 
 const SLOTS = [
@@ -168,13 +167,18 @@ export function inventoryScreen() {
     renderDetail();
   }
 
+  const packPanel = panel('Pack', grids);
+  packPanel.classList.add('panel--fill');
+  const detailPanel = panel('Details', detail);
+  detailPanel.classList.add('panel--fill');
+
   const node = el('div', { className: 'screen col gap-sm' },
     panel(null, summary),
     el('div', { className: 'row gap-sm grow', style: { minHeight: '0' } },
-      el('div', { className: 'grow screen-scroll' }, panel('Pack', grids)),
-      el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 320px' } },
+      el('div', { className: 'col grow', style: { minHeight: '0' } }, packPanel),
+      el('div', { className: 'col gap-sm', style: { flex: '0 0 380px', minHeight: '0' } },
         panel('Equipped', equipment),
-        panel('Details', detail),
+        detailPanel,
         button('Back to the fight', () => go('adventure'), { className: 'btn--center' }),
         button('Crafting', () => go('crafting'), { className: 'btn--ghost btn--center' }))),
   );

@@ -231,12 +231,17 @@ export function subjectsScreen() {
   const countChip = el('div', { className: 'hud-chip gold', text: '' });
   const subjectChip = el('div', { className: 'hud-chip', text: '' });
 
+  const subjectPanel = panel('Subjects', listBox);
+  subjectPanel.classList.add('panel--fill');
+  const importPanel = panel('Add your own material', importBox);
+  importPanel.classList.add('panel--fill');
+
   const node = el('div', { className: 'screen col gap-sm' },
     panel(null, el('div', { className: 'hud-strip' }, countChip, subjectChip)),
     el('div', { className: 'row gap-sm grow', style: { minHeight: '0' } },
-      el('div', { className: 'grow screen-scroll' }, panel('Subjects', listBox)),
-      el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 380px' } },
-        panel('Add your own material', importBox),
+      el('div', { className: 'col grow', style: { minHeight: '0' } }, subjectPanel),
+      el('div', { className: 'col gap-sm', style: { flex: '0 0 420px', minHeight: '0' } },
+        importPanel,
         button('Back', () => go(game.run ? 'adventure' : 'menu'), { className: 'btn--center' }))),
   );
 

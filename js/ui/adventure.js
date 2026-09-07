@@ -7,8 +7,8 @@
    combat rules live in game/combat.js. */
 
 import {
-  el, panel, button, toast, closeModal, itemIcon, rarityClass,
-  isModalOpen, setChildren, bar,
+  el, panel, button, toast, modal, closeModal, itemIcon, rarityClass,
+  isModalOpen, setChildren,
 } from './dom.js';
 import { go } from './screens.js';
 import { spriteCanvas } from '../art/render.js';
@@ -25,7 +25,7 @@ import {
   isFinalStage, isBossFloor,
 } from '../game/stages.js';
 import {
-  game, derived, inventoryEntries, saveRun, saveMeta, endRun, MAX_ENERGY, xpForLevel,
+  game, derived, inventoryEntries, saveRun, saveMeta, endRun, MAX_ENERGY,
 } from '../game/state.js';
 import { sfx } from '../core/audio.js';
 
@@ -48,7 +48,39 @@ export function adventureScreen() {
   const canvas = el('canvas', { id: 'scene-canvas', width: SCENE_W, height: SCENE_H });
   const ctx = canvas.getContext('2d');
 
-  const hud = el('div', { className: 'col gap-sm' });
+  /* The scene is drawn in world units SCENE_H tall. The canvas takes whatever
+     size its box has and the world is scaled to that height, so a wide window
+     simply sees more of the tunnel either side rather than black bars. */
+  const view = { w: SCENE_W, h: SCENE_H, k: 1 };
+
+  function resizeCanvas() {
+    const box = canvas.parentElement;
+    if (!box) return;
+    const w = Math.max(320, Math.floor(box.clientWidth));
+    const h = Math.max(170, Math.floor(box.clientHeight));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    view.k = h / SCENE_H;
+    view.h = SCENE_H;
+    const previous = view.w;
+    view.w = w / view.k;
+
+    /* The console's height settles after webfonts load, which changes how much
+       world fits on screen. Re-centre on the current stage whenever that
+       happens, or the fighters drift toward the edges. */
+    if (Math.abs(view.w - previous) > 1 && camera.mode === 'idle' && floorState) {
+      camera.x = stageCam(floorState.index);
+    }
+  }
+
+  /** Camera x that centres stage `i`'s slot in the current view. */
+  function stageCam(i) {
+    return i * SCENE_W - (view.w - SCENE_W) / 2;
+  }
+
+  const hud = el('div', { className: 'hud-strip grow' });
   const main = el('div', { className: 'col gap-sm grow' });
   const sidebar = el('div', { className: 'col gap-sm' });
   const logBox = el('div', { className: 'log' });
@@ -57,7 +89,7 @@ export function adventureScreen() {
      Scene state
      ------------------------------------------------------------ */
 
-  const camera = { x: floorState.index * SCENE_W, y: 0, mode: 'idle', from: 0, to: 0, started: 0 };
+  const camera = { x: 0, y: 0, mode: 'idle', from: 0, to: 0, started: 0 };
   const fx = { player: { lunge: 0, shake: 0, flash: 0 }, enemy: { lunge: 0, shake: 0, flash: 0 } };
   const floaters = [];
   let combat = null;
@@ -65,6 +97,7 @@ export function adventureScreen() {
   let banner = null;
 
   const stageOriginX = () => floorState.index * SCENE_W;
+  const stageCamX = () => stageCam(floorState.index);
 
   function showBanner(text, sub = '') {
     banner = { text, sub, born: performance.now() };
@@ -83,7 +116,7 @@ export function adventureScreen() {
     const x = Math.round(worldX - camera.x + lunge + shake - image.width / 2);
     const y = Math.round(FLOOR_Y - image.height + bob - camera.y);
 
-    if (x < -image.width || x > SCENE_W + image.width) return;
+    if (x < -image.width || x > view.w + image.width) return;
 
     // Contact shadow grounds the sprite on the walkway.
     ctx.save();
@@ -139,9 +172,13 @@ export function adventureScreen() {
     ctx.restore();
   }
 
-  /** Pokémon-style info box, drawn on the canvas rather than in the DOM. */
+  /**
+   * Battle info box. Each fighter's box sits on that fighter's own side —
+   * player left, enemy right — so at a glance the bar you are reading clearly
+   * belongs to the character beneath it.
+   */
   function drawInfoBox(x, y, w, name, hp, maxHp, sub, accent, energy = null) {
-    const h = energy == null ? 58 : 76;
+    const h = energy == null ? 66 : 92;
     ctx.save();
     ctx.fillStyle = 'rgba(10,14,20,0.86)';
     ctx.strokeStyle = accent;
@@ -152,41 +189,51 @@ export function adventureScreen() {
     ctx.stroke();
 
     ctx.fillStyle = '#e8e4d8';
-    ctx.font = '11px "Press Start 2P", monospace';
+    ctx.font = '13px "Press Start 2P", monospace';
     ctx.textBaseline = 'top';
-    ctx.fillText(name.length > 20 ? name.slice(0, 19) + '…' : name, x + 12, y + 11);
+    ctx.fillText(name.length > 19 ? name.slice(0, 18) + '…' : name, x + 14, y + 12);
 
     if (sub) {
       ctx.fillStyle = '#97a1b0';
-      ctx.font = '8px "Press Start 2P", monospace';
-      ctx.fillText(sub, x + w - 12 - ctx.measureText(sub).width, y + 13);
+      ctx.font = '10px "Press Start 2P", monospace';
+      ctx.fillText(sub, x + w - 14 - ctx.measureText(sub).width, y + 15);
     }
 
-    const barY = y + 30;
-    const barW = w - 24;
+    const barY = y + 36;
+    const barW = w - 28;
     ctx.fillStyle = '#10141c';
-    ctx.fillRect(x + 12, barY, barW, 10);
+    ctx.fillRect(x + 14, barY, barW, 13);
     const ratio = Math.max(0, Math.min(1, hp / maxHp));
     ctx.fillStyle = ratio > 0.5 ? '#63c76a' : ratio > 0.2 ? '#f0a13a' : '#d1454b';
-    ctx.fillRect(x + 12, barY, Math.round(barW * ratio), 10);
+    ctx.fillRect(x + 14, barY, Math.round(barW * ratio), 13);
     ctx.strokeStyle = 'rgba(0,0,0,0.7)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(x + 12.5, barY + 0.5, barW - 1, 9);
+    ctx.strokeRect(x + 14.5, barY + 0.5, barW - 1, 12);
 
-    ctx.fillStyle = '#97a1b0';
-    ctx.font = '8px "Press Start 2P", monospace';
-    ctx.fillText(`${Math.ceil(hp)} / ${maxHp}`, x + 12, barY + 14);
+    ctx.fillStyle = '#cfd6e0';
+    ctx.font = '10px "Press Start 2P", monospace';
+    ctx.fillText(`${Math.ceil(hp)} / ${maxHp}`, x + 14, barY + 18);
 
     if (energy != null) {
-      const eY = y + 58;
-      ctx.fillStyle = '#10141c';
-      ctx.fillRect(x + 12, eY, barW, 8);
+      /* Energy is a small integer pool, so discrete pips read far faster than
+         a continuous bar — you can count what an ability costs at a glance. */
+      const eY = y + 70;
       ctx.fillStyle = '#f0a13a';
-      ctx.fillRect(x + 12, eY, Math.round(barW * (energy / MAX_ENERGY)), 8);
+      ctx.font = '10px "Press Start 2P", monospace';
+      ctx.fillText('EN', x + 14, eY + 1);
+      const pipW = 6;
+      const gap = 2;
+      for (let i = 0; i < MAX_ENERGY; i++) {
+        const px = x + 42 + i * (pipW + gap);
+        ctx.fillStyle = i < energy ? '#f0a13a' : '#1b222c';
+        ctx.fillRect(px, eY, pipW, 12);
+        ctx.strokeStyle = i < energy ? '#ffd88a' : '#2b3547';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 0.5, eY + 0.5, pipW - 1, 11);
+      }
       ctx.fillStyle = '#e8e4d8';
-      ctx.font = '8px "Press Start 2P", monospace';
-      const label = `EN ${energy}/${MAX_ENERGY}`;
-      ctx.fillText(label, x + w - 12 - ctx.measureText(label).width, eY - 1);
+      ctx.font = '10px "Press Start 2P", monospace';
+      ctx.fillText(String(energy), x + 42 + MAX_ENERGY * (pipW + gap) + 6, eY + 1);
     }
     ctx.restore();
   }
@@ -245,28 +292,31 @@ export function adventureScreen() {
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.fillStyle = 'rgba(8,11,16,0.82)';
-    ctx.fillRect(0, 150, SCENE_W, banner.sub ? 76 : 54);
+    ctx.fillRect(0, 150, view.w, banner.sub ? 76 : 54);
     ctx.strokeStyle = 'rgba(242,193,78,0.8)';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(0, 150); ctx.lineTo(SCENE_W, 150);
-    ctx.moveTo(0, 150 + (banner.sub ? 76 : 54)); ctx.lineTo(SCENE_W, 150 + (banner.sub ? 76 : 54));
+    ctx.moveTo(0, 150); ctx.lineTo(view.w, 150);
+    ctx.moveTo(0, 150 + (banner.sub ? 76 : 54)); ctx.lineTo(view.w, 150 + (banner.sub ? 76 : 54));
     ctx.stroke();
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f2c14e';
     ctx.font = '18px "Press Start 2P", monospace';
-    ctx.fillText(banner.text, SCENE_W / 2, 180);
+    ctx.fillText(banner.text, view.w / 2, 180);
     if (banner.sub) {
       ctx.fillStyle = '#97a1b0';
       ctx.font = '10px "Press Start 2P", monospace';
-      ctx.fillText(banner.sub, SCENE_W / 2, 208);
+      ctx.fillText(banner.sub, view.w / 2, 208);
     }
     ctx.restore();
   }
 
   function draw(now) {
-    ctx.clearRect(0, 0, SCENE_W, SCENE_H);
-    drawBackdrop(ctx, backdrop, camera.x, now, SCENE_W, SCENE_H, camera.y);
+    resizeCanvas();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(view.k, 0, 0, view.k, 0, 0);
+    drawBackdrop(ctx, backdrop, camera.x, now, view.w, view.h, camera.y);
 
     // The ladder lives one slot past the final stage.
     const ladderWorldX = floorState.stages.length * SCENE_W + SCENE_W / 2;
@@ -278,7 +328,7 @@ export function adventureScreen() {
     for (let i = Math.max(0, floorState.index - 1); i <= Math.min(floorState.stages.length - 1, floorState.index + 1); i++) {
       const stage = floorState.stages[i];
       const originX = i * SCENE_W;
-      if (Math.abs(originX - camera.x) > SCENE_W * 1.6) continue;
+      if (Math.abs(originX - camera.x) > SCENE_W * 1.8) continue;
       drawStageProp(stage, originX);
       if (stage.kind === 'combat' && i === floorState.index && combat) {
         drawFighter(combat.enemy.sprite, originX + ENEMY_X, combat.enemy.isBoss ? 9 : 7, 'enemy', now, combat.enemy.hp > 0);
@@ -294,15 +344,18 @@ export function adventureScreen() {
     }
 
     const stats = derived(run);
+    const boxW = 372;
     if (combat && combat.enemy.hp > 0 && camera.mode === 'idle') {
-      drawInfoBox(28, 24, 330, combat.enemy.name, combat.enemy.hp, combat.enemy.maxHp,
+      // Enemy is on the right of the scene, so its box is too.
+      drawInfoBox(view.w - boxW - 26, 22, boxW, combat.enemy.name, combat.enemy.hp, combat.enemy.maxHp,
         combat.enemy.isBoss ? 'BOSS' : '', combat.enemy.isBoss ? '#f2c14e' : '#c0562e');
-      drawStatusPips(combat.enemy.statuses, 28, 86);
+      drawStatusPips(combat.enemy.statuses, view.w - boxW - 26, 92);
     }
     if (camera.mode === 'idle') {
-      drawInfoBox(SCENE_W - 358, SCENE_H - 118, 330, stats.role.name, run.hp, stats.maxHp,
+      // Player stands on the left, so its box is bottom-left.
+      drawInfoBox(26, SCENE_H - 98, boxW, stats.role.name, run.hp, stats.maxHp,
         `Lv ${run.level}`, '#63c76a', run.energy);
-      drawStatusPips(run.statuses, SCENE_W - 358, SCENE_H - 134);
+      drawStatusPips(run.statuses, 26, SCENE_H - 120);
     }
 
     drawFloaters(now);
@@ -312,20 +365,20 @@ export function adventureScreen() {
   function drawStatusPips(statuses, x, y) {
     const entries = Object.entries(statuses || {}).filter(([, turns]) => turns > 0);
     ctx.save();
-    ctx.font = '8px "Press Start 2P", monospace';
+    ctx.font = '10px "Press Start 2P", monospace';
     let offset = 0;
     for (const [id, turns] of entries) {
       const info = statusInfo(id);
       const label = `${info.name} ${turns}`;
-      const w = ctx.measureText(label).width + 12;
+      const w = ctx.measureText(label).width + 14;
       ctx.fillStyle = 'rgba(10,14,20,0.85)';
-      ctx.fillRect(x + offset, y, w, 16);
+      ctx.fillRect(x + offset, y, w, 18);
       ctx.strokeStyle = info.colour;
       ctx.lineWidth = 1;
-      ctx.strokeRect(x + offset + 0.5, y + 0.5, w - 1, 15);
+      ctx.strokeRect(x + offset + 0.5, y + 0.5, w - 1, 17);
       ctx.fillStyle = info.colour;
-      ctx.fillText(label, x + offset + 6, y + 11);
-      offset += w + 6;
+      ctx.fillText(label, x + offset + 7, y + 12);
+      offset += w + 7;
     }
     ctx.restore();
   }
@@ -423,7 +476,7 @@ export function adventureScreen() {
   function beginStage() {
     const stage = currentStage(run);
     combat = null;
-    camera.x = stageOriginX();
+    camera.x = stageCamX();
 
     if (!stage) { advance(); return; }
 
@@ -443,11 +496,11 @@ export function adventureScreen() {
   function advance() {
     const result = clearStage(run);
     if (result === 'next-stage') {
-      panTo(stageOriginX(), () => { beginStage(); });
+      panTo(stageCamX(), () => { beginStage(); });
       return;
     }
     // Floor cleared: pan to the ladder, then climb to the next floor.
-    const ladderX = floorState.stages.length * SCENE_W;
+    const ladderX = stageCam(floorState.stages.length);
     panTo(ladderX, () => {
       sfx.descend();
       showBanner('The way up', 'The ladder leads deeper into the system.');
@@ -460,7 +513,7 @@ export function adventureScreen() {
         descend(run);
         floorState = ensureFloor(run);
         backdrop = buildBackdrop(floorState.biome, `${run.seed}:${run.floor}`);
-        camera.x = 0;
+        camera.x = stageCam(0);
         camera.y = 0;
         saveMeta();
         showBanner(`Floor ${run.floor}`, floorState.biomeName);
@@ -473,21 +526,43 @@ export function adventureScreen() {
      HUD and log
      ------------------------------------------------------------ */
 
+  /**
+   * The status strip. HP and XP already read clearly on the canvas boxes, so
+   * this band leads with energy — the number every move decision turns on —
+   * as counted pips rather than another thin bar lost among the others.
+   */
   function renderHud() {
     const stats = derived(run);
     const total = floorState.stages.length;
+    const cheapest = combat
+      ? availableAbilities(run)
+          .filter(a => !a.levelLocked && a.ability.cost > 0)
+          .sort((a, b) => a.ability.cost - b.ability.cost)[0]
+      : null;
+    const affordable = cheapest && run.energy >= cheapest.ability.cost;
+
+    const pips = el('div', { className: 'pips' },
+      ...Array.from({ length: MAX_ENERGY }, (_, i) => el('div', {
+        className: `pip ${i < run.energy ? 'is-full' : ''} ${
+          affordable && i === cheapest.ability.cost - 1 ? 'is-ready' : ''}`,
+      })));
+
+    /* Two chips rather than five: on a narrow window the strip used to wrap to
+       a second row and steal that height from the scene. */
     setChildren(hud,
-      el('div', { className: 'hud-strip' },
-        el('div', { className: 'hud-chip gold', text: `FLOOR ${run.floor}${isBossFloor(run.floor) ? ' — BOSS' : ''}` }),
-        el('div', { className: 'hud-chip', text: floorState.biomeName }),
-        el('div', { className: 'hud-chip', text: `Stage ${Math.min(floorState.index + 1, total)} / ${total}` }),
-        el('div', { className: 'hud-chip', text: `${stats.role.name} Lv ${run.level}` }),
-        el('div', { className: 'hud-chip', text: `ATK ${stats.atk}` }),
-        el('div', { className: 'hud-chip', text: `DEF ${stats.def}` })),
-      el('div', { className: 'row gap-sm' },
-        el('div', { className: 'grow' }, bar('hp', run.hp, stats.maxHp, `HP ${Math.ceil(run.hp)} / ${stats.maxHp}`)),
-        el('div', { className: 'grow' }, bar('energy', run.energy, MAX_ENERGY, `ENERGY ${run.energy} / ${MAX_ENERGY}`)),
-        el('div', { className: 'grow' }, bar('xp', run.xp, xpForLevel(run.level), `XP ${run.xp} / ${xpForLevel(run.level)}`))));
+      el('div', { className: 'hud-chip gold', text:
+        `FLOOR ${run.floor}${isBossFloor(run.floor) ? ' BOSS' : ''} · ${floorState.biomeName}`
+        + ` · ${Math.min(floorState.index + 1, total)}/${total}` }),
+      el('div', { className: 'hud-chip', text:
+        `${stats.role.name} Lv ${run.level} · ATK ${stats.atk} · DEF ${stats.def}` }),
+      el('div', { className: 'energy-readout' },
+        el('span', { className: 'label', text: `ENERGY ${run.energy}` }),
+        pips,
+        cheapest
+          ? el('span', { className: 'tiny dim', text: affordable
+              ? `${cheapest.ability.name} ready`
+              : `${cheapest.ability.cost - run.energy} more for ${cheapest.ability.name}` })
+          : null));
   }
 
   function renderLog() {
@@ -548,8 +623,8 @@ export function adventureScreen() {
   function renderQuestionChoice() {
     if (!combat.choices.length) { renderAction(); return; }
     setChildren(main, panel('Choose your question',
-      el('p', { className: 'small dim mb', text:
-        'A harder question lands a heavier blow. Get it wrong and the enemy strikes instead — energy only comes from Rest and Strike.' }),
+      el('p', { className: 'small dim', text:
+        'Harder question, heavier blow. Get it wrong and the enemy strikes instead.' }),
       el('div', { className: 'q-choices' }, ...combat.choices.map((choice, index) => {
         const q = choice.question;
         const bonus = Math.round((choice.damageBonus - 1) * 100);
@@ -634,14 +709,18 @@ export function adventureScreen() {
 
     if (q.type === 'mc') {
       const chosen = combat.response;
-      body.appendChild(el('div', { className: 'opt-list' },
-        ...q.options.map((option, index) => el('div', {
-          className: `opt ${index === q.answer ? 'opt--correct' : index === chosen ? 'opt--wrong' : ''}`,
-        },
-          el('span', { className: 'opt-key', text: String.fromCharCode(65 + index) }),
-          el('span', { text: option }),
-          index === chosen && index !== q.answer
-            ? el('span', { className: 'tiny', text: '← your answer' }) : null))));
+      // Re-listing all four options pushed the explanation — the part worth
+      // reading — off screen. Show the answer, and the wrong pick if there was one.
+      const letter = (i) => String.fromCharCode(65 + i);
+      body.appendChild(el('div', { className: 'col gap-sm' },
+        Number.isInteger(chosen) && chosen !== q.answer
+          ? el('div', { className: 'answer-row answer-row--wrong' },
+              el('span', { className: 'tag', text: `YOU ${letter(chosen)}` }),
+              el('span', { text: q.options[chosen] }))
+          : null,
+        el('div', { className: 'answer-row answer-row--correct' },
+          el('span', { className: 'tag', text: `ANS ${letter(q.answer)}` }),
+          el('span', { text: q.options[q.answer] }))));
     } else {
       body.appendChild(el('div', { className: 'small dim', text: `You wrote: ${combat.response || '(nothing)'}` }));
       const feedback = gradingFeedback(q, result);
@@ -771,9 +850,10 @@ export function adventureScreen() {
           if (outcome?.kind === 'defeat') { renderDefeat(); return; }
           render();
         }, {
-          className: 'btn--sm',
+          className: 'btn--sm item-btn',
           disabled: !allowed,
-          sub: allowed ? item.desc : (isHint ? 'Only while a question is open' : 'Only when choosing your move'),
+          title: allowed ? item.desc
+            : (isHint ? 'Only while a question is open' : 'Only when choosing your move'),
         });
       });
       children.push(panel('Items', buttons.length
@@ -788,21 +868,28 @@ export function adventureScreen() {
             el('div', { className: 'tiny dim', text: item.desc })))));
       }
       children.push(panel('Enemy',
-        el('p', { className: 'small dim', text: combat.enemy.flavour || '' }),
-        el('div', { className: 'tiny dim mt', text:
-          `ATK ${combat.enemy.atk} · DEF ${combat.enemy.def} · worth ${combat.enemy.xp} XP` }),
+        el('div', { className: 'tiny dim', text:
+          `ATK ${combat.enemy.atk} · DEF ${combat.enemy.def} · ${combat.enemy.xp} XP` }),
         combat.enemy.traits?.length
-          ? el('div', { className: 'tiny gold mt', text: combat.enemy.traits.join(' · ') }) : null));
+          ? el('div', { className: 'tiny gold', text: combat.enemy.traits.join(' · ') }) : null));
     }
 
-    children.push(panel('Log', logBox));
-    children.push(el('div', { className: 'row gap-sm' },
-      button('Inventory', () => go('inventory'), { className: 'btn--sm btn--center' }),
-      button('Craft', () => go('crafting'), { className: 'btn--sm btn--center' })));
-    children.push(button('Menu', () => go('menu'), { className: 'btn--sm btn--ghost btn--center' }));
+    // Controls lead the rail so nothing important sits below a scroll.
+    const controls = el('div', { className: 'row gap-sm' },
+      button('Bag', () => go('inventory'), { className: 'btn--sm btn--center' }),
+      button('Craft', () => go('crafting'), { className: 'btn--sm btn--center' }),
+      button('Log', showLog, { className: 'btn--sm btn--ghost btn--center' }),
+      button('Menu', () => go('menu'), { className: 'btn--sm btn--ghost btn--center' }));
 
-    setChildren(sidebar, ...children);
+    setChildren(sidebar, controls, ...children);
+  }
+
+  /* The battle log is history, not a control, so it sits behind a button and
+     the items you might actually use lead the rail. */
+  function showLog() {
     renderLog();
+    modal('Battle log', logBox,
+      [button('Close', () => closeModal(), { className: 'btn--inline btn--center' })]);
   }
 
   /* ------------------------------------------------------------
@@ -824,6 +911,12 @@ export function adventureScreen() {
     }
   }
 
+  /* Re-centre on the current stage when the view width changes. */
+  function onResize() {
+    resizeCanvas();
+    if (camera.mode === 'idle') camera.x = stageCamX();
+  }
+
   function onKeyDown(event) {
     if (isModalOpen()) { if (event.key === 'Escape') closeModal(); return; }
     if (event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT') return;
@@ -832,23 +925,26 @@ export function adventureScreen() {
     else if (event.key === 'Escape') { event.preventDefault(); go('menu'); }
   }
 
-  const node = el('div', { className: 'screen col gap-sm' },
-    panel(null, hud),
+  const node = el('div', { className: 'screen battle' },
+    el('div', { className: 'battle-top' }, hud),
     el('div', { className: 'scene-stage' }, canvas),
-    el('div', { className: 'row gap-sm grow', style: { minHeight: '0' } },
-      el('div', { className: 'grow screen-scroll' }, main),
-      el('div', { className: 'screen-scroll', style: { flex: '0 0 300px' } }, sidebar)));
+    el('div', { className: 'battle-console' },
+      el('div', { className: 'battle-main' }, main),
+      el('div', { className: 'battle-rail' }, sidebar)));
 
   return {
     node,
     mount() {
       window.addEventListener('keydown', onKeyDown);
+      window.addEventListener('resize', onResize);
+      resizeCanvas();
       showBanner(`Floor ${run.floor}`, floorState.biomeName);
       beginStage();
       raf = requestAnimationFrame(tick);
     },
     unmount() {
       window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('resize', onResize);
       if (raf) cancelAnimationFrame(raf);
       saveRun();
       saveMeta();

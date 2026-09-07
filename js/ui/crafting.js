@@ -2,7 +2,7 @@
 
 import { el, panel, button, toast, itemIcon, rarityClass, itemDetail, setChildren} from './dom.js';
 import { go } from './screens.js';
-import { game, saveRun, countItem } from '../game/state.js';
+import { game, saveRun } from '../game/state.js';
 import { allRecipeStatuses, craft } from '../game/crafting.js';
 import { sfx } from '../core/audio.js';
 
@@ -72,6 +72,11 @@ export function craftingScreen() {
     renderDetail();
   }
 
+  const recipePanel = panel('Recipes', list);
+  recipePanel.classList.add('panel--fill');
+  const detailPanel = panel('Details', detail);
+  detailPanel.classList.add('panel--fill');
+
   const node = el('div', { className: 'screen col gap-sm' },
     panel(null, el('div', { className: 'row between center-y wrap gap-sm' },
       el('div', { className: 'hud-strip' },
@@ -81,9 +86,9 @@ export function craftingScreen() {
         el('input', { type: 'checkbox', onChange: (e) => { showOnlyCraftable = e.target.checked; render(); } }),
         el('span', { text: 'Only show what I can make' })))),
     el('div', { className: 'row gap-sm grow', style: { minHeight: '0' } },
-      el('div', { className: 'grow screen-scroll' }, panel('Recipes', list)),
-      el('div', { className: 'col gap-sm screen-scroll', style: { flex: '0 0 320px' } },
-        panel('Details', detail),
+      el('div', { className: 'col grow', style: { minHeight: '0' } }, recipePanel),
+      el('div', { className: 'col gap-sm', style: { flex: '0 0 380px', minHeight: '0' } },
+        detailPanel,
         button('Back to the fight', () => go('adventure'), { className: 'btn--center' }),
         button('Inventory', () => go('inventory'), { className: 'btn--ghost btn--center' }))),
   );
