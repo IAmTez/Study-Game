@@ -25,6 +25,20 @@ export function rollRarity(rng, { luck = 0, floor = 1, minimum = null } = {}) {
   return chosen;
 }
 
+/* There are far more kinds of gear than of consumables, so picking evenly
+   from everything would starve the player of potions. Choose the family
+   first, then the item. */
+const CONSUMABLE_SHARE = 0.55;
+
+function pickFrom(rng, candidates) {
+  const consumables = candidates.filter(it => it.kind === 'consumable');
+  const gear = candidates.filter(it => it.kind !== 'consumable');
+  if (consumables.length && gear.length) {
+    return rng.pick(rng.chance(CONSUMABLE_SHARE) ? consumables : gear);
+  }
+  return rng.pick(candidates);
+}
+
 /** One item drop, or null if the roll produced nothing usable. */
 export function rollItem(rng, { luck = 0, floor = 1, minimum = null } = {}) {
   const rarity = rollRarity(rng, { luck, floor, minimum });
@@ -33,11 +47,11 @@ export function rollItem(rng, { luck = 0, floor = 1, minimum = null } = {}) {
     // Nothing of that rarity is unlocked yet — step down until something is.
     for (let i = RARITY_ORDER.indexOf(rarity) - 1; i >= 0; i--) {
       const fallback = droppableItems(floor).filter(it => it.rarity === RARITY_ORDER[i]);
-      if (fallback.length) return rng.pick(fallback);
+      if (fallback.length) return pickFrom(rng, fallback);
     }
     return null;
   }
-  return rng.pick(candidates);
+  return pickFrom(rng, candidates);
 }
 
 /**

@@ -83,16 +83,30 @@ function fight(run, enemy, rng, accuracy) {
 }
 
 const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4 };
+const { SLOTS, slotUnlocked, equippedCount } = await import('../js/game/equipment.js');
+
+/** A rough worth for comparing two pieces of gear. */
+function score(item) {
+  const s = item.stats || {};
+  return (s.atk || 0) * 2 + (s.def || 0) * 2 + (s.maxHp || 0) * 0.25 + (s.crit || 0) * 60
+    + (s.block || 0) * 50 + (s.dodge || 0) * 70 + (s.regen || 0) * 4 + (s.thorns || 0) * 2
+    + (s.energyGain || 0) * 8 + (s.luck || 0) * 10 + (s.xpBonus || 0) * 10 + RARITY_RANK[item.rarity];
+}
 
 /** A real player equips upgrades; the simulation has to as well. */
 function autoEquip(run) {
-  for (const slot of ['weapon', 'armour', 'trinket']) {
-    const owned = state.inventoryEntries(run, slot);
-    if (!owned.length) continue;
-    const best = owned.sort((a, b) => RARITY_RANK[b.item.rarity] - RARITY_RANK[a.item.rarity])[0];
-    const current = run.equipped[slot];
-    if (!current || RARITY_RANK[best.item.rarity] > RARITY_RANK[items.getItem(current).rarity]) {
-      state.equip(run, best.item.id);
+  for (const slot of SLOTS) {
+    if (!slotUnlocked(run, slot)) continue;
+    const kinds = slot.key === 'off' ? ['shield'] : slot.accepts;
+    const owned = state.inventoryEntries(run).filter(e => kinds.includes(e.item.kind))
+      .filter(e => !(slot.key === 'main' && e.item.twoHanded));
+    const current = run.equipped[slot.key] && items.getItem(run.equipped[slot.key]);
+    const best = owned
+      .filter(e => e.count > equippedCount(run, e.item.id))
+      .sort((a, b) => score(b.item) - score(a.item))[0];
+    if (best && (!current || score(best.item) > score(current))) {
+      if (current) state.unequip(run, slot.key);
+      state.equip(run, best.item.id, slot.key);
     }
   }
 }

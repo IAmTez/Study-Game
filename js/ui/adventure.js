@@ -11,11 +11,14 @@ import {
   isModalOpen, setChildren,
 } from './dom.js';
 import { go } from './screens.js';
-import { spriteCanvas } from '../art/render.js';
+import { renderArt, pixelRatio } from '../art/render.js';
+import { gearLooks } from '../art/gear.js';
 import {
   buildBackdrop, drawBackdrop, drawLadder, SCENE_W, SCENE_H, FLOOR_Y,
 } from '../art/backdrop.js';
 import { gradingFeedback, VERDICT } from '../game/grading.js';
+import { sourceLabel } from '../data/questions/past.js';
+import { PAST_PAPER_CREDIT } from '../data/questions/index.js';
 import {
   PHASE, startCombat, selectQuestion, submitAnswer, continueFromResult,
   availableAbilities, useAbility, useItemInCombat, useHintOn, drainEvents, statusInfo,
@@ -30,6 +33,24 @@ import {
 import { sfx } from '../core/audio.js';
 
 const DIFFICULTY_LABEL = ['', 'Recall', 'Basic', 'Applied', 'Analysis', 'Evaluation'];
+
+const DISPLAY_FONT = "'Cinzel', Georgia, serif";
+const BODY_FONT = "'Nunito', 'Segoe UI', system-ui, sans-serif";
+
+/** "HSC 2024 Q7" for a question taken from a past paper; nothing otherwise. */
+function sourceTag(q) {
+  if (!q.source) return null;
+  return el('span', {
+    className: 'q-source',
+    title: PAST_PAPER_CREDIT,
+    text: `${sourceLabel(q.source)}${q.source.drill ? ' · thesis drill' : ''}`,
+  });
+}
+
+/** A table or description the question refers to, laid out as on the paper. */
+function stimulusBlock(q) {
+  return q.stimulus ? el('pre', { className: 'q-stimulus', text: q.stimulus }) : null;
+}
 
 const PLAYER_X = 300;   // offsets within a stage slot
 const ENEMY_X = 810;
@@ -51,16 +72,20 @@ export function adventureScreen() {
   /* The scene is drawn in world units SCENE_H tall. The canvas takes whatever
      size its box has and the world is scaled to that height, so a wide window
      simply sees more of the tunnel either side rather than black bars. */
-  const view = { w: SCENE_W, h: SCENE_H, k: 1 };
+  const view = { w: SCENE_W, h: SCENE_H, k: 1, dpr: 1 };
 
   function resizeCanvas() {
     const box = canvas.parentElement;
     if (!box) return;
     const w = Math.max(320, Math.floor(box.clientWidth));
     const h = Math.max(170, Math.floor(box.clientHeight));
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width = w;
-      canvas.height = h;
+    // Draw at the screen's real pixel density so the vector art stays sharp.
+    view.dpr = pixelRatio();
+    const dw = Math.round(w * view.dpr);
+    const dh = Math.round(h * view.dpr);
+    if (canvas.width !== dw || canvas.height !== dh) {
+      canvas.width = dw;
+      canvas.height = dh;
     }
     view.k = h / SCENE_H;
     view.h = SCENE_H;
@@ -107,52 +132,75 @@ export function adventureScreen() {
      Drawing
      ------------------------------------------------------------ */
 
-  function drawFighter(sprite, worldX, scale, side, time, alive = true) {
+  /* Fighters are vector drawings, re-rendered every frame (they breathe,
+     sway and swing) into one offscreen canvas per side at device resolution,
+     then composited with a shadow, a reflection and the hit flash. */
+  const FIGHTER_UNIT = 0.9;       // world pixels per art unit
+  const fighterCanvas = { player: document.createElement('canvas'), enemy: document.createElement('canvas') };
+
+  function renderFighter(side, name, time, extra = {}) {
+    const opts = side === 'player'
+      ? { gear: gearLooks(run.equipped), pose: { t: time, swing: fx.player.lunge, ...extra } }
+      : { t: time, animated: true };
+    return renderArt(name, FIGHTER_UNIT, view.k * view.dpr, { ...opts, animated: true }, fighterCanvas[side]);
+  }
+
+  function drawFighter(name, worldX, side, time, alive = true) {
     const shake = fx[side].shake > 0 ? (Math.random() - 0.5) * 10 : 0;
     const lunge = fx[side].lunge * (side === 'player' ? 34 : -34);
-    const bob = Math.sin(time * 0.0022 + (side === 'player' ? 0 : 1.7)) * 3;
+    const bob = Math.sin(time * 0.0022 + (side === 'player' ? 0 : 1.7)) * 2;
 
-    const image = spriteCanvas(sprite, scale);
-    const x = Math.round(worldX - camera.x + lunge + shake - image.width / 2);
-    const y = Math.round(FLOOR_Y - image.height + bob - camera.y);
+    const art = renderFighter(side, name, time);
+    const flip = side === 'enemy';
+    // Enemies are drawn facing right and mirrored to face the player.
+    const originX = flip ? art.w - art.originX : art.originX;
+    const x = worldX - camera.x + lunge + shake - originX;
+    const y = FLOOR_Y - art.originY + bob - camera.y;
 
-    if (x < -image.width || x > view.w + image.width) return;
+    if (x < -art.w || x > view.w + art.w) return;
 
-    // Contact shadow grounds the sprite on the walkway.
+    const blit = (dx, dy) => {
+      if (flip) {
+        ctx.save();
+        ctx.translate(dx + art.w, dy);
+        ctx.scale(-1, 1);
+        ctx.drawImage(art.canvas, 0, 0, art.w, art.h);
+        ctx.restore();
+      } else {
+        ctx.drawImage(art.canvas, dx, dy, art.w, art.h);
+      }
+    };
+
+    // Contact shadow grounds the figure on the walkway.
     ctx.save();
-    ctx.globalAlpha = 0.4;
-    ctx.fillStyle = '#000';
+    ctx.globalAlpha = 0.38;
+    const shadow = ctx.createRadialGradient(x + originX, FLOOR_Y - camera.y + 4, 2, x + originX, FLOOR_Y - camera.y + 4, 60);
+    shadow.addColorStop(0, 'rgba(0,0,0,0.9)');
+    shadow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadow;
     ctx.beginPath();
-    ctx.ellipse(x + image.width / 2, FLOOR_Y - camera.y + 4, image.width * 0.34, 7, 0, 0, Math.PI * 2);
+    ctx.ellipse(x + originX, FLOOR_Y - camera.y + 4, Math.min(70, art.w * 0.4), 9, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // Reflection in the channel: the sprite flipped, faded and squashed.
+    // Reflection in the channel: flipped, faded and squashed.
     ctx.save();
-    ctx.globalAlpha = 0.18;
-    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = 0.16;
     ctx.translate(0, (FLOOR_Y - camera.y) * 2 + 16);
     ctx.scale(1, -1);
-    ctx.drawImage(image, x, FLOOR_Y - camera.y - image.height);
+    blit(x, y + bob * 2);
     ctx.restore();
 
     ctx.save();
-    ctx.imageSmoothingEnabled = false;
     if (!alive) ctx.globalAlpha = 0.35;
-    if (side === 'enemy') {
-      ctx.translate(x + image.width, y);
-      ctx.scale(-1, 1);
-      ctx.drawImage(image, 0, 0);
-    } else {
-      ctx.drawImage(image, x, y);
-    }
+    blit(x, y);
     ctx.restore();
 
     if (fx[side].flash > 0) {
       ctx.save();
-      ctx.globalAlpha = fx[side].flash * 0.75;
+      ctx.globalAlpha = fx[side].flash * 0.7;
       ctx.globalCompositeOperation = 'lighter';
-      ctx.drawImage(image, side === 'enemy' ? x : x, y);
+      blit(x, y);
       ctx.restore();
     }
   }
@@ -162,14 +210,11 @@ export function adventureScreen() {
    * past, so they read as ascending rather than being left behind.
    */
   function drawClimbingPlayer(ladderWorldX, time) {
-    const image = spriteCanvas(derived(run).role.sprite, 7);
-    const x = Math.round(ladderWorldX - camera.x - image.width / 2);
+    const art = renderFighter('player', derived(run).role.sprite, time, { climb: true });
     const clamber = Math.sin(time * 0.009) * 4;
-    const y = Math.round(SCENE_H * 0.60 - image.height / 2 + clamber);
-    ctx.save();
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(image, x, y);
-    ctx.restore();
+    const x = ladderWorldX - camera.x - art.originX;
+    const y = SCENE_H * 0.60 - art.h / 2 + clamber;
+    ctx.drawImage(art.canvas, x, y, art.w, art.h);
   }
 
   /**
@@ -177,63 +222,90 @@ export function adventureScreen() {
    * player left, enemy right — so at a glance the bar you are reading clearly
    * belongs to the character beneath it.
    */
-  function drawInfoBox(x, y, w, name, hp, maxHp, sub, accent, energy = null) {
-    const h = energy == null ? 66 : 92;
-    ctx.save();
-    ctx.fillStyle = 'rgba(10,14,20,0.86)';
-    ctx.strokeStyle = accent;
-    ctx.lineWidth = 3;
+  /** A rounded-rectangle path on the scene context. */
+  function roundRect(x, y, w, h, r) {
     ctx.beginPath();
-    ctx.rect(x, y, w, h);
-    ctx.fill();
-    ctx.stroke();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
 
-    ctx.fillStyle = '#e8e4d8';
-    ctx.font = '13px "Press Start 2P", monospace';
-    ctx.textBaseline = 'top';
-    ctx.fillText(name.length > 19 ? name.slice(0, 18) + '…' : name, x + 14, y + 12);
+  function drawInfoBox(x, y, w, name, hp, maxHp, sub, accent, energy = null) {
+    const h = energy == null ? 64 : 88;
+    ctx.save();
+    // Glassy panel with a coloured rim on the side facing the fighter.
+    roundRect(x, y, w, h, 12);
+    const bg = ctx.createLinearGradient(0, y, 0, y + h);
+    bg.addColorStop(0, 'rgba(26,34,49,0.92)');
+    bg.addColorStop(1, 'rgba(12,16,24,0.92)');
+    ctx.fillStyle = bg;
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 3;
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255,236,190,0.16)';
+    ctx.stroke();
+    roundRect(x, y, 5, h, 3);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#f1e6c8';
+    ctx.font = `700 17px ${DISPLAY_FONT}`;
+    ctx.fillText(name.length > 24 ? name.slice(0, 23) + '…' : name, x + 16, y + 23);
 
     if (sub) {
-      ctx.fillStyle = '#97a1b0';
-      ctx.font = '10px "Press Start 2P", monospace';
-      ctx.fillText(sub, x + w - 14 - ctx.measureText(sub).width, y + 15);
+      ctx.font = `800 12px ${BODY_FONT}`;
+      const tw = ctx.measureText(sub).width;
+      roundRect(x + w - 16 - tw - 14, y + 9, tw + 14, 18, 9);
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.fill();
+      ctx.fillStyle = accent;
+      ctx.fillText(sub, x + w - 16 - tw - 7, y + 22);
     }
 
-    const barY = y + 36;
-    const barW = w - 28;
-    ctx.fillStyle = '#10141c';
-    ctx.fillRect(x + 14, barY, barW, 13);
+    const barY = y + 32;
+    const barW = w - 30;
     const ratio = Math.max(0, Math.min(1, hp / maxHp));
-    ctx.fillStyle = ratio > 0.5 ? '#63c76a' : ratio > 0.2 ? '#f0a13a' : '#d1454b';
-    ctx.fillRect(x + 14, barY, Math.round(barW * ratio), 13);
-    ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + 14.5, barY + 0.5, barW - 1, 12);
-
+    roundRect(x + 16, barY, barW, 12, 6);
+    ctx.fillStyle = '#0b1017';
+    ctx.fill();
+    if (ratio > 0) {
+      roundRect(x + 16, barY, Math.max(12, barW * ratio), 12, 6);
+      const fill = ctx.createLinearGradient(0, barY, 0, barY + 12);
+      const [top, bottom] = ratio > 0.5 ? ['#8be09b', '#2f9a52'] : ratio > 0.2 ? ['#ffd27a', '#e08a1e'] : ['#ff8a8f', '#d23b45'];
+      fill.addColorStop(0, top);
+      fill.addColorStop(1, bottom);
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
     ctx.fillStyle = '#cfd6e0';
-    ctx.font = '10px "Press Start 2P", monospace';
-    ctx.fillText(`${Math.ceil(hp)} / ${maxHp}`, x + 14, barY + 18);
+    ctx.font = `800 12px ${BODY_FONT}`;
+    ctx.fillText(`${Math.ceil(hp)} / ${maxHp} HP`, x + 16, barY + 27);
 
     if (energy != null) {
       /* Energy is a small integer pool, so discrete pips read far faster than
          a continuous bar — you can count what an ability costs at a glance. */
-      const eY = y + 70;
-      ctx.fillStyle = '#f0a13a';
-      ctx.font = '10px "Press Start 2P", monospace';
-      ctx.fillText('EN', x + 14, eY + 1);
-      const pipW = 6;
-      const gap = 2;
+      const eY = y + 66;
+      ctx.fillStyle = '#f4a63c';
+      ctx.font = `800 12px ${BODY_FONT}`;
+      ctx.fillText('EN', x + 16, eY + 10);
+      const pipW = 7;
+      const gap = 2.5;
       for (let i = 0; i < MAX_ENERGY; i++) {
         const px = x + 42 + i * (pipW + gap);
-        ctx.fillStyle = i < energy ? '#f0a13a' : '#1b222c';
-        ctx.fillRect(px, eY, pipW, 12);
-        ctx.strokeStyle = i < energy ? '#ffd88a' : '#2b3547';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(px + 0.5, eY + 0.5, pipW - 1, 11);
+        roundRect(px, eY, pipW, 12, 2.5);
+        ctx.fillStyle = i < energy ? '#f4a63c' : '#1b222c';
+        ctx.fill();
+        if (i < energy) { ctx.strokeStyle = 'rgba(255,216,138,0.8)'; ctx.lineWidth = 1; ctx.stroke(); }
       }
-      ctx.fillStyle = '#e8e4d8';
-      ctx.font = '10px "Press Start 2P", monospace';
-      ctx.fillText(String(energy), x + 42 + MAX_ENERGY * (pipW + gap) + 6, eY + 1);
+      ctx.fillStyle = '#f1e6c8';
+      ctx.fillText(String(energy), x + 42 + MAX_ENERGY * (pipW + gap) + 6, eY + 10);
     }
     ctx.restore();
   }
@@ -241,45 +313,45 @@ export function adventureScreen() {
   function drawStageProp(stage, originX) {
     if (!stage) return;
     const palette = backdrop.palette;
+    const res = view.k * view.dpr;
     if (stage.kind === 'treasure') {
-      const image = spriteCanvas(stage.opened ? 'chest_open' : 'chest', 5);
-      const x = Math.round(originX + ENEMY_X - camera.x - image.width / 2);
-      ctx.save();
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(image, x, Math.round(FLOOR_Y - image.height - camera.y));
-      ctx.restore();
+      const art = renderArt(stage.opened ? 'chest_open' : 'chest', 1.6, res);
+      const x = originX + ENEMY_X - camera.x - art.w / 2;
+      ctx.drawImage(art.canvas, x, FLOOR_Y - art.h + 4 - camera.y, art.w, art.h);
     } else if (stage.kind === 'shrine') {
-      const image = spriteCanvas('altar', 5);
-      const x = Math.round(originX + ENEMY_X - camera.x - image.width / 2);
-      const y = Math.round(FLOOR_Y - image.height - camera.y);
+      const art = renderArt('altar', 1.8, res);
+      const x = originX + ENEMY_X - camera.x - art.w / 2;
+      const y = FLOOR_Y - art.h + 4 - camera.y;
       ctx.save();
       if (!stage.used) {
-        const glow = ctx.createRadialGradient(x + image.width / 2, y + 20, 4, x + image.width / 2, y + 20, 120);
+        const glow = ctx.createRadialGradient(x + art.w / 2, y + 20, 4, x + art.w / 2, y + 20, 120);
         glow.addColorStop(0, palette.light);
         glow.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = glow;
-        ctx.fillRect(x - 120, y - 100, image.width + 240, 260);
+        ctx.fillRect(x - 120, y - 100, art.w + 240, 260);
       }
-      ctx.imageSmoothingEnabled = false;
       ctx.globalAlpha = stage.used ? 0.5 : 1;
-      ctx.drawImage(image, x, y);
+      ctx.drawImage(art.canvas, x, y, art.w, art.h);
       ctx.restore();
     }
   }
 
   function drawFloaters(now) {
     ctx.save();
-    ctx.font = '16px "Press Start 2P", monospace';
+    ctx.font = `800 22px ${BODY_FONT}`;
     ctx.textAlign = 'center';
+    ctx.lineJoin = 'round';
     for (let i = floaters.length - 1; i >= 0; i--) {
       const f = floaters[i];
       const age = (now - f.born) / 900;
       if (age >= 1) { floaters.splice(i, 1); continue; }
-      ctx.globalAlpha = 1 - age;
-      ctx.fillStyle = '#000';
-      ctx.fillText(f.text, f.x - camera.x + 2, f.y - age * 46 + 2 - camera.y);
+      ctx.globalAlpha = 1 - age * age;
+      const fy = f.y - age * 46 - camera.y;
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+      ctx.strokeText(f.text, f.x - camera.x, fy);
       ctx.fillStyle = f.colour;
-      ctx.fillText(f.text, f.x - camera.x, f.y - age * 46 - camera.y);
+      ctx.fillText(f.text, f.x - camera.x, fy);
     }
     ctx.restore();
   }
@@ -291,31 +363,47 @@ export function adventureScreen() {
     const alpha = age < 300 ? age / 300 : age > 2200 ? (2600 - age) / 400 : 1;
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = 'rgba(8,11,16,0.82)';
-    ctx.fillRect(0, 150, view.w, banner.sub ? 76 : 54);
-    ctx.strokeStyle = 'rgba(242,193,78,0.8)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, 150); ctx.lineTo(view.w, 150);
-    ctx.moveTo(0, 150 + (banner.sub ? 76 : 54)); ctx.lineTo(view.w, 150 + (banner.sub ? 76 : 54));
-    ctx.stroke();
+    const bandH = banner.sub ? 78 : 56;
+    const band = ctx.createLinearGradient(0, 0, view.w, 0);
+    band.addColorStop(0, 'rgba(8,11,16,0)');
+    band.addColorStop(0.2, 'rgba(8,11,16,0.85)');
+    band.addColorStop(0.8, 'rgba(8,11,16,0.85)');
+    band.addColorStop(1, 'rgba(8,11,16,0)');
+    ctx.fillStyle = band;
+    ctx.fillRect(0, 150, view.w, bandH);
+    const rule = ctx.createLinearGradient(0, 0, view.w, 0);
+    rule.addColorStop(0, 'rgba(240,199,94,0)');
+    rule.addColorStop(0.5, 'rgba(240,199,94,0.85)');
+    rule.addColorStop(1, 'rgba(240,199,94,0)');
+    ctx.fillStyle = rule;
+    ctx.fillRect(0, 150, view.w, 1.5);
+    ctx.fillRect(0, 150 + bandH - 1.5, view.w, 1.5);
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#f2c14e';
-    ctx.font = '18px "Press Start 2P", monospace';
-    ctx.fillText(banner.text, view.w / 2, 180);
+    ctx.fillStyle = '#f0c75e';
+    ctx.font = `700 28px ${DISPLAY_FONT}`;
+    ctx.fillText(banner.text, view.w / 2, 186);
     if (banner.sub) {
-      ctx.fillStyle = '#97a1b0';
-      ctx.font = '10px "Press Start 2P", monospace';
-      ctx.fillText(banner.sub, view.w / 2, 208);
+      ctx.fillStyle = '#b8c2d0';
+      ctx.font = `600 15px ${BODY_FONT}`;
+      ctx.fillText(banner.sub, view.w / 2, 212);
     }
     ctx.restore();
   }
 
+  /** Rebuild the backdrop when the screen's pixel density changes a lot. */
+  function ensureBackdropResolution() {
+    const want = Math.max(1, Math.min(2.5, view.k * view.dpr));
+    if (Math.abs((backdrop.res || 1) - want) > 0.3) {
+      backdrop = buildBackdrop(floorState.biome, `${run.seed}:${run.floor}`, SCENE_W, SCENE_H, want);
+    }
+  }
+
   function draw(now) {
     resizeCanvas();
+    ensureBackdropResolution();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(view.k, 0, 0, view.k, 0, 0);
+    ctx.setTransform(view.k * view.dpr, 0, 0, view.k * view.dpr, 0, 0);
     drawBackdrop(ctx, backdrop, camera.x, now, view.w, view.h, camera.y);
 
     // The ladder lives one slot past the final stage.
@@ -331,16 +419,16 @@ export function adventureScreen() {
       if (Math.abs(originX - camera.x) > SCENE_W * 1.8) continue;
       drawStageProp(stage, originX);
       if (stage.kind === 'combat' && i === floorState.index && combat) {
-        drawFighter(combat.enemy.sprite, originX + ENEMY_X, combat.enemy.isBoss ? 9 : 7, 'enemy', now, combat.enemy.hp > 0);
+        drawFighter(combat.enemy.sprite, originX + ENEMY_X, 'enemy', now, combat.enemy.hp > 0);
       } else if (stage.kind === 'combat' && !stage.cleared && stage.enemy.hp > 0) {
-        drawFighter(stage.enemy.sprite, originX + ENEMY_X, stage.enemy.isBoss ? 9 : 7, 'enemy', now);
+        drawFighter(stage.enemy.sprite, originX + ENEMY_X, 'enemy', now);
       }
     }
 
     if (camera.mode === 'climbing') {
       drawClimbingPlayer(ladderWorldX, now);
     } else {
-      drawFighter(derived(run).role.sprite, stageOriginX() + PLAYER_X, 7, 'player', now);
+      drawFighter(derived(run).role.sprite, stageOriginX() + PLAYER_X, 'player', now);
     }
 
     const stats = derived(run);
@@ -352,10 +440,10 @@ export function adventureScreen() {
       drawStatusPips(combat.enemy.statuses, view.w - boxW - 26, 92);
     }
     if (camera.mode === 'idle') {
-      // Player stands on the left, so its box is bottom-left.
-      drawInfoBox(26, SCENE_H - 98, boxW, stats.role.name, run.hp, stats.maxHp,
+      // Player stands on the left, so its box is top-left, mirroring the enemy's.
+      drawInfoBox(26, 22, boxW, stats.role.name, run.hp, stats.maxHp,
         `Lv ${run.level}`, '#63c76a', run.energy);
-      drawStatusPips(run.statuses, 26, SCENE_H - 120);
+      drawStatusPips(run.statuses, 26, 118);
     }
 
     drawFloaters(now);
@@ -365,19 +453,20 @@ export function adventureScreen() {
   function drawStatusPips(statuses, x, y) {
     const entries = Object.entries(statuses || {}).filter(([, turns]) => turns > 0);
     ctx.save();
-    ctx.font = '10px "Press Start 2P", monospace';
+    ctx.font = `800 12px ${BODY_FONT}`;
     let offset = 0;
     for (const [id, turns] of entries) {
       const info = statusInfo(id);
       const label = `${info.name} ${turns}`;
       const w = ctx.measureText(label).width + 14;
+      roundRect(x + offset, y, w, 18, 9);
       ctx.fillStyle = 'rgba(10,14,20,0.85)';
-      ctx.fillRect(x + offset, y, w, 18);
+      ctx.fill();
       ctx.strokeStyle = info.colour;
       ctx.lineWidth = 1;
-      ctx.strokeRect(x + offset + 0.5, y + 0.5, w - 1, 17);
+      ctx.stroke();
       ctx.fillStyle = info.colour;
-      ctx.fillText(label, x + offset + 7, y + 12);
+      ctx.fillText(label, x + offset + 7, y + 13);
       offset += w + 7;
     }
     ctx.restore();
@@ -457,6 +546,14 @@ export function adventureScreen() {
         case 'blocked':
           floater('player', 'BLOCK', '#4b9cf0');
           break;
+        case 'dodged':
+          floater('player', 'DODGE', '#9fd3e6');
+          sfx.select();
+          break;
+        case 'thorns':
+          floater('enemy', `-${event.amount}`, '#f06b2a');
+          fx.enemy.flash = 1;
+          break;
         case 'revive':
           floater('player', 'REVIVED', '#f2c14e');
           toast(`${event.item} saves you.`, 'gold');
@@ -512,7 +609,7 @@ export function adventureScreen() {
       camera.onDone = () => {
         descend(run);
         floorState = ensureFloor(run);
-        backdrop = buildBackdrop(floorState.biome, `${run.seed}:${run.floor}`);
+        backdrop = buildBackdrop(floorState.biome, `${run.seed}:${run.floor}`, SCENE_W, SCENE_H, Math.min(2.5, view.k * view.dpr));
         camera.x = stageCam(0);
         camera.y = 0;
         saveMeta();
@@ -635,6 +732,7 @@ export function adventureScreen() {
         } },
           el('div', { className: 'q-card-subject', style: { color: q.subjectColour }, text: q.subjectName }),
           el('div', { className: 'q-card-topic', text: q.topic }),
+          sourceTag(q),
           el('div', { className: 'q-card-meta' },
             el('span', { className: 'dim', text: `${DIFFICULTY_LABEL[choice.offeredTier]} · T${choice.offeredTier}` }),
             el('span', { className: bonus >= 0 ? 'gold' : 'dim', text: `${bonus >= 0 ? '+' : ''}${bonus}% dmg` })),
@@ -649,8 +747,11 @@ export function adventureScreen() {
     const body = el('div', { className: 'col gap-sm' },
       el('div', { className: 'row between small' },
         el('span', { style: { color: q.subjectColour }, text: `${q.subjectName} — ${q.topic}` }),
-        el('span', { className: 'dim', text: `${DIFFICULTY_LABEL[q.difficulty]} (tier ${q.difficulty})` })),
+        el('span', { className: 'row gap-sm center-y' },
+          sourceTag(q),
+          el('span', { className: 'dim', text: `${DIFFICULTY_LABEL[q.difficulty]} (tier ${q.difficulty})` }))),
       el('div', { className: 'q-prompt', text: q.prompt }),
+      stimulusBlock(q),
       combat.hint?.type === 'reveal' ? el('div', { className: 'explain', text: `Answer: ${combat.hint.text}` }) : null,
       combat.hint?.type === 'keyword' ? el('div', { className: 'explain', text: combat.hint.text }) : null);
 
@@ -704,8 +805,11 @@ export function adventureScreen() {
       : result.verdict === VERDICT.PARTIAL ? 'gold' : 'bad';
 
     const body = el('div', { className: 'col gap-sm' },
-      el('div', { className: verdictClass, text: verdictLabel }),
-      el('div', { className: 'q-prompt', text: q.prompt }));
+      el('div', { className: 'row between center-y' },
+        el('div', { className: verdictClass, text: verdictLabel }),
+        sourceTag(q)),
+      el('div', { className: 'q-prompt', text: q.prompt }),
+      stimulusBlock(q));
 
     if (q.type === 'mc') {
       const chosen = combat.response;

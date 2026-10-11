@@ -10,7 +10,6 @@ import { settingsScreen } from './ui/settings.js';
 import { subjectsScreen } from './ui/subjects.js';
 import { applySettings } from './ui/apply-settings.js';
 import { loadGame, saveAll, game } from './game/state.js';
-import { validateSprites } from './art/render.js';
 import { unlock } from './core/audio.js';
 import { toast } from './ui/dom.js';
 
@@ -49,7 +48,6 @@ document.addEventListener('visibilitychange', () => {
 function start() {
   loadGame();
   applySettings();
-  if (new URLSearchParams(window.location.search).has('debug')) validateSprites();
   go('menu');
 }
 

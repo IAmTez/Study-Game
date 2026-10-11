@@ -61,8 +61,8 @@ export const SUBJECT = {
       prompt: 'Explain ONE limitation of using Pompeian graffiti as historical evidence.',
       accept: ['graffiti is anonymous and undated so it cannot be reliably attributed or placed in context'],
       keywords: [
-        ['anonymous', 'unknown', 'who wrote', 'attribut', 'author', 'undated', 'date'],
-        ['context', 'bias', 'humour', 'joke', 'exagger', 'literal', 'representative', 'sample', 'literate', 'literacy'],
+        ['anonymous', 'unknown author', 'who wrote', 'unattribut', 'undated', 'no date'],
+        ['literate', 'literacy', 'unrepresentative', 'not representative', 'sample', 'intent', 'joke', 'exagger', 'humour', 'humor', 'insult', 'boast'],
       ],
       minKeywords: 1,
       explanation: 'Limitations: the writer is usually anonymous and undatable; graffiti records only those able to write, so it is unrepresentative; intent is often unclear (boast, joke, insult, advertisement); and survival is accidental, so what remains is not a balanced sample. Its value is that it gives voice to non-elite Pompeians — electoral notices, prices, gladiator results, complaints — which the literary sources almost entirely omit.'
@@ -317,10 +317,13 @@ export const SUBJECT = {
     },
     {
       id: 'per-13', topic: 'Xerxes', difficulty: 1, type: 'short',
-      prompt: 'Name the Achaemenid kings from Cyrus II to Xerxes I, in order.',
-      accept: ['cyrus cambyses darius xerxes'],
-      keywords: [['cyrus'], ['cambyses'], ['darius'], ['xerxes']],
-      minKeywords: 3,
+      prompt: 'Name the two Achaemenid kings who ruled between Cyrus II and Xerxes I.',
+      accept: ['cambyses and darius'],
+      keywords: [
+        ['cambyses'],
+        ['darius'],
+      ],
+      minKeywords: 2,
       explanation: 'Cyrus II (559-530), Cambyses II (530-522), Darius I (522-486), Xerxes I (486-465). Bardiya/Gaumata briefly holds power in 522 before Darius seizes the throne - the event the Behistun inscription exists to justify. Getting this spine secure makes every other date in the period easier to place.'
     },
     {
@@ -490,7 +493,7 @@ export const SUBJECT = {
         ['greek', 'herodotus', 'hostile', 'bias', 'stereotype', 'literary', 'portrait'],
         ['administrat', 'effective', 'competent', 'builder', 'reassess', 'different', 'balance']
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'For centuries Xerxes was read almost entirely through Herodotus: vain, cruel, uxorious, undone by hubris. Working from Persian material instead - the Persepolis building programme, the royal inscriptions, the administrative tablets, the continuity of imperial government after 479 - historians such as Kuhrt, Sancisi-Weerdenburg and Briant present a capable ruler whose empire was barely dented by a failed campaign on its western fringe. The reassessment is really about which evidence you privilege.'
     },
     {
@@ -502,7 +505,7 @@ export const SUBJECT = {
         ['persian', 'inscription', 'formulaic', 'ideolog', 'silent', 'no record', 'propaganda'],
         ['infer', 'action', 'cannot', 'uncertain', 'speculat', 'expansion', 'precedent', 'imperial']
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'Herodotus supplies motives freely - avenging Marathon, the urging of Mardonius and the Aleuadae, a dream compelling him, the ambition to make Persian territory bounded only by the sky. These are narrative devices, staged in an invented council debate. The Persian record is silent on policy: royal inscriptions state that the King upholds order by the favour of Ahuramazda, and list lands, but never argue a strategy. What can be inferred is the imperial logic - Ionia was Persian, Athens and Eretria had backed its revolt, and unfinished business on a frontier invited settlement. A strong answer concludes that his actions are recoverable and his reasoning largely is not.'
     },
 
@@ -545,8 +548,7 @@ export const SUBJECT = {
       prompt: 'Why did the Spartans arrive at Marathon too late for the battle?',
       accept: ['they were celebrating the carneia festival and religious law prevented them marching until it ended'],
       keywords: [
-        ['carneia', 'festival', 'religious', 'rite', 'sacred'],
-        ['law', 'forbid', 'prevent', 'could not', 'delay', 'wait', 'full moon', 'until']
+        ['carneia', 'karneia', 'festival', 'apollo'],
       ],
       minKeywords: 1,
       explanation: 'The Spartans were observing the Carneia, a festival of Apollo during which they would not march. They set out once it ended and arrived after the battle, viewing the Persian dead. Whether the religious scruple was genuine or a convenient excuse is a standard exam debate; note that Herodotus, whose sympathies are not anti-Spartan, reports it without cynicism. The messenger Pheidippides had run the roughly 240 km to Sparta to ask - the later legend of a run to Athens to announce victory is not in Herodotus.'
@@ -819,11 +821,11 @@ export const SUBJECT = {
       prompt: 'Explain how religion functioned as an instrument of the Spartan state, not just as private belief.',
       accept: ['kings held priesthoods and sacrificed before crossing the frontier and before battle while oracles were controlled through the pythioi and festivals such as the karneia could delay campaigns so religion legitimised royal authority and shaped military decisions'],
       keywords: [
-        ['king', 'priest', 'sacrific', 'frontier', 'battle', 'omen'],
-        ['oracle', 'delphi', 'pythioi', 'festival', 'karneia', 'delay', 'campaign'],
-        ['legitim', 'authority', 'control', 'state', 'political', 'decision'],
+        ['king', 'priest', 'sacrific', 'frontier', 'omen'],
+        ['oracle', 'delphi', 'pythioi', 'festival', 'karneia', 'carneia'],
+        ['legitim', 'authority', 'political', 'military', 'campaign', 'war'],
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'Religion was constitutional machinery. The kings held the priesthoods of Zeus Lakedaimon and Zeus Ouranios and sacrificed before crossing the frontier and again before battle, so an unfavourable omen could halt an army — royal religious authority was therefore also military authority. Oracular consultation ran through the Pythioi, two royal appointees, giving the kings control of the channel to Delphi. Festivals overrode strategy: the Karneia delayed the Spartan response to both Marathon and Thermopylae. And the archaeology grounds it — Artemis Orthia\'s lead figurines and masks, the Amyklaion, the Menelaion, Athena Chalkioikos. Claim, named source, what it proves: that formula is what the marker rewarded elsewhere in the paper.'
     },
     {

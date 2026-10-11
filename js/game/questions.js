@@ -3,6 +3,7 @@
 
 import { builtinSubjects, normaliseSubject } from '../data/questions/index.js';
 import { game } from './state.js';
+import { gradableGroups } from './grading.js';
 
 let poolCache = null;
 let poolKey = '';
@@ -75,10 +76,29 @@ function weightFor(question, targetTier, recent) {
   return Math.max(0.05, weight);
 }
 
-function pickWeighted(rng, candidates, targetTier, recent, exclude) {
+/* Subjects differ a lot in size — Business has several times as many
+   questions as Geography — so a question's weight is scaled by its subject's
+   size. Every enabled subject then turns up equally often, however many
+   questions it holds. */
+let sizeCache = { pool: null, sizes: new Map(), mean: 1 };
+
+function subjectShare(pool, question) {
+  if (sizeCache.pool !== pool) {
+    const sizes = new Map();
+    for (const q of pool) sizes.set(q.subjectId, (sizes.get(q.subjectId) || 0) + 1);
+    sizeCache = { pool, sizes, mean: pool.length / Math.max(1, sizes.size) };
+  }
+  return sizeCache.mean / (sizeCache.sizes.get(question.subjectId) || 1);
+}
+
+function pickWeighted(rng, candidates, targetTier, recent, exclude, usedSubjects = new Set()) {
   const entries = candidates
     .filter(q => !exclude.has(q.id))
-    .map(q => ({ q, weight: weightFor(q, targetTier, recent) }))
+    .map(q => ({
+      q,
+      // A subject already on the table is less likely to fill another card.
+      weight: weightFor(q, targetTier, recent) * subjectShare(candidates, q) * (usedSubjects.has(q.subjectId) ? 0.35 : 1),
+    }))
     .filter(e => e.weight > 0);
   if (!entries.length) {
     const fallback = candidates.filter(q => !exclude.has(q.id));
@@ -110,12 +130,14 @@ export function pickQuestionChoices(rng, floor, count = 3) {
 
   const recent = game.run?.recentQuestions || [];
   const exclude = new Set();
+  const usedSubjects = new Set();
   const chosen = [];
 
   for (const t of tiers) {
-    const question = pickWeighted(rng, pool, t, recent, exclude);
+    const question = pickWeighted(rng, pool, t, recent, exclude, usedSubjects);
     if (!question) continue;
     exclude.add(question.id);
+    usedSubjects.add(question.subjectId);
     chosen.push({
       question,
       offeredTier: t,
@@ -150,11 +172,13 @@ export function applyHint(question, strength) {
     const shuffled = wrong.sort(() => Math.random() - 0.5);
     return { type: 'eliminate', indices: shuffled.slice(0, Math.min(2, wrong.length)) };
   }
-  const groups = question.keywords || [];
+  // Hint from the groups the grader will actually mark, never from a word the
+  // question already shows.
+  const groups = gradableGroups(question);
   if (strength >= 2) {
-    return { type: 'reveal', text: question.accept?.[0] || groups.map(g => g[0]).join(', ') };
+    return { type: 'reveal', text: question.accept?.[0] || groups.map(g => g[0].label).join(', ') };
   }
-  const first = groups[0]?.[0];
+  const first = groups[0]?.[0]?.label;
   return {
     type: 'keyword',
     text: first ? `Your answer needs to mention: "${first}"` : 'No keyword hint is available for this question.'

@@ -5,6 +5,10 @@ import * as storage from '../core/storage.js';
 import { getRole } from '../data/roles.js';
 import { ITEMS, getItem } from '../data/items.js';
 import { emit } from '../core/bus.js';
+import {
+  SLOTS, emptyEquipment, canEquip, defaultSlot, placeInSlot, pruneEquipment, migrateEquipment,
+  OFF_HAND_ATTACK,
+} from './equipment.js';
 
 /* Energy is a small pool built one or two points at a time, so an ultimate is
    a decision made several turns in advance rather than a per-turn resource. */
@@ -67,6 +71,10 @@ export function loadGame() {
   game.customSubjects = storage.load(storage.KEYS.custom, []) || [];
   const savedRun = storage.load(storage.KEYS.save, null);
   game.run = savedRun && savedRun.roleId ? savedRun : null;
+  if (game.run) {
+    migrateEquipment(game.run);
+    pruneEquipment(game.run, id => countItem(game.run, id));
+  }
   game.sessionStart = Date.now();
 }
 
@@ -113,7 +121,7 @@ export function createRun(roleId, { fromSanctum = false } = {}) {
     floor: startFloor,
     startedAt: Date.now(),
     inventory: {},
-    equipped: { weapon: null, armour: null, trinket: null },
+    equipped: emptyEquipment(),
     statuses: {},
     seed: `${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
     recentQuestions: [],
@@ -129,8 +137,10 @@ export function createRun(roleId, { fromSanctum = false } = {}) {
   addItem(run, 'hint_scroll', 1);
   addItem(run, 'rusty_shortsword', 1);
   addItem(run, 'patched_tunic', 1);
+  addItem(run, 'wading_boots', 1);
   equip(run, 'rusty_shortsword');
   equip(run, 'patched_tunic');
+  equip(run, 'wading_boots');
 
   // Materials banked from previous runs come back with you.
   for (const [id, count] of Object.entries(game.meta.vault || {})) {
@@ -184,21 +194,33 @@ export function derived(run) {
     def: role.stats.def + Math.round((level - 1) * 0.85),
     crit: role.stats.crit,
     luck: role.stats.luck,
-    energyGain: role.stats.energyGain
+    energyGain: role.stats.energyGain,
+    block: 0, dodge: 0, regen: 0, thorns: 0, xpBonus: 0,
   };
+  const specials = new Set();
 
-  for (const slot of ['weapon', 'armour', 'trinket']) {
-    const id = run.equipped[slot];
+  for (const slot of SLOTS) {
+    const id = run.equipped?.[slot.key];
     const item = id && getItem(id);
-    if (!item?.stats) continue;
-    for (const [key, value] of Object.entries(item.stats)) {
-      stats[key] = (stats[key] || 0) + value;
+    if (!item) continue;
+    if (item.special) specials.add(item.special);
+    // A weapon in the off hand adds part of its attack, all of everything else.
+    const offHandWeapon = slot.key === 'off' && item.kind === 'weapon';
+    for (const [key, value] of Object.entries(item.stats || {})) {
+      const share = offHandWeapon && key === 'atk' ? OFF_HAND_ATTACK : 1;
+      stats[key] = (stats[key] || 0) + value * share;
     }
   }
 
   stats.maxHp = Math.max(1, Math.round(stats.maxHp));
   stats.atk = Math.max(1, Math.round(stats.atk));
   stats.def = Math.max(0, Math.round(stats.def));
+  stats.block = Math.min(0.5, stats.block);
+  stats.dodge = Math.min(0.35, stats.dodge);
+  stats.regen = Math.round(stats.regen);
+  stats.thorns = Math.round(stats.thorns);
+  stats.dualWield = getItem(run.equipped?.off)?.kind === 'weapon';
+  stats.specials = specials;
   stats.maxEnergy = MAX_ENERGY;
   stats.role = role;
   return stats;
@@ -206,7 +228,7 @@ export function derived(run) {
 
 export function grantXp(run, amount) {
   const role = getRole(run.roleId);
-  const bonus = role.id === 'scholar' ? 1.25 : 1;
+  const bonus = (role.id === 'scholar' ? 1.25 : 1) + (derived(run).xpBonus || 0);
   const gained = Math.max(1, Math.round(amount * bonus));
   run.xp += gained;
   const levelsGained = [];
@@ -248,25 +270,35 @@ export function inventoryEntries(run, kind = null) {
     .filter(entry => entry.item && (!kind || entry.item.kind === kind));
 }
 
-export function equip(run, itemId) {
+/**
+ * Equip an owned item, into `slotKey` or the natural slot for it.
+ * Returns { ok, reason, slot }.
+ */
+export function equip(run, itemId, slotKey = null) {
   const item = getItem(itemId);
-  if (!item || !['weapon', 'armour', 'trinket'].includes(item.kind)) return false;
-  const previous = run.equipped[item.kind];
-  if (previous === itemId) return false;
-  run.equipped[item.kind] = itemId;
-  const stats = derived(run);
-  run.hp = Math.min(run.hp, stats.maxHp);
+  const owned = countItem(run, itemId);
+  if (!item || owned <= 0) return { ok: false, reason: 'You do not have that.' };
+  const slot = slotKey || defaultSlot(run, item, owned);
+  if (!slot) return { ok: false, reason: 'That cannot be equipped.' };
+  const check = canEquip(run, item, slot, owned);
+  if (!check.ok) return check;
+  placeInSlot(run, item, slot);
+  run.hp = Math.min(run.hp, derived(run).maxHp);
+  emit('stats:changed');
+  return { ok: true, slot };
+}
+
+export function unequip(run, slotKey) {
+  if (!run.equipped[slotKey]) return false;
+  run.equipped[slotKey] = null;
+  run.hp = Math.min(run.hp, derived(run).maxHp);
   emit('stats:changed');
   return true;
 }
 
-export function unequip(run, slot) {
-  if (!run.equipped[slot]) return false;
-  run.equipped[slot] = null;
-  const stats = derived(run);
-  run.hp = Math.min(run.hp, stats.maxHp);
-  emit('stats:changed');
-  return true;
+/** Drop any slot that points at more copies than the inventory holds. */
+export function tidyEquipment(run) {
+  pruneEquipment(run, id => countItem(run, id));
 }
 
 /* ---------------------------------------------------------------

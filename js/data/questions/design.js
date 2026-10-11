@@ -149,13 +149,13 @@ export const SUBJECT = {
     {
       id: 'dnt-12', topic: 'Innovation and Emerging Technologies', difficulty: 3, type: 'short',
       prompt: 'Explain ONE social impact of an emerging technology on a community.',
-      accept: ['automation displaces workers from existing jobs changing employment patterns in the community'],
+      accept: ['automation displaces workers from existing jobs which changes employment and income for people and families in that society'],
       keywords: [
-        ['automation', 'ai', 'robot', 'digital', 'technology', 'machine'],
-        ['job', 'employment', 'work', 'skill', 'access', 'privacy', 'health', 'isolation', 'connect', 'inequality'],
-        ['community', 'people', 'society', 'social', 'change'],
+        ['automation', 'ai', 'robot', 'digital', 'technolog', 'machine', 'internet', 'smartphone'],
+        ['job', 'employment', 'worker', 'skill', 'access', 'privacy', 'health', 'isolation', 'connect', 'inequality', 'surveil'],
+        ['community', 'people', 'society', 'social', 'residents', 'users'],
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'Social impacts run both ways and good answers say so. Automation displaces some workers while creating demand for different skills; connectivity reduces isolation for remote communities but enables surveillance and erodes privacy; medical technology extends life while raising questions of access and cost. Name the technology, name the group affected, and state the change.'
     },
     {
@@ -324,8 +324,8 @@ export const SUBJECT = {
       accept: ['the shape of an object should be determined by its intended purpose rather than decoration'],
       keywords: [
         ['form', 'shape', 'appearance', 'look'],
-        ['function', 'purpose', 'use', 'job', 'work'],
-        ['determin', 'follow', 'derive', 'based', 'rather than', 'not', 'decorat', 'ornament'],
+        ['function', 'purpose', 'use', 'job'],
+        ['determin', 'follow', 'derive', 'based', 'rather than', 'decorat', 'ornament', 'dictat'],
       ],
       minKeywords: 2,
       explanation: 'Coined by Louis Sullivan and central to modernism: an object\'s shape should be derived from its purpose, not from applied decoration. Useful as a critical lens rather than a law — postmodern designers argued it produced sterile, culturally impoverished objects, and emotional and symbolic function are functions too.'
@@ -363,7 +363,7 @@ export const SUBJECT = {
         ['cost', 'budget', 'money', 'finance'],
         ['material', 'resource', 'equipment', 'tool', 'skill', 'safety', 'regulation', 'legal', 'standard', 'space'],
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'Typical constraints: time, budget, available materials and equipment, the designer\'s skill level, safety and WHS requirements, Australian Standards and other regulations, environmental limits, and the needs of the end user. Constraints belong in the brief — a solution that ignores them is not a solution.'
     },
     {
@@ -371,9 +371,9 @@ export const SUBJECT = {
       prompt: 'What is a "disruptive" innovation?',
       accept: ['an innovation that displaces an established product or market rather than improving it incrementally'],
       keywords: [
-        ['displace', 'replace', 'overturn', 'disrupt', 'new market', 'existing'],
-        ['established', 'incumbent', 'traditional', 'existing product', 'industry', 'market'],
-        ['rather than', 'not', 'incremental', 'improve'],
+        ['displace', 'replace', 'overturn', 'disrupt', 'new market'],
+        ['established', 'incumbent', 'traditional', 'existing product', 'existing market', 'industry'],
+        ['rather than', 'incremental', 'improving', 'creates a new'],
       ],
       minKeywords: 2,
       explanation: 'Disruptive innovation displaces an established product or creates a new market, rather than incrementally improving what exists. It often begins as cheaper, simpler or lower-performing, serving customers the incumbents ignore, then improves until it takes the mainstream — digital photography against film being the standard example.'
@@ -420,7 +420,7 @@ export const SUBJECT = {
       accept: ['patents are expensive and publish the design publicly so trade secrecy may protect it better'],
       keywords: [
         ['cost', 'expensive', 'fee', 'money', 'afford'],
-        ['public', 'publish', 'disclose', 'reveal', 'copy', 'secret', 'secrecy'],
+        ['public', 'publish', 'disclose', 'reveal', 'copied', 'copying', 'imitat', 'secret', 'secrecy'],
         ['time', 'slow', 'expire', 'enforce', 'defend', 'litigation'],
       ],
       minKeywords: 2,
@@ -432,10 +432,10 @@ export const SUBJECT = {
       accept: ['higher initial cost is often offset by material savings durability and lower running costs over the life cycle'],
       keywords: [
         ['initial', 'upfront', 'purchase', 'higher', 'more expensive'],
-        ['life cycle', 'lifetime', 'long term', 'running', 'durab', 'last', 'maintenance', 'energy', 'offset', 'saving'],
-        ['material', 'waste', 'less', 'efficien', 'reduce'],
+        ['life cycle', 'lifetime', 'long term', 'running', 'durab', 'maintenance', 'offset', 'saving'],
+        ['material', 'waste', 'efficien', 'reduce'],
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'The claim holds for upfront cost in many cases, and fails over the life cycle. Sustainable strategies frequently reduce cost: using less material, designing out waste, lowering energy consumption in use, and extending lifespan so replacement is deferred. Where it genuinely costs more — certified materials, small production runs, take-back schemes — the honest evaluation weighs that against regulatory risk, brand value and the cost of the impact itself. Reach a judgement rather than sitting on the fence.'
     },
     {
@@ -566,32 +566,6 @@ export const SUBJECT = {
       explanation: 'The design brief defines the problem, the criteria and the constraints, so if it is unclear everything downstream — research, ideation, evaluation — aims at the wrong target and the solution can be well executed yet still fail because it solves the wrong problem. Expensive research and testing is a budget pressure, not a cause of design failure; thorough testing generally makes success MORE likely, with cost as the trade-off. When every option looks plausible, ask which one attacks the foundation of the design process rather than a resource constraint — failure questions point back to the brief, the criteria or the user.'
     },
     {
-      id: 'dnt-47', topic: 'Design Theory', difficulty: 2, type: 'mc',
-      prompt: 'A florist designs an arrangement for a wedding. The design factor given highest priority is:',
-      options: ['Aesthetics', 'Durability', 'Ergonomics', 'Obsolescence'],
-      answer: 0,
-      explanation: 'Match the design factor to the user and the context — this is the skill multiple choice tests every year. A short-lived decorative product for a single event prioritises visual appeal, not durability or ergonomics. By the same logic, a product for young children prioritises safety through non-toxic, durable materials over cost or aesthetics, and a wearable fitness device prioritises ergonomics and data privacy.'
-    },
-    {
-      id: 'dnt-48', topic: 'Design Theory', difficulty: 2, type: 'mc',
-      prompt: 'Which tool is used to track project progress against time, as opposed to analysing a situation or an environmental impact?',
-      options: ['Gantt chart', 'SWOT analysis', 'Life cycle analysis', 'Venn diagram'],
-      answer: 0,
-      explanation: 'A Gantt chart sequences tasks against deadlines and exposes the critical path, so it is the scheduling tool. SWOT is situational analysis, life cycle analysis is a cradle-to-grave environmental assessment, and a Venn diagram is for comparison. Knowing which tool does which job is worth an easy multiple choice mark most years.'
-    },
-    {
-      id: 'dnt-49', topic: 'Designing and Producing', difficulty: 3, type: 'short',
-      prompt: 'Outline the role of prototyping in the development of a design project. Answer "role of", not just what a prototype is.',
-      accept: ['prototyping lets a designer test and evaluate a concept in physical or functional form identifying faults early so modifications are made before final production which reduces risk and cost and each prototype informs the next iteration'],
-      keywords: [
-        ['test', 'evaluat', 'trial', 'try'],
-        ['fault', 'issue', 'problem', 'refine', 'improve', 'modif', 'iterat'],
-        ['early', 'before', 'risk', 'cost', 'final production', 'commit'],
-      ],
-      minKeywords: 2,
-      explanation: 'Go beyond the definition and answer the role directly: prototyping tests and refines design concepts in physical or functional form, identifying faults and areas for refinement early so improvements are made before the expense of final production. Mention iteration explicitly — each prototype informs the next evolution of the design. Ground it in your own folio: testing a 3D-printed case prototype to check tolerances before committing to the final print, or the 45° rotated strap holes on your mount.'
-    },
-    {
       id: 'dnt-50', topic: 'Design Theory', difficulty: 3, type: 'mc',
       prompt: 'A patent protects an invention for 20 years. Design registration in Australia protects the visual appearance of a product for:',
       options: ['10 years', '20 years', '5 years', 'The life of the designer plus 70 years'],
@@ -611,18 +585,6 @@ export const SUBJECT = {
       explanation: 'Assurance is preventative and systemic — building processes so defects do not occur. Control is detective — inspecting output to find defects that have already occurred. The design implication is that assurance is cheaper, because a defect caught by inspection has already consumed materials and time, and rework is most expensive late in production. That is why action plans embed QA checkpoints rather than relying on final inspection.'
     },
     {
-      id: 'dnt-52', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
-      prompt: 'Discuss the long-term environmental impact of lithium-ion rechargeable versus alkaline single-use batteries. Give a point for EACH and a judgement.',
-      accept: ['lithium ion is rechargeable hundreds of times so far fewer units are manufactured and discarded but lithium and cobalt mining depletes resources and uses huge water volumes while alkaline single use means continuous manufacturing energy and landfill volume so lithium ion has lower cumulative impact if recycled properly'],
-      keywords: [
-        ['rechargeab', 'hundreds', 'reus', 'fewer unit', 'lifespan'],
-        ['mining', 'lithium', 'cobalt', 'extraction', 'water', 'recycl', 'landfill', 'toxic', 'fire'],
-        ['single-use', 'single use', 'disposab', 'continuous', 'manufactur', 'volume'],
-      ],
-      minKeywords: 2,
-      explanation: 'Discuss means both sides for both options, then a judgement. Lithium-ion for: rechargeable hundreds of times, so far fewer units are manufactured and discarded over the product\'s life, and it enables renewable and cordless technology. Lithium-ion against: lithium and cobalt mining depletes finite resources, damages ecosystems and consumes huge volumes of water; the cells are hard to recycle and pose fire and toxicity risks in landfill. Alkaline for: less toxic than older chemistries, with some recycling streams available. Alkaline against: single use means continuous manufacturing energy and massive cumulative landfill volume per unit of energy delivered. Judgement: over the long term lithium-ion has the lower cumulative impact PROVIDED it is recycled properly; alkaline\'s disposability makes it worse at scale.'
-    },
-    {
       id: 'dnt-53', topic: 'Innovation and Emerging Technologies', difficulty: 4, type: 'short',
       prompt: 'Name TWO impacts of AI on designers that a top-band extended response must cover beyond efficiency gains.',
       accept: ['employment and role change as entry level tasks are automated shifting designers toward curation and judgement plus ethical and legal implications including copyright of ai generated work bias in training data and the energy cost of compute'],
@@ -633,18 +595,6 @@ export const SUBJECT = {
       ],
       minKeywords: 2,
       explanation: 'Efficiency alone is a band 4 answer. Employment and role change: automation of entry-level design tasks creates job displacement risk, especially in developing economies, and shifts the designer\'s role toward curation, prompting and judgement. Ethical and legal implications: copyright and IP ownership of AI-generated work, bias in training data, and where responsibility sits when an AI-assisted design fails. Environmental and social lens: the energy and water cost of AI compute in data centres, and the tension between democratising design tools and concentrating power in a few technology companies. Reference the stimulus directly, use cause-and-effect connectives, and conclude with a genuine judgement — that is what earned 15/15 in the trial.'
-    },
-    {
-      id: 'dnt-54', topic: 'Design Theory', difficulty: 3, type: 'short',
-      prompt: 'Describe ONE ethical issue in managing personal data collected by a product.',
-      accept: ['privacy means designers must obtain informed consent collect only what is needed and store data securely because mismanagement such as selling data without consent or a breach violates users privacy rights and trust'],
-      keywords: [
-        ['privacy', 'consent', 'security', 'secure', 'confidential'],
-        ['collect', 'store', 'share', 'sell', 'third part', 'access', 'breach'],
-        ['trust', 'right', 'violat', 'harm', 'misuse', 'unauthorised'],
-      ],
-      minKeywords: 2,
-      explanation: 'Pick ONE issue and develop it rather than listing several. Privacy: designers and companies collecting personal data have an ethical obligation to obtain informed consent, collect only what is needed, and store it securely against unauthorised access. Link back to management by naming the consequence of mishandling — selling data to third parties without clear consent, or weak security leading to a breach, violates users\' privacy rights and destroys trust. A concrete example anchors it: a fitness app sharing location data with advertisers without meaningful consent.'
     },
   ]
 };

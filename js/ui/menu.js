@@ -57,11 +57,11 @@ export function menuScreen() {
   const node = el('div', { className: 'screen col gap-lg center-y center-x', style: { justifyContent: 'center' } },
     el('div', { className: 'title-wrap' },
       el('div', { className: 'row gap-sm center-y' },
-        spriteElement('rat', 3),
-        spriteElement('slime', 3),
-        spriteElement('boss_ratking', 3),
-        spriteElement('ghoul', 3),
-        spriteElement('cultist', 3)),
+        spriteElement('rat', 5, { t: 400 }),
+        spriteElement('slime', 5, { t: 900 }),
+        spriteElement('boss_ratking', 7, { t: 200 }),
+        spriteElement('ghoul', 5, { t: 1300 }),
+        spriteElement('cultist', 5, { t: 700 })),
       el('h1', { className: 'title-main', text: 'SEWERS OF STUDY' }),
       el('div', { className: 'title-sub', text: 'AN INFINITE REVISION DUNGEON' }),
       el('p', { className: 'title-tag', text:
@@ -93,7 +93,7 @@ export function roleScreen() {
       },
       dataset: { role: role.id }
     },
-      spriteElement(role.sprite, 4),
+      spriteElement(role.sprite, 11),
       el('div', { className: 'role-name', text: role.name }),
       el('div', { className: 'role-perk', text: role.perk.name }),
       el('div', { className: 'tiny dim', text:

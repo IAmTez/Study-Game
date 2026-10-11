@@ -6,12 +6,21 @@ import { game, saveRun } from '../game/state.js';
 import { allRecipeStatuses, craft } from '../game/crafting.js';
 import { sfx } from '../core/audio.js';
 
+const CATEGORIES = [
+  { id: 'all', label: 'All', kinds: [] },
+  { id: 'consumable', label: 'Potions & tools', kinds: ['consumable'] },
+  { id: 'weapon', label: 'Weapons & shields', kinds: ['weapon', 'shield'] },
+  { id: 'armour', label: 'Armour', kinds: ['helmet', 'armour', 'boots'] },
+  { id: 'jewellery', label: 'Rings & charms', kinds: ['ring', 'charm'] },
+];
+
 export function craftingScreen() {
   const run = game.run;
   if (!run) { go('menu'); return {}; }
 
   let showOnlyCraftable = false;
   let selected = null;
+  let category = 'all';
 
   const list = el('div', { className: 'col gap-sm' });
   const detail = el('div', { className: 'col gap-sm' });
@@ -46,7 +55,9 @@ export function craftingScreen() {
   function renderList() {
     const statuses = allRecipeStatuses(run)
       .filter(s => !showOnlyCraftable || s.craftable)
+      .filter(s => category === 'all' || CATEGORIES.find(c => c.id === category).kinds.includes(s.result.kind))
       .sort((a, b) => Number(b.craftable) - Number(a.craftable));
+    renderTabs();
 
     if (!statuses.length) {
       setChildren(list, el('p', { className: 'small dim', text: 'Nothing craftable yet. Kill things and open chests.' }));
@@ -60,11 +71,22 @@ export function craftingScreen() {
       onClick: () => { selected = status.recipe.id; sfx.select(); render(); }
     },
       el('div', { className: 'row center-y gap-sm' },
-        itemIcon(status.result, 2),
+        itemIcon(status.result, 2.8),
         el('div', { className: 'grow' },
           el('div', { className: rarityClass(status.result), text: status.result.name + (status.recipe.amount > 1 ? ` x${status.recipe.amount}` : '') }),
           el('div', { className: 'tiny dim', text: status.costs.map(c => `${c.item?.name || '?'} ${c.have}/${c.need}`).join(' · ') })),
         el('span', { className: status.craftable ? 'pill pill--good' : 'pill', text: status.craftable ? 'Ready' : 'Missing' })))));
+  }
+
+  const tabs = el('div', { className: 'rail-tabs' });
+  function renderTabs() {
+    const statuses = allRecipeStatuses(run);
+    setChildren(tabs, ...CATEGORIES.map(c => {
+      const ready = statuses.filter(s => s.craftable && (c.id === 'all' || c.kinds.includes(s.result.kind))).length;
+      return button(`${c.label}${ready ? ` · ${ready}` : ''}`, () => { category = c.id; sfx.select(); render(); }, {
+        className: `btn--sm btn--inline btn--center ${category === c.id ? 'btn--gold' : 'btn--ghost'}`,
+      });
+    }));
   }
 
   function render() {
@@ -72,7 +94,7 @@ export function craftingScreen() {
     renderDetail();
   }
 
-  const recipePanel = panel('Recipes', list);
+  const recipePanel = panel('Recipes', tabs, list);
   recipePanel.classList.add('panel--fill');
   const detailPanel = panel('Details', detail);
   detailPanel.classList.add('panel--fill');

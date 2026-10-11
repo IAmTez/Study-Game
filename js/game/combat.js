@@ -169,7 +169,7 @@ export function submitAnswer(run, combat, response) {
       combat.events.push({ type: 'heal', side: 'player', amount: heal });
       logLine(run, `Mend restores ${heal} HP.`, 'good');
     }
-    if (run.equipped.trinket === 'infinite_index' && result.verdict === VERDICT.CORRECT) {
+    if (stats.specials.has('index') && result.verdict === VERDICT.CORRECT) {
       run.hp = Math.min(stats.maxHp, run.hp + 5);
     }
 
@@ -413,9 +413,32 @@ export function resolveEnemyTurn(run, combat) {
         continue;
       }
 
+      // Light feet first: a dodged blow never lands at all.
+      if (stats.dodge > 0 && rng.chance(stats.dodge)) {
+        combat.events.push({ type: 'dodged', side: 'player' });
+        logLine(run, `You sidestep ${enemy.name}'s attack.`, 'info');
+        continue;
+      }
+      // A shield turns most of the blow aside.
+      let shielded = false;
+      if (stats.block > 0 && rng.chance(stats.block)) {
+        damage = Math.max(1, Math.round(damage * 0.4));
+        shielded = true;
+      }
+
       run.hp = Math.max(0, run.hp - damage);
-      combat.events.push({ type: 'attack', side: 'enemy', amount: damage, crit: false, ability: 'Attack' });
-      logLine(run, `${enemy.name} hits you for ${damage}.`, 'bad');
+      combat.events.push({ type: 'attack', side: 'enemy', amount: damage, crit: false, ability: 'Attack', shielded });
+      logLine(run, shielded
+        ? `Your shield takes most of it — ${enemy.name} hits you for ${damage}.`
+        : `${enemy.name} hits you for ${damage}.`, 'bad');
+
+      // Thorns bite back at whatever just hit you.
+      if (stats.thorns > 0 && enemy.hp > 0) {
+        const bite = Math.min(enemy.hp, stats.thorns);
+        enemy.hp -= bite;
+        combat.events.push({ type: 'thorns', side: 'enemy', amount: bite });
+        if (enemy.hp <= 0) break;
+      }
 
       if (enemy.traits.includes('poisonous') && rng.chance(0.4)) {
         applyStatus({ statuses: combat.playerStatuses }, 'poison', 3);
@@ -434,6 +457,13 @@ export function resolveEnemyTurn(run, combat) {
     if (run.hp < before) combat.events.push({ type: 'dot', side: 'player', amount: before - run.hp });
   }
 
+  // Gear that regenerates heals you once the enemy has acted.
+  if (run.hp > 0 && stats.regen > 0 && run.hp < stats.maxHp) {
+    const heal = Math.min(stats.regen, stats.maxHp - run.hp);
+    run.hp += heal;
+    combat.events.push({ type: 'heal', side: 'player', amount: heal });
+  }
+
   // Regenerating enemies heal a little each round.
   if (enemy.traits.includes('regen') && enemy.hp > 0) {
     const heal = Math.max(1, Math.round(enemy.maxHp * 0.03));
@@ -445,6 +475,9 @@ export function resolveEnemyTurn(run, combat) {
     const revived = tryRevive(run, combat);
     if (!revived) return finishCombat(run, combat, false);
   }
+
+  // Thorns can finish an enemy on its own turn.
+  if (enemy.hp <= 0) return finishCombat(run, combat, true);
 
   combat.turn++;
   offerQuestions(run, combat);

@@ -384,8 +384,8 @@ export const SUBJECT = {
       prompt: 'State the function of the juxtaposition between Titus and Violet.',
       accept: ['violets articulate allusive speech is the measure of an uncolonised mind so her decline dramatises the human cost of the feed and indicts titus'],
       keywords: [
-        ['articulate', 'allusive', 'vocabulary', 'language', 'educated', 'precise', 'thinks'],
-        ['measure', 'contrast', 'against', 'cost', 'indict', 'what is lost', 'decline', 'death'],
+        ['articulate', 'allusive', 'vocabulary', 'educated', 'precise', 'eloquen', 'fluen'],
+        ['measure', 'contrast', 'indict', 'what is lost', 'what the feed', 'decline', 'juxtapos', 'foil', 'shows how'],
       ],
       minKeywords: 2,
       explanation: 'Violet functions as the novel\'s control variable. Implanted late, she retains an articulate, allusive register that Titus cannot access, so her speech measures precisely what the feed has taken from everyone else — the reader can only see Titus\'s poverty because Violet\'s fluency exists beside it. Her decline as the feed sustaining her fails converts that measurement into human cost, and her death indicts Titus\'s passivity and, through complicity, the reader\'s.'

@@ -306,7 +306,7 @@ export const SUBJECT = {
         ['customer', 'market', 'client', 'community', 'understand', 'reflect'],
         ['reputation', 'talent', 'recruit', 'retention', 'legal', 'compliance'],
       ],
-      minKeywords: 1,
+      minKeywords: 2,
       explanation: 'Benefits: a wider range of perspectives improving innovation and problem-solving; better understanding of a diverse customer base; access to a larger talent pool; improved reputation as an employer; and compliance with anti-discrimination law. Managing diversity requires more than hiring — training, inclusive policy and measurable accountability.'
     },
     {
@@ -342,7 +342,7 @@ export const SUBJECT = {
         ['team', 'cooperation', 'collaborat', 'competition', 'conflict', 'short term', 'quality', 'ethic', 'gaming'],
         ['measur', 'quantif', 'fair', 'subjective'],
       ],
-      minKeywords: 2,
+      minKeywords: 3,
       explanation: 'Effective where output is individually measurable and quality is easy to verify — sales commission is the classic case. Less effective where work is collaborative (it undermines teamwork), where quality matters more than volume (it encourages corner-cutting), or where measurement is subjective (it breeds perceptions of unfairness). Herzberg would add that pay is a hygiene factor: its absence demotivates, but its presence does not create lasting satisfaction.'
     },
     {

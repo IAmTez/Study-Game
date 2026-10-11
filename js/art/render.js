@@ -1,111 +1,110 @@
-/* Canvas rendering for the 16x16 sprite grids.
+/* Rendering entry points for the vector art.
 
-   Sprites are rasterised once per (name, scale, tint) into an offscreen
-   canvas and cached — the battle scene redraws every frame, so re-reading the
-   character grids each time would be wasteful. */
+   `spriteElement(name, scale)` keeps the old API — a canvas 16 × scale CSS
+   pixels square — but draws the vector art at the screen's full resolution,
+   so icons, portraits and creatures stay crisp on any display. `name` can be
+   a role (drawn as the hero), a creature, an item icon or a prop. */
 
-import { SPRITES } from './sprites.js';
+import { drawIcon } from './icons.js';
+import { CREATURES, drawCreature, creatureSize } from './creatures.js';
+import { drawHero, HERO_BOUNDS, ROLE_LOOKS } from './hero.js';
+import { gearLooks, STARTER_GEAR } from './gear.js';
 
 export const SPRITE_SIZE = 16;
+const ICON_BOX = 64;
 
+export function pixelRatio() {
+  return Math.min(3, Math.max(1, (typeof window !== 'undefined' && window.devicePixelRatio) || 1));
+}
+
+export function isHero(name) {
+  return !!ROLE_LOOKS[name];
+}
+
+export function isCreature(name) {
+  return !!CREATURES[name];
+}
+
+/** The drawing's bounds in its own units. */
+export function artBounds(name) {
+  if (isHero(name)) return HERO_BOUNDS;
+  if (isCreature(name)) return creatureSize(name);
+  return { x: 0, y: 0, w: ICON_BOX, h: ICON_BOX };
+}
+
+/** Draw `name` in its own units (heroes and creatures stand on y = 0). */
+export function drawArt(ctx, name, opts = {}) {
+  if (isHero(name)) {
+    drawHero(ctx, name, opts.gear || gearLooks(opts.equipped || STARTER_GEAR), opts.pose || { t: opts.t || 0 });
+    return;
+  }
+  if (isCreature(name)) {
+    drawCreature(ctx, name, opts.t || 0);
+    return;
+  }
+  if (!drawIcon(ctx, name, opts.look || null)) {
+    // Unknown art: a clear placeholder rather than nothing at all.
+    ctx.fillStyle = '#ff00ff';
+    ctx.fillRect(8, 8, 48, 48);
+  }
+}
+
+/** Draw `name` scaled to fit a w × h box, centred, with a little padding. */
+export function paintArt(ctx, name, w, h, opts = {}) {
+  const b = artBounds(name);
+  const pad = opts.pad ?? 0.06;
+  const k = Math.min((w * (1 - pad * 2)) / b.w, (h * (1 - pad * 2)) / b.h);
+  ctx.save();
+  ctx.translate(w / 2, h / 2);
+  ctx.scale(k, k);
+  ctx.translate(-(b.x + b.w / 2), -(b.y + b.h / 2));
+  drawArt(ctx, name, opts);
+  ctx.restore();
+}
+
+/** A standalone <canvas> showing one drawing — for use in the DOM UI. */
+export function spriteElement(name, scale = 3, opts = {}) {
+  const size = SPRITE_SIZE * scale;
+  const ratio = pixelRatio();
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(size * ratio);
+  canvas.height = Math.round(size * ratio);
+  canvas.style.width = `${size}px`;
+  canvas.style.height = `${size}px`;
+  canvas.className = opts.className || 'art';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(ratio, ratio);
+  if (opts.flip) { ctx.translate(size, 0); ctx.scale(-1, 1); }
+  paintArt(ctx, name, size, size, opts);
+  return canvas;
+}
+
+/* A cache of rendered static drawings (props), keyed by name and resolution. */
 const cache = new Map();
 
-function rasterise(name, scale, tint, tintAlpha) {
-  const sprite = SPRITES[name];
-  const canvas = document.createElement('canvas');
-  canvas.width = SPRITE_SIZE * scale;
-  canvas.height = SPRITE_SIZE * scale;
+/**
+ * An offscreen canvas of `name` drawn so that one art unit is `unit` world
+ * pixels, at `res` device pixels per world pixel. Returns the canvas plus its
+ * size in world pixels and where its origin (feet) sits inside it.
+ */
+export function renderArt(name, unit, res, opts = {}, target = null) {
+  const b = artBounds(name);
+  const w = b.w * unit;
+  const h = b.h * unit;
+  const key = !target && !opts.animated ? `${name}|${unit}|${res}|${opts.look ? JSON.stringify(opts.look) : ''}` : null;
+  if (key && cache.has(key)) return cache.get(key);
+
+  const canvas = target || document.createElement('canvas');
+  const cw = Math.max(1, Math.ceil(w * res));
+  const ch = Math.max(1, Math.ceil(h * res));
+  if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
   const ctx = canvas.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
-  if (!sprite) {
-    // Unknown sprite: draw a magenta "missing" box rather than nothing at all.
-    ctx.fillStyle = '#ff00ff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(scale, scale, canvas.width - scale * 2, canvas.height - scale * 2);
-    return canvas;
-  }
-  for (let y = 0; y < Math.min(SPRITE_SIZE, sprite.p.length); y++) {
-    const row = sprite.p[y];
-    for (let x = 0; x < Math.min(SPRITE_SIZE, row.length); x++) {
-      const ch = row[x];
-      if (ch === '.') continue;
-      const colour = sprite.c[ch];
-      if (!colour) continue;
-      ctx.fillStyle = colour;
-      ctx.fillRect(x * scale, y * scale, scale, scale);
-    }
-  }
-  if (tint) {
-    ctx.globalAlpha = tintAlpha;
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = tint;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-  }
-  return canvas;
-}
-
-/** Cached offscreen canvas for a sprite at a given scale. */
-export function spriteCanvas(name, scale = 3, tint = null, tintAlpha = 0.35) {
-  const key = `${name}|${scale}|${tint || ''}|${tintAlpha}`;
-  let canvas = cache.get(key);
-  if (!canvas) {
-    canvas = rasterise(name, scale, tint, tintAlpha);
-    cache.set(key, canvas);
-  }
-  return canvas;
-}
-
-/** Blit a sprite onto a 2D context at device pixel (x, y). */
-export function drawSprite(ctx, name, x, y, scale = 3, opts = {}) {
-  const { flip = false, alpha = 1, tint = null, tintAlpha = 0.35 } = opts;
-  const src = spriteCanvas(name, scale, tint, tintAlpha);
-  const prevAlpha = ctx.globalAlpha;
-  if (alpha !== 1) ctx.globalAlpha = alpha;
-  if (flip) {
-    ctx.save();
-    ctx.translate(x + src.width, y);
-    ctx.scale(-1, 1);
-    ctx.drawImage(src, 0, 0);
-    ctx.restore();
-  } else {
-    ctx.drawImage(src, x, y);
-  }
-  ctx.globalAlpha = prevAlpha;
-}
-
-/** A standalone <canvas> element showing one sprite — for use in the DOM UI. */
-export function spriteElement(name, scale = 3, opts = {}) {
-  const src = spriteCanvas(name, scale, opts.tint || null, opts.tintAlpha ?? 0.35);
-  const canvas = document.createElement('canvas');
-  canvas.width = src.width;
-  canvas.height = src.height;
-  canvas.className = opts.className || '';
-  const ctx = canvas.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
-  if (opts.flip) {
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-  }
-  ctx.drawImage(src, 0, 0);
-  return canvas;
-}
-
-/** Development helper: report malformed sprite grids. */
-export function validateSprites() {
-  const problems = [];
-  for (const [name, sprite] of Object.entries(SPRITES)) {
-    if (sprite.p.length !== SPRITE_SIZE) problems.push(`${name}: ${sprite.p.length} rows`);
-    sprite.p.forEach((row, i) => {
-      if (row.length !== SPRITE_SIZE) problems.push(`${name} row ${i}: ${row.length} chars`);
-      for (const ch of row) {
-        if (ch !== '.' && !(ch in sprite.c)) problems.push(`${name} row ${i}: unmapped '${ch}'`);
-      }
-    });
-  }
-  if (problems.length) console.warn('[sprites] problems:\n' + problems.join('\n'));
-  else console.info(`[sprites] ${Object.keys(SPRITES).length} sprites OK`);
-  return problems;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, cw, ch);
+  const k = unit * res;
+  ctx.setTransform(k, 0, 0, k, -b.x * k, -b.y * k);
+  drawArt(ctx, name, opts);
+  const out = { canvas, w, h, originX: -b.x * unit, originY: -b.y * unit };
+  if (key) cache.set(key, out);
+  return out;
 }

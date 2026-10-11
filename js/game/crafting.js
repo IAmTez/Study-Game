@@ -2,7 +2,7 @@
 
 import { RECIPES } from '../data/recipes.js';
 import { getItem } from '../data/items.js';
-import { addItem, countItem, removeItem, logLine, game } from './state.js';
+import { addItem, countItem, removeItem, logLine, game, tidyEquipment } from './state.js';
 
 /** A recipe annotated with whether the run can currently afford it. */
 export function recipeStatus(run, recipe) {
@@ -31,14 +31,9 @@ export function craft(run, recipeId) {
   const status = recipeStatus(run, recipe);
   if (!status.craftable) return { ok: false, reason: 'You are missing materials.' };
 
-  for (const [id, need] of Object.entries(recipe.cost)) {
-    // Removing an equipped item would leave a dangling equip reference.
-    if (run.equipped.weapon === id || run.equipped.armour === id || run.equipped.trinket === id) {
-      const slot = ['weapon', 'armour', 'trinket'].find(s => run.equipped[s] === id);
-      if (countItem(run, id) <= need) run.equipped[slot] = null;
-    }
-    removeItem(run, id, need);
-  }
+  for (const [id, need] of Object.entries(recipe.cost)) removeItem(run, id, need);
+  // Using up an equipped item must not leave a slot pointing at nothing.
+  tidyEquipment(run);
 
   const amount = recipe.amount || 1;
   addItem(run, recipe.result, amount);

@@ -1,7 +1,7 @@
 /* Small DOM helpers. No framework — the screens are plain elements. */
 
 import { spriteElement } from '../art/render.js';
-import { rarityMeta } from '../data/items.js';
+import { rarityMeta, formatStats, KIND_LABEL } from '../data/items.js';
 
 /** el('div', { className, onClick, ... }, ...children) */
 export function el(tag, props = {}, ...children) {
@@ -83,7 +83,7 @@ export function statRow(label, value) {
 }
 
 export function itemIcon(item, scale = 3) {
-  return spriteElement(item.sprite, scale);
+  return spriteElement(item.sprite, scale, { look: item.look, className: `art art--icon rar-glow-${item.rarity || 'common'}` });
 }
 
 export function rarityClass(item) {
@@ -144,10 +144,8 @@ export function itemDetail(item, extra = null) {
       itemIcon(item, 3),
       el('div', {},
         el('div', { className: rarityClass(item), text: item.name }),
-        el('div', { className: 'tiny dim', text: `${rarity.name} · ${item.kind}` }))),
+        el('div', { className: 'tiny dim', text: `${rarity.name} · ${KIND_LABEL[item.kind] || item.kind}${item.twoHanded ? ' · two-handed' : ''}` }))),
     el('div', { className: 'small dim', text: item.desc }),
-    item.stats && el('div', { className: 'tiny gold', text: Object.entries(item.stats)
-      .map(([k, v]) => `${k === 'maxHp' ? 'Max HP' : k === 'energyGain' ? 'Energy gain' : k.toUpperCase()} +${v % 1 ? (v * 100).toFixed(0) + '%' : v}`)
-      .join('   ') }),
+    item.stats && el('div', { className: 'tiny gold', text: formatStats(item.stats) }),
     extra);
 }

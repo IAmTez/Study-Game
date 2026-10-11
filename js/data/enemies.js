@@ -5,7 +5,7 @@ export const ENEMIES = [
   {
     id: 'rat', name: 'Sewer Rat', sprite: 'rat', floorMin: 1, floorMax: 14,
     hp: 0.8, atk: 0.85, def: 0.6, xp: 0.9, weight: 10,
-    drops: ['rat_tail', 'bone_shard'],
+    drops: ['rat_tail', 'bone_shard', 'leather_scrap'],
     flavour: 'Bloated, unbothered, and far too confident.'
   },
   {
@@ -17,19 +17,19 @@ export const ENEMIES = [
   {
     id: 'bat', name: 'Grotto Bat', sprite: 'bat', floorMin: 2, floorMax: 20,
     hp: 0.7, atk: 1.05, def: 0.5, xp: 0.95, weight: 9,
-    drops: ['bone_shard'], traits: ['swift'],
+    drops: ['bone_shard', 'leather_scrap'], traits: ['swift'],
     flavour: 'Fast enough that a slow answer costs you.'
   },
   {
     id: 'crab', name: 'Iron Crab', sprite: 'crab', floorMin: 3, floorMax: 26,
     hp: 1.1, atk: 0.95, def: 1.5, xp: 1.15, weight: 8,
-    drops: ['rusted_cog', 'drowned_pearl'], traits: ['armoured'],
+    drops: ['rusted_cog', 'iron_scrap', 'drowned_pearl'], traits: ['armoured'],
     flavour: 'Its shell has taken on the colour of the pipes.'
   },
   {
     id: 'ghoul', name: 'Tunnel Ghoul', sprite: 'ghoul', floorMin: 4, floorMax: 32,
     hp: 1.2, atk: 1.15, def: 0.8, xp: 1.25, weight: 8,
-    drops: ['bone_shard', 'rat_tail'], traits: ['enrage'],
+    drops: ['bone_shard', 'rat_tail', 'leather_scrap'], traits: ['enrage'],
     flavour: 'It remembers being a maintenance worker. Barely.'
   },
   {
@@ -41,7 +41,7 @@ export const ENEMIES = [
   {
     id: 'croc', name: 'Sewer Croc', sprite: 'croc', floorMin: 6, floorMax: 48,
     hp: 1.4, atk: 1.3, def: 1.0, xp: 1.45, weight: 7,
-    drops: ['bone_shard', 'drowned_pearl'], traits: ['enrage'],
+    drops: ['scaled_hide', 'bone_shard', 'drowned_pearl'], traits: ['enrage'],
     flavour: 'The urban legend was true, and it is hungry.'
   },
   {
@@ -53,7 +53,7 @@ export const ENEMIES = [
   {
     id: 'sludge', name: 'Sludge Golem', sprite: 'sludge', floorMin: 9, floorMax: 999,
     hp: 1.9, atk: 1.2, def: 1.4, xp: 1.7, weight: 6,
-    drops: ['slime_core', 'rusted_cog'], traits: ['armoured', 'regen'],
+    drops: ['slime_core', 'iron_scrap', 'rusted_cog'], traits: ['armoured', 'regen'],
     flavour: 'Every scrap the tunnels ever swallowed, walking.'
   },
   {
@@ -65,13 +65,13 @@ export const ENEMIES = [
   {
     id: 'drowned', name: 'Drowned Watchman', sprite: 'drowned', floorMin: 14, floorMax: 999,
     hp: 1.6, atk: 1.5, def: 1.2, xp: 2.0, weight: 6,
-    drops: ['drowned_pearl', 'rusted_cog'], traits: ['enrage', 'armoured'],
+    drops: ['drowned_pearl', 'iron_scrap', 'rusted_cog'], traits: ['enrage', 'armoured'],
     flavour: 'Still holding the lantern. Still walking the route.'
   },
   {
     id: 'serpent', name: 'Effluvium Serpent', sprite: 'serpent', floorMin: 18, floorMax: 999,
     hp: 1.7, atk: 1.7, def: 1.0, xp: 2.2, weight: 5,
-    drops: ['spore_cap', 'aether_dust'], traits: ['poisonous', 'swift'],
+    drops: ['spore_cap', 'scaled_hide', 'aether_dust'], traits: ['poisonous', 'swift'],
     flavour: 'It has been growing down here, uninterrupted, for a long time.'
   },
 ];
@@ -89,7 +89,7 @@ export const BOSSES = [
   {
     id: 'leviathan', name: 'Sludge Leviathan', sprite: 'boss_leviathan',
     hp: 5.2, atk: 1.6, def: 1.6, xp: 7,
-    drops: ['abyssal_plate', 'aether_dust', 'slime_core'],
+    drops: ['abyssal_plate', 'barnacle_tower', 'aether_dust', 'slime_core'],
     traits: ['armoured', 'regen'],
     flavour: 'The overflow channel is not a channel. It is a throat.',
     taunt: 'Everything washed down here eventually. So did you.'
@@ -97,7 +97,7 @@ export const BOSSES = [
   {
     id: 'plague', name: 'Plague Warden', sprite: 'boss_plague',
     hp: 4.8, atk: 1.85, def: 1.3, xp: 8,
-    drops: ['warden_mail', 'aether_dust', 'spore_cap'],
+    drops: ['warden_mail', 'warden_helm', 'aether_dust', 'spore_cap'],
     traits: ['poisonous', 'enrage'],
     flavour: 'It was sent to contain the rot. It succeeded, from the inside.',
     taunt: 'Quarantine holds. You will be filed with the rest.'
@@ -105,7 +105,7 @@ export const BOSSES = [
   {
     id: 'sovereign', name: 'The Drowned Sovereign', sprite: 'boss_sovereign',
     hp: 5.8, atk: 2.0, def: 1.7, xp: 9,
-    drops: ['sovereigns_edge', 'aether_dust', 'drowned_pearl'],
+    drops: ['sovereigns_edge', 'crown_of_the_drowned', 'aether_dust', 'drowned_pearl'],
     traits: ['armoured', 'enrage'],
     flavour: 'Crowned, waterlogged, and still holding court over nothing.',
     taunt: 'Kneel, or be corrected.'

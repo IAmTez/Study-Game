@@ -1,10 +1,9 @@
 /* Side-on sewer backdrops.
 
-   Deliberately NOT drawn as 16x16 tiles. The backgrounds are painted at full
-   canvas resolution with gradients, layered translucency and soft light — the
-   richer "32-bit" look — so that the chunky 16x16 character and item sprites
-   drawn on top read as foreground. Two parallax layers are baked once per
-   floor into tileable canvases; water, light shafts and drips animate live.
+   Painted in the same vector style as the characters: rounded bevelled
+   bricks, tapered grime, clumped moss, gradients and soft light. Two parallax
+   layers are baked once per floor into tileable canvases at the screen's
+   pixel density; water, light shafts and drips animate live.
 
    Every layer is seamless across `width`, so panning the camera by any amount
    never shows a join. */
@@ -133,11 +132,27 @@ export function paletteFor(biome) {
    Drawing helpers
    --------------------------------------------------------------- */
 
+/* Layers are painted in world units onto a canvas `res` times larger, so a
+   high-density screen gets a sharp backdrop rather than an upscaled one. */
+let buildRes = 1;
+
 function canvasOf(width, height) {
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = Math.round(width * buildRes);
+  canvas.height = Math.round(height * buildRes);
+  canvas.getContext('2d').scale(buildRes, buildRes);
   return canvas;
+}
+
+function roundedRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
 }
 
 /** Draw at x, and again either side, so anything crossing the seam wraps. */
@@ -220,13 +235,18 @@ function buildNearLayer(palette, rng, width, height) {
     const offset = (y / brickH) % 2 ? brickW / 2 : 0;
     for (let x = -brickW; x < width + brickW; x += brickW) {
       const bx = x + offset;
-      ctx.fillStyle = palette.brick[Math.floor(rng() * palette.brick.length)];
-      ctx.fillRect(bx + 1, y + 1, brickW - 2, brickH - 2);
-      // A lit top edge and shaded bottom give each brick some relief.
-      ctx.fillStyle = 'rgba(255,255,255,0.09)';
-      ctx.fillRect(bx + 1, y + 1, brickW - 2, 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillRect(bx + 1, y + brickH - 3, brickW - 2, 2);
+      // Rounded bricks with a soft bevel: lit from above, shaded below.
+      const base = palette.brick[Math.floor(rng() * palette.brick.length)];
+      roundedRect(ctx, bx + 1.5, y + 1.5, brickW - 3, brickH - 3, 4);
+      ctx.fillStyle = base;
+      ctx.fill();
+      const bevel = ctx.createLinearGradient(0, y, 0, y + brickH);
+      bevel.addColorStop(0, 'rgba(255,240,210,0.13)');
+      bevel.addColorStop(0.35, 'rgba(255,240,210,0)');
+      bevel.addColorStop(0.75, 'rgba(0,0,0,0)');
+      bevel.addColorStop(1, 'rgba(0,0,0,0.32)');
+      ctx.fillStyle = bevel;
+      ctx.fill();
     }
   }
 
@@ -279,30 +299,50 @@ function buildNearLayer(palette, rng, width, height) {
     ctx.fillRect(fx + 3, pipeY + pipeH, 8, 90);
   }
 
-  /* --- grime, stains and moss --- */
-  for (let i = 0; i < 44; i++) {
+  /* --- grime streaks: tapered drips that fade as they run down --- */
+  for (let i = 0; i < 30; i++) {
     const x = rng() * width;
-    const y = rng.range(ceilH, FLOOR_Y - 20);
-    const w = rng.range(20, 90);
-    const h = rng.range(30, 130);
+    const y = rng.range(ceilH, FLOOR_Y - 40);
+    const w = rng.range(10, 46);
+    const h = rng.range(40, 140);
+    const lean = rng.range(-6, 6);
     wrapped(ctx, width, x, (px) => {
       const gradient = ctx.createLinearGradient(0, y, 0, y + h);
       gradient.addColorStop(0, palette.grime);
       gradient.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = gradient;
-      ctx.fillRect(px, y, w, h);
+      ctx.beginPath();
+      ctx.moveTo(px - w / 2, y);
+      ctx.quadraticCurveTo(px - w / 2 + lean, y + h * 0.6, px + lean, y + h);
+      ctx.quadraticCurveTo(px + w / 2 + lean, y + h * 0.6, px + w / 2, y);
+      ctx.closePath();
+      ctx.fill();
     });
   }
-  for (let i = 0; i < 26; i++) {
+  /* --- moss: soft clumps of overlapping blobs with a few hanging strands --- */
+  for (let i = 0; i < 18; i++) {
     const x = rng() * width;
-    const y = rng.range(ceilH, FLOOR_Y - 60);
-    const w = rng.range(30, 110);
+    const y = rng.range(ceilH + 10, FLOOR_Y - 70);
+    const span = rng.range(30, 100);
+    const blobs = Array.from({ length: 6 }, () => [rng.range(-span / 2, span / 2), rng.range(-6, 6), rng.range(7, 16)]);
+    const strands = Array.from({ length: 3 }, () => [rng.range(-span / 2, span / 2), rng.range(14, 40)]);
     wrapped(ctx, width, x, (px) => {
-      const gradient = ctx.createLinearGradient(0, y, 0, y + 46);
+      const gradient = ctx.createLinearGradient(0, y - 16, 0, y + 20);
       gradient.addColorStop(0, palette.moss);
       gradient.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = gradient;
-      ctx.fillRect(px, y, w, 46);
+      ctx.beginPath();
+      for (const [bx, by, r] of blobs) { ctx.moveTo(px + bx + r, y + by); ctx.arc(px + bx, y + by, r, 0, Math.PI * 2); }
+      ctx.fill();
+      ctx.strokeStyle = palette.moss;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      for (const [sx, len] of strands) {
+        ctx.beginPath();
+        ctx.moveTo(px + sx, y + 4);
+        ctx.quadraticCurveTo(px + sx + 4, y + len * 0.5, px + sx - 2, y + len);
+        ctx.stroke();
+      }
     });
   }
 
@@ -311,12 +351,29 @@ function buildNearLayer(palette, rng, width, height) {
   for (let i = 0; i < lampCount; i++) {
     const x = (i + 0.5) * (width / lampCount);
     const y = 190;
+    // Wall bracket and a brass cage around the flame.
     ctx.fillStyle = palette.pipe;
-    ctx.fillRect(x - 5, y, 10, 22);
-    ctx.fillStyle = palette.lampCore;
-    ctx.beginPath();
-    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    roundedRect(ctx, x - 6, y + 6, 12, 22, 3);
     ctx.fill();
+    ctx.strokeStyle = palette.trim;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 9, y + 8); ctx.lineTo(x + 9, y + 8);
+    ctx.stroke();
+    const core = ctx.createRadialGradient(x, y - 1, 1, x, y, 10);
+    core.addColorStop(0, '#fffbe8');
+    core.addColorStop(0.5, palette.lampCore);
+    core.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.ellipse(x, y - 1, 8, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = palette.trim;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(x, y - 1, 8, 10, 0, 0, Math.PI * 2);
+    ctx.moveTo(x, y - 11); ctx.lineTo(x, y + 9);
+    ctx.stroke();
     const glow = ctx.createRadialGradient(x, y, 2, x, y, 190);
     glow.addColorStop(0, palette.light);
     glow.addColorStop(1, 'rgba(0,0,0,0)');
@@ -333,8 +390,11 @@ function buildNearLayer(palette, rng, width, height) {
   ctx.fillStyle = 'rgba(255,255,255,0.2)';
   ctx.fillRect(0, FLOOR_Y, width, 3);
   // Flagstone joints across the walkway.
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  for (let x = 0; x < width; x += 70) ctx.fillRect(x, FLOOR_Y + 3, 2, CHANNEL_Y - FLOOR_Y - 10);
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  for (let x = 0; x < width; x += 70) {
+    roundedRect(ctx, x, FLOOR_Y + 4, 2, CHANNEL_Y - FLOOR_Y - 12, 1);
+    ctx.fill();
+  }
   // Kerb overhanging the channel.
   verticalGradient(ctx, 0, CHANNEL_Y - 8, width, 8, [
     [0, palette.ledge[0]], [1, '#000'],
@@ -350,17 +410,22 @@ function buildNearLayer(palette, rng, width, height) {
 }
 
 /** Build both parallax layers for a floor. Cheap enough to redo per floor. */
-export function buildBackdrop(biome, seed, width = SCENE_W, height = SCENE_H) {
+export function buildBackdrop(biome, seed, width = SCENE_W, height = SCENE_H, res = 1) {
   const palette = paletteFor(biome);
   const rng = makeRng(`${seed}:backdrop:${biome}`);
-  return {
+  buildRes = Math.max(1, Math.min(2.5, res));
+  const backdrop = {
     biome,
+    seed,
     palette,
     width,
     height,
+    res: buildRes,
     far: buildFarLayer(palette, rng, width, height),
     near: buildNearLayer(palette, rng, width, height),
   };
+  buildRes = 1;
+  return backdrop;
 }
 
 /* ---------------------------------------------------------------
@@ -369,8 +434,9 @@ export function buildBackdrop(biome, seed, width = SCENE_W, height = SCENE_H) {
 
 function tileImage(ctx, image, offset, width, viewW, y = 0) {
   let x = -(((offset % width) + width) % width);
+  const height = SCENE_H;
   while (x < viewW) {
-    ctx.drawImage(image, Math.round(x), y);
+    ctx.drawImage(image, x, y, width, height);
     x += width;
   }
 }

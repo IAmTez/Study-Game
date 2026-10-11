@@ -6,9 +6,26 @@ import { SUBJECT as business } from './business.js';
 import { SUBJECT as design } from './design.js';
 import { SUBJECT as ancient } from './ancient.js';
 import { SUBJECT as english } from './english.js';
+import { PAST_QUESTIONS as geographyPast } from './hsc-geography.js';
+import { PAST_QUESTIONS as businessPast } from './hsc-business.js';
+import { PAST_QUESTIONS as designPast } from './hsc-design.js';
+import { PAST_QUESTIONS as ancientPast } from './hsc-ancient.js';
+import { PAST_QUESTIONS as englishPast } from './hsc-english.js';
 import { makeRng } from '../../core/rng.js';
 
-export const BUILTIN_SUBJECTS = [geography, business, design, ancient, english];
+/* Past HSC questions join their subject's pool, so they turn up in normal
+   play alongside the originals, tagged with the paper they came from. */
+const withPast = (subject, past) => ({ ...subject, questions: [...subject.questions, ...past] });
+
+export const BUILTIN_SUBJECTS = [
+  withPast(geography, geographyPast),
+  withPast(business, businessPast),
+  withPast(design, designPast),
+  withPast(ancient, ancientPast),
+  withPast(english, englishPast),
+];
+
+export const PAST_PAPER_CREDIT = 'Past HSC questions © NSW Education Standards Authority, reproduced for non-commercial study.';
 
 /** Fill in defaults so a hand-written or imported question is always complete. */
 export function normaliseQuestion(question, subject) {
@@ -29,8 +46,9 @@ export function normaliseQuestion(question, subject) {
        three times out of four, which a player can exploit without knowing any
        of the content. Shuffling here, seeded by the question id, spreads the
        answer evenly while keeping each question stable across sessions so the
-       explanations stay true and revision feels consistent. */
-    if (q.options.length > 1 && q.answer < q.options.length) {
+       explanations stay true and revision feels consistent. Past HSC
+       questions keep the paper's A–D order so they match NESA's key. */
+    if (!q.fixedOrder && q.options.length > 1 && q.answer < q.options.length) {
       const rng = makeRng(`options:${q.id}`);
       const order = rng.shuffle(q.options.map((_, i) => i));
       q.options = order.map(i => q.options[i]);

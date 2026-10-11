@@ -36,15 +36,21 @@ export function isBossFloor(floor) {
    Enemy scaling
    --------------------------------------------------------------- */
 
+const GEAR_PRESSURE_PER_FLOOR = 0.014;
+const GEAR_PRESSURE_CAP = 0.4;
+
 export function scaleEnemy(template, floor, rng, { isBoss = false } = {}) {
   const growth = 1 + (floor - 1) * 0.155;
   // Beyond floor 20 the curve steepens so late floors stay threatening.
   const lateSpike = Math.pow(1.035, Math.max(0, floor - 20));
   const loops = isBoss ? bossLoop(floor) : 0;
   const loopBonus = 1 + loops * 0.45;
+  // Deeper floors assume a fuller set of gear — helmet, boots, shield, rings
+  // and charms — and hit correspondingly harder.
+  const gearPressure = 1 + Math.min(GEAR_PRESSURE_CAP, (floor - 1) * GEAR_PRESSURE_PER_FLOOR);
 
-  const maxHp = Math.round(15 * template.hp * growth * lateSpike * loopBonus);
-  const atk = Math.round(6.5 * template.atk * Math.pow(growth, 0.94) * lateSpike * (1 + loops * 0.2));
+  const maxHp = Math.round(15 * template.hp * growth * lateSpike * loopBonus * gearPressure);
+  const atk = Math.round(6.5 * template.atk * Math.pow(growth, 0.94) * lateSpike * (1 + loops * 0.2) * gearPressure);
   const def = Math.round(2.2 * template.def * Math.pow(growth, 0.8) * (1 + loops * 0.15));
   const xp = Math.round(13 * template.xp * Math.pow(growth, 0.88) * loopBonus);
 

@@ -7,7 +7,10 @@ import { game, saveCustomSubjects, saveSettings } from '../game/state.js';
 import { allSubjects, enabledSubjectIds, invalidatePool, questionPool } from '../game/questions.js';
 import { readStudyFile, ACCEPTED_EXTENSIONS, extensionOf } from '../import/files.js';
 import { buildSubjectFromText } from '../import/parser.js';
+import { PAST_PAPER_CREDIT } from '../data/questions/index.js';
 import { sfx } from '../core/audio.js';
+
+const pastCount = (subject) => subject.questions.filter(q => q.source).length;
 
 const FORMAT_LABEL = {
   json: 'JSON question list',
@@ -87,6 +90,7 @@ export function subjectsScreen() {
         el('span', { className: 'pill', text: `${subject.questions.length} questions` })),
       el('div', { className: 'tiny dim', text: subject.syllabus || '' }),
       el('div', { className: 'tiny dim', text: subject.topics.join(' · ') }),
+      pastCount(subject) ? el('div', { className: 'tiny gold', text: `${pastCount(subject)} from past HSC papers, tagged in play` }) : null,
       el('div', { className: 'row gap-sm mt' },
         button('Preview', () => preview(subject), { className: 'btn--sm btn--ghost btn--center btn--inline' }),
         subject.custom && button('Delete', () => deleteCustom(subject), { className: 'btn--sm btn--danger btn--center btn--inline' })))));
@@ -231,7 +235,7 @@ export function subjectsScreen() {
   const countChip = el('div', { className: 'hud-chip gold', text: '' });
   const subjectChip = el('div', { className: 'hud-chip', text: '' });
 
-  const subjectPanel = panel('Subjects', listBox);
+  const subjectPanel = panel('Subjects', listBox, el('p', { className: 'tiny dim mt', text: PAST_PAPER_CREDIT }));
   subjectPanel.classList.add('panel--fill');
   const importPanel = panel('Add your own material', importBox);
   importPanel.classList.add('panel--fill');

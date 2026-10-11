@@ -67,8 +67,8 @@ export const SUBJECT = {
       prompt: 'Explain ONE social impact of urban renewal at Green Square. Give the mechanism, not just the outcome.',
       accept: ['gentrification raised housing costs which displaced lower income renters and workers from the area'],
       keywords: [
-        ['gentrif', 'displace', 'afford', 'rent', 'housing cost', 'price', 'lower income', 'infrastructure lag', 'school', 'open space', 'community', 'placemaking', 'library', 'aquatic'],
-        ['because', 'so ', 'which mean', 'leading to', 'therefore', 'result', 'as a result', 'causes', 'drives', 'lag'],
+        ['gentrif', 'displace', 'afford', 'rent', 'housing cost', 'price', 'lower income', 'infrastructure lag', 'school', 'open space', 'placemaking', 'library', 'aquatic'],
+        ['because', 'so', 'which mean', 'meaning', 'leading to', 'leads to', 'therefore', 'result', 'causes', 'caused', 'drives', 'raise', 'raising', 'pushed', 'pushing', 'lag'],
       ],
       minKeywords: 2,
       explanation: 'Either direction earns the mark provided the chain is shown. Negative: renewal raises land values, so rents and purchase prices rise, so lower-income renters and former industrial workers are priced out — gentrification and displacement. Positive: council placemaking investment in the Green Square Library (2018) and Gunyama Park Aquatic Centre (2021) gives a young, largely overseas-born apartment population (Zetland: 12,622 residents, median age 30, 2021 Census) shared civic space, building community identity where none previously existed. A strong answer also names infrastructure lag — school capacity and open space per person failing to keep pace with residential growth.'
@@ -446,13 +446,15 @@ export const SUBJECT = {
     },
     {
       id: 'geo-38', topic: 'Global Sustainability — Tourism', difficulty: 4, type: 'short',
-      prompt: 'Name a framework of criteria you could use to evaluate the effectiveness of a tourism management strategy, and list its components.',
-      accept: ['the four pillars of sustainability environmental economic social and cultural or effectiveness criteria of measurable outcome cost scale of jurisdiction equity and durability'],
+      prompt: 'Name the four pillars of sustainability you could use as criteria to evaluate a tourism management strategy.',
+      accept: ['environmental economic social and cultural'],
       keywords: [
-        ['pillar', 'environmental', 'economic', 'social', 'cultural', 'sdg', 'sustainable development goal', 'criteri'],
-        ['measurable', 'outcome', 'cost', 'fund', 'jurisdiction', 'scale', 'equity', 'durab', 'enforce'],
+        ['environment'],
+        ['econom'],
+        ['social', 'societ'],
+        ['cultur'],
       ],
-      minKeywords: 1,
+      minKeywords: 3,
       explanation: 'An evaluate or assess response loses marks purely for having no stated yardstick, so name the framework in the opening sentence. Framework A — the four pillars: environmental, economic, social, cultural. Framework B — the SDGs, naming the specific goal (SDG 8 decent work, 11 sustainable cities, 12 responsible consumption, 13 climate action, 14 life below water, 15 life on land). Framework C — effectiveness criteria: measurable outcome, cost and funding source, scale of jurisdiction versus scale of threat, equity of impact, durability over time. Opening template: "Assessed against the environmental, economic and social pillars of sustainability, tourism in [place] is [judgement], because…"'
     },
     {
@@ -697,6 +699,157 @@ export const SUBJECT = {
       ],
       minKeywords: 3,
       explanation: 'Overall trend, then supporting figures, then the anomaly or exception. Quote every figure with its units and its date. The same skeleton works on line, bar, pie, compound and climate graphs — for a climate graph, state the annual rainfall total, the temperature range (hottest minus coldest month) and the wet season months, remembering the Southern Hemisphere summer peaks in December–February. The anomaly is where the higher marks are, because noticing it shows you read the data rather than just summarising its direction.'
+    },
+    /* ---------------- More practice, in the style of the 2025 paper ---------------- */
+    {
+      id: 'geo-63', topic: 'Geographical Skills', difficulty: 2, type: 'mc',
+      prompt: 'The highest point in a map area is 412 m and the lowest is 128 m. The local relief is:',
+      options: ['284 m', '540 m', '412 m', '142 m'],
+      answer: 0,
+      explanation: 'Local relief is the difference between the highest and lowest points: 412 − 128 = 284 m. Adding them (540) or halving the difference (142) are the usual traps.'
+    },
+    {
+      id: 'geo-64', topic: 'Geographical Skills', difficulty: 3, type: 'mc',
+      prompt: 'On a 1:25 000 map, a rectangular park measures 8 cm by 6 cm. Its area on the ground is:',
+      options: ['3 km²', '0.48 km²', '12 km²', '48 km²'],
+      answer: 0,
+      explanation: 'At 1:25 000, 1 cm represents 250 m. So 8 cm = 2 km and 6 cm = 1.5 km, and 2 × 1.5 = 3 km². Convert each side to ground distance BEFORE multiplying — squaring the scale is where most errors happen.'
+    },
+    {
+      id: 'geo-65', topic: 'Geographical Skills', difficulty: 1, type: 'mc',
+      prompt: 'A bearing of 225° points:',
+      options: ['South-west', 'South-east', 'North-west', 'West-south-west'],
+      answer: 0,
+      explanation: 'Bearings run clockwise from north: 90° E, 180° S, 270° W. 225° is halfway between south and west — south-west. West-south-west would be 247.5°.'
+    },
+    {
+      id: 'geo-66', topic: 'Geographical Skills', difficulty: 2, type: 'mc',
+      prompt: 'A local government area has 48 000 residents and covers 120 km². Its population density is:',
+      options: ['400 people per km²', '2.5 people per km²', '5 760 people per km²', '40 people per km²'],
+      answer: 0,
+      explanation: 'Density = population ÷ area = 48 000 ÷ 120 = 400 people per km². Always give the unit.'
+    },
+    {
+      id: 'geo-67', topic: 'Geographical Skills', difficulty: 2, type: 'mc',
+      prompt: 'A climate graph shows a warmest monthly mean of 28 °C in January and a coolest of 12 °C in July. The annual temperature range is:',
+      options: ['16 °C', '40 °C', '20 °C', '12 °C'],
+      answer: 0,
+      explanation: 'Annual temperature range = warmest month − coolest month = 28 − 12 = 16 °C. A January peak tells you the place is in the Southern Hemisphere.'
+    },
+    {
+      id: 'geo-68', topic: 'Geographical Skills', difficulty: 2, type: 'mc',
+      prompt: 'Which measure of central tendency is least affected by one extreme value in a data set?',
+      options: ['Median', 'Mean', 'Range', 'Total'],
+      answer: 0,
+      explanation: 'The median is the middle value, so one outlier barely moves it, while the mean is dragged toward it. The range is a measure of spread, not central tendency.'
+    },
+    {
+      id: 'geo-69', topic: 'Ecosystems and Global Biodiversity', difficulty: 2, type: 'mc',
+      prompt: 'A country is in ecological deficit when:',
+      options: [
+        'its ecological footprint is greater than its biocapacity',
+        'its biocapacity is greater than its ecological footprint',
+        'its population is falling',
+        'it imports more food than it exports',
+      ],
+      answer: 0,
+      explanation: 'Ecological deficit = demand on nature (ecological footprint) exceeds what local ecosystems can regenerate and absorb (biocapacity). The gap is met by importing biocapacity or by running down natural capital. (Biocapacity itself was HSC 2025 Q1.)'
+    },
+    {
+      id: 'geo-70', topic: 'Ecosystems and Global Biodiversity', difficulty: 1, type: 'mc',
+      prompt: 'An endemic species is one that:',
+      options: [
+        'is found naturally in only one region',
+        'has been introduced from another continent',
+        'is at risk of extinction',
+        'migrates between hemispheres each year',
+      ],
+      answer: 0,
+      explanation: 'Endemic means native to and found only in one place — the mountain pygmy-possum is endemic to the Australian Alps. Endemics are especially vulnerable because their whole population shares one range.'
+    },
+    {
+      id: 'geo-71', topic: 'Ecosystems and Global Biodiversity', difficulty: 3, type: 'short',
+      prompt: 'Explain how an invasive species can reduce the biodiversity of an ecosystem. Use a named example.',
+      accept: ['feral horses in kosciuszko trample sphagnum bogs and compete with native species for grazing which destroys habitat and pushes endemic species like the broad toothed rat toward extinction'],
+      keywords: [
+        ['compet', 'predat', 'prey', 'eat', 'graz', 'trampl', 'disease', 'habitat'],
+        ['native', 'endemic', 'local species', 'indigenous species'],
+        ['decline', 'extinct', 'fewer species', 'loss', 'collapse', 'reduce'],
+        ['horse', 'brumb', 'fox', 'cat', 'rabbit', 'cane toad', 'chytrid', 'deer', 'lantana', 'willow', 'crown of thorns'],
+      ],
+      minKeywords: 3,
+      explanation: 'Name the mechanism, the victim and the result: invasive species compete with, prey on, or destroy the habitat of native species, which then decline. In Kosciuszko, feral horses trample sphagnum bogs and stream banks and graze native vegetation, threatening endemics such as the broad-toothed rat; chytrid fungus drove the southern corroboree frog toward extinction. HIPPO puts invasive species as the I.'
+    },
+    {
+      id: 'geo-72', topic: 'Rural and Urban Places', difficulty: 2, type: 'mc',
+      prompt: 'The main cause of an urban heat island is:',
+      options: [
+        'dark, impermeable surfaces replacing vegetation, absorbing heat by day and releasing it at night',
+        'cities generally being located at lower latitudes than rural areas',
+        'higher rainfall in cities than in surrounding rural areas',
+        'tall buildings blocking cool sea breezes in every city',
+      ],
+      answer: 0,
+      explanation: 'Concrete, asphalt and roofs absorb solar energy and re-radiate it, while there is little vegetation for shade and evaporative cooling; waste heat from cars and air-conditioning adds to it. Western Sydney can be several degrees hotter than the coast on summer days. Green and blue infrastructure — tree canopy, parks, water — is the main response.'
+    },
+    {
+      id: 'geo-73', topic: 'Rural and Urban Places', difficulty: 2, type: 'mc',
+      prompt: 'Gentrification is best defined as:',
+      options: [
+        'wealthier residents moving into a lower-income area, raising property values and often displacing existing residents',
+        'the spread of low-density housing onto farmland at the urban fringe',
+        'the movement of people from cities to rural areas',
+        'the government demolition of public housing',
+      ],
+      answer: 0,
+      explanation: 'Gentrification is a socio-economic change: renovation and investment raise rents and prices, the area’s character shifts, and lower-income residents can be priced out. Option B is urban sprawl; option C is counter-urbanisation.'
+    },
+    {
+      id: 'geo-74', topic: 'Rural and Urban Places', difficulty: 3, type: 'short',
+      prompt: 'Outline ONE way an urban place can reduce its ecological footprint.',
+      accept: ['expanding public transport and medium density housing reduces car use which cuts fuel use and greenhouse emissions'],
+      keywords: [
+        ['public transport', 'metro', 'rail', 'cycl', 'walkab', 'density', 'consolidat', 'renewable', 'solar', 'green roof', 'tree', 'recycl', 'compost', 'water sensitive', 'transit'],
+        ['emission', 'carbon', 'energy', 'fuel', 'car use', 'cars', 'waste', 'landfill', 'land', 'water use', 'resource'],
+      ],
+      minKeywords: 2,
+      explanation: 'Give a strategy AND what it reduces: transit-oriented, medium-density development cuts car use and fuel emissions; rooftop solar and renewables cut energy emissions; organic waste collection diverts landfill; water-sensitive design cuts water demand. Berlin and Singapore are good examples.'
+    },
+    {
+      id: 'geo-75', topic: 'Global Sustainability — Tourism', difficulty: 1, type: 'mc',
+      prompt: 'Ecotourism is best described as tourism that:',
+      options: [
+        'is nature-based, minimises its impact, educates visitors and benefits conservation and local people',
+        'takes place in any national park',
+        'uses only electric transport',
+        'is cheaper than mass tourism',
+      ],
+      answer: 0,
+      explanation: 'Ecotourism has four elements: nature-based, low-impact, educational, and returning benefits to conservation and local communities. A visit to a national park is not ecotourism unless those conditions are met — that is “greenwashing” territory.'
+    },
+    {
+      id: 'geo-76', topic: 'Global Sustainability — Tourism', difficulty: 2, type: 'mc',
+      prompt: 'The tourism multiplier effect refers to:',
+      options: [
+        'tourist spending being re-spent in the local economy, generating further income and jobs',
+        'the number of tourists doubling each decade',
+        'tourists visiting several destinations on one trip',
+        'governments taxing tourism several times',
+      ],
+      answer: 0,
+      explanation: 'A tourist pays a hotel, which pays staff and local suppliers, who spend in turn — each round adds income. The multiplier is weakened by leakage, when money flows out to foreign-owned companies or imported goods.'
+    },
+    {
+      id: 'geo-77', topic: 'Global Sustainability — Tourism', difficulty: 3, type: 'short',
+      prompt: 'Explain ONE negative social impact of tourism on a host community.',
+      accept: ['short term rentals for tourists push up rents so local residents are priced out and the community loses its permanent population'],
+      keywords: [
+        ['rent', 'housing', 'short term rental', 'short-term rental', 'airbnb', 'cost of living', 'crowd', 'congestion', 'commodif', 'cultur', 'crime', 'noise'],
+        ['local', 'resident', 'community', 'host', 'indigenous', 'traditional owner'],
+        ['priced out', 'displac', 'resent', 'conflict', 'erode', 'lose', 'loss', 'unaffordab', 'pushed out'],
+      ],
+      minKeywords: 3,
+      explanation: 'Explain the chain, not just the label: tourist demand for short-term rentals raises rents, pricing out local residents (Barcelona, Venice, Byron Bay); crowding causes resentment; cultural performances can be commodified, eroding meaning for the host community.'
     },
   ]
 };
