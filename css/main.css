@@ -270,7 +270,10 @@ canvas.art { display: block; }
      column rather than pushing the page past the viewport. */
   flex: 0 1 auto;
   display: flex; gap: 10px; align-items: stretch;
-  max-height: min(54vh, 450px); min-height: 0;
+  max-height: min(54vh, 450px);
+  /* A floor under the console keeps the scene from jumping in size when the
+     panel briefly holds just a line ("Moving deeper…", "The blow lands…"). */
+  min-height: min(30vh, 272px);
 }
 .battle-main {
   flex: 1 1 auto; min-width: 0; overflow-y: auto;

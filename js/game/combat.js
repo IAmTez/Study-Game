@@ -267,6 +267,7 @@ export function useAbility(run, combat, abilityId) {
   };
 
   if (ability.effect === 'rest') {
+    combat.events.push({ type: 'rest' });
     const gained = bankEnergy();
     logLine(run, `You rest and bank ${gained} energy, forgoing your attack.`, 'info');
     return resolveEnemyTurn(run, combat);
@@ -282,7 +283,7 @@ export function useAbility(run, combat, abilityId) {
     const { damage, crit } = rollPlayerDamage(run, combat, ability, { critBonus });
     enemy.hp = Math.max(0, enemy.hp - damage);
     total += damage;
-    combat.events.push({ type: 'attack', side: 'player', amount: damage, crit, ability: ability.name });
+    combat.events.push({ type: 'attack', side: 'player', amount: damage, crit, ability: ability.name, abilityId: ability.id, hit: i });
   }
 
   logLine(run, `${ability.name} hits ${enemy.name} for ${total}.${banked ? ` +${banked} energy.` : ''}`, 'good');
@@ -363,7 +364,7 @@ export function useItemInCombat(run, combat, itemId, { endsTurn = true } = {}) {
   }
   if (use.damage) {
     combat.enemy.hp = Math.max(0, combat.enemy.hp - use.damage);
-    combat.events.push({ type: 'attack', side: 'player', amount: use.damage, crit: false, ability: item.name });
+    combat.events.push({ type: 'attack', side: 'player', amount: use.damage, crit: false, ability: item.name, itemId: item.id });
     acted = true;
   }
 

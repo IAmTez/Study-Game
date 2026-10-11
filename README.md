@@ -5,8 +5,9 @@ and side-on: get the question right and you attack, get it wrong and the enemy
 attacks you. Floors are procedurally generated and never end.
 
 Built for desktop browsers. No build step, no framework, no runtime dependencies —
-plain ES modules and vector art drawn in code: every character, creature, item and
-backdrop is layered paths and gradients, rendered at your screen's full resolution.
+plain ES modules and anime-style art drawn in code: every character, creature, item
+and backdrop is cel-shaded layered paths, animated with a skeleton rig and rendered at
+your screen's full resolution.
 
 ## Running it
 
@@ -207,12 +208,18 @@ your progress between browsers.
 index.html            entry point
 css/main.css          the UI theme
 js/core/              seeded RNG, event bus, storage, procedural audio
-js/art/vector.js      shared vector drawing helpers (gradients, outlines, limbs, glows)
-js/art/hero.js        the player rig: six role looks, with every equipped item drawn on
-js/art/creatures.js   twelve enemies and five bosses
+js/art/anime/cel.js   cel-shading toolkit: hard shadows, rim light, gloss, coloured line art
+js/art/anime/rig.js   skeleton maths: two-bone IK, keyframed poses, spring chains for hair and cloth
+js/art/anime/hero.js  the hero rig: six role designs, faces, hair, outfits, every equipped item drawn on
+js/art/anime/hero-anim.js  hero timelines: idle, per-weapon attacks, casts, reactions, victory, defeat
+js/art/anime/gear.js  weapons, shields and helmets (on the hero and as inventory icons)
+js/art/anime/beasts.js, bosses.js  twelve enemies and five bosses, each with its own attack
+js/art/anime/creatures.js  creature registry and their idle / attack / hurt / death timelines
+js/art/anime/vfx.js   slash trails, impacts, elemental projectiles, magic circles, status auras
+js/art/vector.js      colour helpers, and the simpler vector style used by consumable icons and props
 js/art/icons.js       item icons and props
 js/art/render.js      renders any drawing to a crisp canvas at screen resolution
-js/art/backdrop.js    painted parallax sewer backdrops, one palette per biome
+js/art/backdrop.js    painted sewer sets with depth layers, god rays and fog, one palette per biome
 js/data/              roles, abilities, items, enemies, recipes
 js/data/questions/    the five subject banks, plus hsc-*.js past-paper questions
 js/game/stages.js     floors, stages and enemy scaling
@@ -220,6 +227,7 @@ js/game/equipment.js  equipment slots, level gates, dual wielding, old-save migr
 js/game/              state, combat, grading, loot, crafting, question selection
 js/import/            file readers (ZIP/DOCX, PDF) and the study-material parser
 js/ui/adventure.js    the battle scene, camera pans and the turn UI
+js/ui/director.js     plays combat events out as choreography: hits land on contact, hit-stop, cut-ins
 js/ui/                menu, inventory, crafting, stats, settings, subjects
 tools/balance-sim.mjs headless difficulty check
 tools/grader-check.mjs short-answer grading regression check
@@ -238,23 +246,46 @@ viewport — status strip, scene, console — so playing never turns into scroll
 web page. The scene canvas sizes itself to whatever height is left and scales the
 world to match, so a wide window simply sees more tunnel rather than black bars.
 
-**Vector art.** Everything is drawn in code as layered vector shapes, in one house
-style: each shape gets a soft gradient of its base colour, an outline in a darker
-shade of that same colour rather than flat black, and white highlights where light
-from the upper left would catch. Nothing is a bitmap, so it stays sharp at any size
-and on high-density screens — the scene canvas and every icon render at the
-display's real pixel density.
+**Anime cel shading.** Everything is drawn in code as layered paths, painted the
+way anime key art is: a base colour with a soft gradient for volume, a hard-edged
+shadow in a cooler violet shade of that colour (never just darker), a thin rim
+light along the back edge, gloss on metal and hair, and line art in a deep shade
+of each fill rather than flat black. The shadow and rim are found automatically
+from each shape, so a sleeve, a lock of hair or a boss's jaw all shade themselves.
 
-The hero is a rig built back to front — cape, legs, arms, body, armour, head,
-weapon, off hand — with a layer for every equipment slot, so a helmet, chest armour,
-boots, a weapon, a shield or a second weapon, rings and charms all show on the
-character. Each role has its own look (the knight's cape and tabard, the mage's hat
-and beard, the rogue's hood and mask) that stays recognisable under light armour.
-Fighters breathe, sway and swing their weapon when they attack; creatures flap, drip
-and glow. Backdrops are painted in the same style — rounded bevelled bricks, clumped
-moss, tapered grime, reflected lamplight and animated sludge — with one palette per
-biome, rotating every ten floors through brickwork, flooded mains, spore galleries,
-ossuary, drowned court and sunken archive.
+**Characters.** The hero is a full-body rig of about six and a half heads, solved
+from a pose each frame with two-bone IK for arms and legs. Faces have layered eyes
+with gradient irises, highlights and lashes, brows and mouths that change with
+expression, and blush. Hair is built from cap, bangs, side locks and back locks;
+long hair, ponytails, braids, capes, scarves, coat tails and robes hang on spring
+chains, so they swing, trail behind a dash and settle. Each role has its own design
+— the knight's tabard, pauldron and cape, the mage's witch hat and floating
+grimoire, the rogue's hood, mask and scarf, the cleric's halo and vestments, the
+scholar's coat and glasses, the warden's leafy hood and braid — and every equipped
+item draws onto the body: helmets replace hats, heavy armour covers the outfit
+while light armour layers over it, boots, weapons, shields, a second weapon, rings
+and charms.
+
+**Animation.** Fighters breathe, blink and sway while idle. Attacks are keyframed
+per weapon — a leaping slash for swords, a lunge for rapiers and tridents, a jumping
+overhead smash for hammers and axes, a second off-hand cut when dual-wielding —
+with wind-up, follow-through and a slash trail. Spells cast or channel over a rune
+circle and fire elemental projectiles, pillars of light, vines or toxic clouds;
+ultimates open with a cut-in of the hero's face and the ability's name. Hits land
+when the blow connects, with sparks, hit-stop, a flinch and screen shake, and only
+then does the number appear and the HP bar drain. Every enemy and boss has its own
+wind-up and attack — bites, claw rakes, slams, sonic screams, spore clouds, venom,
+a tidal wave, a barrage of books — plus hurt flinches and a dissolving death. The
+hero dodges, raises a ward or shield, kneels to rest, collapses on defeat and lifts
+a weapon in victory.
+
+**Sets.** Each stage is framed like a stage set: stone columns and two great
+arches, one behind each fighter, opening onto a fogged hall far below. God rays
+pour through, lanterns flicker, and crystals, mushrooms, coral, candles or books
+glow by biome — brickwork, flooded mains, spore galleries, ossuary, drowned court
+and sunken archive, rotating every ten floors. Static layers are baked once per
+floor; on slower machines the scene lowers its pixel density and repaints fighters
+on alternate frames to keep the motion smooth.
 
 ## Checking the difficulty curve
 

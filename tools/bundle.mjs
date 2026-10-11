@@ -96,6 +96,15 @@ function transform(module) {
   out = out.replace(/^[ \t]*export\s+(async\s+function|function|const|let|class)\s+([A-Za-z0-9_$]+)/gm,
     (_all, kind, name) => { exported.add(name); return `${kind} ${name}`; });
 
+  // `export { a, b };` — re-exporting local bindings (no aliases, no `from`).
+  out = out.replace(/^[ \t]*export\s*\{([^}]*)\}\s*;?[ \t]*$/gm, (_all, names) => {
+    for (const name of names.split(',').map(s => s.trim()).filter(Boolean)) {
+      if (!/^[A-Za-z0-9_$]+$/.test(name)) throw new Error(`${module.id}: unhandled export list -> ${name}`);
+      exported.add(name);
+    }
+    return '';
+  });
+
   if (/^\s*export\s/m.test(out)) {
     const leftover = out.match(/^\s*export\s.*$/m)[0].trim();
     throw new Error(`${module.id}: unhandled export form -> ${leftover}`);

@@ -4,3 +4,6 @@ package-lock.json
 
 # transient playwright checks
 .pw*.mjs
+
+# art preview harness
+.preview/

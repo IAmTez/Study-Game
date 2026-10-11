@@ -8,7 +8,7 @@ import {
   shade, rgba, poly, smooth, ellipsePath, circlePath, roundRectPath,
   paint, line, limb, glow, gloss, withTransform,
 } from './vector.js';
-import { drawWeapon, drawShield, drawHelmet, HEAD } from './hero.js';
+import { drawWeapon, drawShield, drawHelmet } from './anime/gear.js';
 
 /* ---------------------------------------------------------------
    Consumables
@@ -202,7 +202,7 @@ const ICONS = {
   },
   feather: (ctx, look = {}) => {
     const c = look.colour || '#dfe6ee';
-    withTransform(ctx, 32, 32, -0.8, 1, () => drawWeapon(ctx, { shape: 'quill', blade: c, hilt: '#3a2a1e' }));
+    withTransform(ctx, 32, 32, -0.8, 0.6, () => withTransform(ctx, -37, 0, 0, 1, () => drawWeapon(ctx, { shape: 'quill', blade: c, hilt: '#3a2a1e' })));
   },
   lens: (ctx, look = {}) => {
     const c = look.colour || '#9fd3e6';
@@ -259,31 +259,28 @@ const WEAPON_SHAPES = { sword: 'sword', dagger: 'dagger', cleaver: 'cleaver', ha
 
 function weaponIcon(ctx, look) {
   const shape = look.shape || 'sword';
-  const long = ['hammer', 'trident', 'axe', 'quill', 'rapier'].includes(shape);
-  // Fit the weapon's full length along the icon's diagonal.
-  const length = { sword: 80, dagger: 46, fang: 56, cleaver: 62, hammer: 86, rapier: 84, trident: 114, quill: 82, axe: 90 }[shape] || 80;
-  const start = { sword: -16, dagger: -12, fang: -12, cleaver: -16, hammer: -24, rapier: -13, trident: -32, quill: -12, axe: -28 }[shape] ?? -16;
-  const scale = 78 / length;
+  // Fit the weapon's full length — pommel to tip — along the icon's diagonal.
+  const start = { sword: -21, dagger: -16, fang: -14, cleaver: -20, hammer: -28, rapier: -17, trident: -36, quill: -16, axe: -32 }[shape] ?? -21;
+  const reach = { sword: 74, dagger: 36, fang: 54, cleaver: 52, hammer: 74, rapier: 89, trident: 102, quill: 90, axe: 72 }[shape] ?? 74;
+  const length = reach - start;
+  const scale = Math.min(1.7, 80 / length);
   withTransform(ctx, 32, 32, -Math.PI / 4, scale, () => {
     withTransform(ctx, -(start + length / 2), 0, 0, 1, () => drawWeapon(ctx, look));
   });
 }
 
 function shieldIcon(ctx, look) {
-  withTransform(ctx, 32, 33, 0, 1.05, () => drawShield(ctx, look));
+  withTransform(ctx, 32, 32, 0, 1.05, () => drawShield(ctx, look));
 }
 
 function helmetIcon(ctx, look) {
   const crown = look.shape === 'crown';
-  const k = crown ? 1.35 : 0.95;
-  const cy = crown ? 64 : 36;
-  withTransform(ctx, 32 - HEAD.x * k, cy - HEAD.y * k, 0, k, () => {
+  const k = crown ? 1.7 : 1.22;
+  const cy = crown ? 32 + 18 * k : 36;
+  withTransform(ctx, 32 - 2 * k, cy, 0, k, () => {
     if (!crown) {
       // A dark lining so open helmets read as hollow.
-      ctx.save();
-      ctx.translate(HEAD.x, HEAD.y);
-      ellipsePath(ctx, 0, 4, 16, 17); ctx.fillStyle = 'rgba(20,24,32,.55)'; ctx.fill();
-      ctx.restore();
+      ellipsePath(ctx, 0, 2, 14, 15); ctx.fillStyle = 'rgba(20,24,32,.55)'; ctx.fill();
     }
     drawHelmet(ctx, look);
   });

@@ -13,8 +13,11 @@ import {
 import { go } from './screens.js';
 import { renderArt, pixelRatio } from '../art/render.js';
 import { gearLooks } from '../art/gear.js';
+import { Director, UNIT } from './director.js';
+import { drawStatusAuras, drawBarrier, elementOf } from '../art/anime/vfx.js';
+import { rgba } from '../art/anime/cel.js';
 import {
-  buildBackdrop, drawBackdrop, drawLadder, SCENE_W, SCENE_H, FLOOR_Y,
+  buildBackdrop, drawBackdrop, drawForeground, drawLadder, SCENE_W, SCENE_H, FLOOR_Y,
 } from '../art/backdrop.js';
 import { gradingFeedback, VERDICT } from '../game/grading.js';
 import { sourceLabel } from '../data/questions/past.js';
@@ -59,6 +62,18 @@ const CLIMB_MS = 1500;
 
 const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
+/* Status colours are CSS custom properties; canvas needs real colours. */
+const cssColours = new Map();
+function canvasColour(colour) {
+  if (!colour || !colour.startsWith('var(')) return colour || '#cfd6e0';
+  if (!cssColours.has(colour)) {
+    const name = colour.slice(4, -1).trim();
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    cssColours.set(colour, value || '#cfd6e0');
+  }
+  return cssColours.get(colour);
+}
+
 export function adventureScreen() {
   const run = game.run;
   if (!run) { go('menu'); return {}; }
@@ -73,14 +88,18 @@ export function adventureScreen() {
      size its box has and the world is scaled to that height, so a wide window
      simply sees more of the tunnel either side rather than black bars. */
   const view = { w: SCENE_W, h: SCENE_H, k: 1, dpr: 1 };
+  let densityCap = 3;
+  let slowSince = 0;
 
   function resizeCanvas() {
     const box = canvas.parentElement;
     if (!box) return;
     const w = Math.max(320, Math.floor(box.clientWidth));
     const h = Math.max(170, Math.floor(box.clientHeight));
-    // Draw at the screen's real pixel density so the vector art stays sharp.
-    view.dpr = pixelRatio();
+    /* Draw at the screen's real pixel density so the vector art stays sharp —
+       unless frames run long, in which case the density steps down (the
+       canvas is scaled up by CSS) until the scene keeps pace. */
+    view.dpr = Math.min(pixelRatio(), densityCap);
     const dw = Math.round(w * view.dpr);
     const dh = Math.round(h * view.dpr);
     if (canvas.width !== dw || canvas.height !== dh) {
@@ -115,11 +134,11 @@ export function adventureScreen() {
      ------------------------------------------------------------ */
 
   const camera = { x: 0, y: 0, mode: 'idle', from: 0, to: 0, started: 0 };
-  const fx = { player: { lunge: 0, shake: 0, flash: 0 }, enemy: { lunge: 0, shake: 0, flash: 0 } };
   const floaters = [];
   let combat = null;
   let raf = null;
   let banner = null;
+  let lastFrame = performance.now();
 
   const stageOriginX = () => floorState.index * SCENE_W;
   const stageCamX = () => stageCam(floorState.index);
@@ -128,100 +147,169 @@ export function adventureScreen() {
     banner = { text, sub, born: performance.now() };
   }
 
+  /* The director plays combat events out as animation: wind-ups, dashes,
+     blows landing with hit-stop, flinches, projectiles and cut-ins. */
+  const director = new Director({
+    floater,
+    sfx: (name) => sfx[name]?.(),
+    actual: () => ({ player: run.hp, enemy: combat ? combat.enemy.hp : null }),
+    statusColour: (id) => canvasColour(statusInfo(id).colour),
+  });
+  director.setPlayerHp(run.hp);
+
+  function battleContext() {
+    const stats = derived(run);
+    return {
+      gear: gearLooks(run.equipped),
+      roleId: stats.role.sprite,
+      playerMax: stats.maxHp,
+      enemyMax: combat ? combat.enemy.maxHp : 0,
+    };
+  }
+
   /* ------------------------------------------------------------
      Drawing
      ------------------------------------------------------------ */
 
-  /* Fighters are vector drawings, re-rendered every frame (they breathe,
-     sway and swing) into one offscreen canvas per side at device resolution,
-     then composited with a shadow, a reflection and the hit flash. */
-  const FIGHTER_UNIT = 0.9;       // world pixels per art unit
-  const fighterCanvas = { player: document.createElement('canvas'), enemy: document.createElement('canvas') };
-
-  function renderFighter(side, name, time, extra = {}) {
-    const opts = side === 'player'
-      ? { gear: gearLooks(run.equipped), pose: { t: time, swing: fx.player.lunge, ...extra } }
-      : { t: time, animated: true };
-    return renderArt(name, FIGHTER_UNIT, view.k * view.dpr, { ...opts, animated: true }, fighterCanvas[side]);
+  /** Where the hero stands: running alongside the camera while it pans. */
+  function playerWorldX() {
+    if (camera.mode === 'panning') return camera.x + (view.w - SCENE_W) / 2 + PLAYER_X;
+    return stageOriginX() + PLAYER_X;
   }
 
-  function drawFighter(name, worldX, side, time, alive = true) {
-    const shake = fx[side].shake > 0 ? (Math.random() - 0.5) * 10 : 0;
-    const lunge = fx[side].lunge * (side === 'player' ? 34 : -34);
-    const bob = Math.sin(time * 0.0022 + (side === 'player' ? 0 : 1.7)) * 2;
+  /**
+   * Composite a fighter's offscreen canvas into the scene with its contact
+   * shadow, water reflection, afterimages and hit flash.
+   */
+  function blitActor(rendered, worldX, flip, opts = {}) {
+    if (!rendered) return;
+    const { actor, box, move } = rendered;
+    const k = UNIT;
+    const dir = flip ? -1 : 1;
+    const ox = worldX + move[0] * k * dir - camera.x;
+    const oy = FLOOR_Y + move[1] * k - camera.y;
+    const w = box.w * k;
+    const h = box.h * k;
+    const alpha = (opts.alpha ?? 1) * (1 - (actor.dissolve || 0));
+    if (ox < -w || ox - w > view.w + w) return;
 
-    const art = renderFighter(side, name, time);
-    const flip = side === 'enemy';
-    // Enemies are drawn facing right and mirrored to face the player.
-    const originX = flip ? art.w - art.originX : art.originX;
-    const x = worldX - camera.x + lunge + shake - originX;
-    const y = FLOOR_Y - art.originY + bob - camera.y;
-
-    if (x < -art.w || x > view.w + art.w) return;
-
-    const blit = (dx, dy) => {
-      if (flip) {
-        ctx.save();
-        ctx.translate(dx + art.w, dy);
-        ctx.scale(-1, 1);
-        ctx.drawImage(art.canvas, 0, 0, art.w, art.h);
-        ctx.restore();
-      } else {
-        ctx.drawImage(art.canvas, dx, dy, art.w, art.h);
-      }
+    const place = (y0, extraAlpha = 1, sy = 1) => {
+      ctx.save();
+      ctx.globalAlpha = alpha * extraAlpha;
+      ctx.translate(ox, y0);
+      ctx.scale(dir, sy);
+      ctx.drawImage(actor.canvas, box.x * k, box.y * k, w, h);
+      ctx.restore();
     };
 
-    // Contact shadow grounds the figure on the walkway.
+    // Contact shadow, shrinking as the fighter leaves the ground.
+    const lift = Math.max(0, -move[1]) + (opts.hover ? 60 : 0);
     ctx.save();
-    ctx.globalAlpha = 0.38;
-    const shadow = ctx.createRadialGradient(x + originX, FLOOR_Y - camera.y + 4, 2, x + originX, FLOOR_Y - camera.y + 4, 60);
+    ctx.globalAlpha = 0.42 * alpha * Math.max(0.3, 1 - lift / 120);
+    const radius = Math.min(80, (opts.footprint || 48) * k);
+    const shadow = ctx.createRadialGradient(ox, FLOOR_Y - camera.y + 3, 2, ox, FLOOR_Y - camera.y + 3, radius);
     shadow.addColorStop(0, 'rgba(0,0,0,0.9)');
     shadow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = shadow;
     ctx.beginPath();
-    ctx.ellipse(x + originX, FLOOR_Y - camera.y + 4, Math.min(70, art.w * 0.4), 9, 0, 0, Math.PI * 2);
+    ctx.ellipse(ox, FLOOR_Y - camera.y + 3, radius, 9, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // Reflection in the channel: flipped, faded and squashed.
+    // Reflection in the channel.
+    if (!director.onTwos) {
     ctx.save();
-    ctx.globalAlpha = 0.16;
-    ctx.translate(0, (FLOOR_Y - camera.y) * 2 + 16);
+    ctx.translate(0, (FLOOR_Y - camera.y) * 2 + 14);
     ctx.scale(1, -1);
-    blit(x, y + bob * 2);
+    place(oy + 14 - 14, 0.15);
     ctx.restore();
+    }
 
-    ctx.save();
-    if (!alive) ctx.globalAlpha = 0.35;
-    blit(x, y);
-    ctx.restore();
-
-    if (fx[side].flash > 0) {
+    // Afterimages trail a dash.
+    for (const ghost of actor.ghosts || []) {
+      const age = (director.clock - ghost.t) / 220;
       ctx.save();
-      ctx.globalAlpha = fx[side].flash * 0.7;
       ctx.globalCompositeOperation = 'lighter';
-      blit(x, y);
+      ctx.globalAlpha = 0.28 * (1 - age) * alpha;
+      ctx.translate(worldX + ghost.move[0] * k * dir - camera.x, FLOOR_Y + ghost.move[1] * k - camera.y);
+      ctx.scale(dir, 1);
+      ctx.drawImage(actor.canvas, box.x * k, box.y * k, w, h);
+      ctx.restore();
+    }
+
+    place(oy);
+
+    if (actor.flash > 0) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      place(oy, Math.min(1, actor.flash) * 0.75);
       ctx.restore();
     }
   }
 
-  /**
-   * During the climb the player holds station on screen while the shaft scrolls
-   * past, so they read as ascending rather than being left behind.
-   */
-  function drawClimbingPlayer(ladderWorldX, time) {
-    const art = renderFighter('player', derived(run).role.sprite, time, { climb: true });
-    const clamber = Math.sin(time * 0.009) * 4;
-    const x = ladderWorldX - camera.x - art.originX;
-    const y = SCENE_H * 0.60 - art.h / 2 + clamber;
-    ctx.drawImage(art.canvas, x, y, art.w, art.h);
+  function drawPlayer(now) {
+    const stats = derived(run);
+    const gear = gearLooks(run.equipped);
+    const res = view.k * view.dpr * (1 + director.zoom);
+    if (camera.mode === 'climbing') {
+      director.heroPose = 'climb';
+      const ladderX = floorState.stages.length * SCENE_W + SCENE_W / 2;
+      const rendered = director.renderHero(stats.role.sprite, gear, res, now);
+      const k = UNIT;
+      ctx.save();
+      ctx.translate(ladderX - 14 - camera.x, SCENE_H * 0.62 + Math.sin(now * 0.009) * 4 + 100 * k);
+      ctx.drawImage(rendered.actor.canvas, rendered.box.x * k, rendered.box.y * k, rendered.box.w * k, rendered.box.h * k);
+      ctx.restore();
+      return;
+    }
+    director.heroPose = camera.mode === 'panning' ? 'run' : null;
+    const rendered = director.renderHero(stats.role.sprite, gear, res, now);
+    const x = playerWorldX();
+    // An ultimate wraps the hero in light.
+    if (director.hero.opts.ultimate && director.hero.anim !== 'idle') {
+      const e = elementOf(director.hero.opts.element);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const cx = x + rendered.move[0] * UNIT - camera.x;
+      const cy = FLOOR_Y - 100 * UNIT - camera.y;
+      const glow = ctx.createRadialGradient(cx, cy, 10, cx, cy, 150);
+      glow.addColorStop(0, rgba(e.main, 0.45));
+      glow.addColorStop(1, rgba(e.main, 0));
+      ctx.fillStyle = glow;
+      ctx.fillRect(cx - 150, cy - 150, 300, 300);
+      ctx.restore();
+    }
+    blitActor(rendered, x, false, { footprint: 44 });
+    if (combat) {
+      drawBarrier(ctx, x + rendered.move[0] * UNIT - camera.x, FLOOR_Y - camera.y, 200 * UNIT, combat.guardStacks, now);
+      drawStatusAuras(ctx, run.statuses, x - camera.x, FLOOR_Y - camera.y, 190 * UNIT, now, director.fx);
+    }
   }
 
-  /**
-   * Battle info box. Each fighter's box sits on that fighter's own side —
-   * player left, enemy right — so at a glance the bar you are reading clearly
-   * belongs to the character beneath it.
-   */
+  /** Static art for an enemy waiting in a neighbouring stage. */
+  const restingActors = new Map();
+  function drawRestingEnemy(stage, originX) {
+    let actor = restingActors.get(stage);
+    if (!actor) {
+      actor = { anim: 'idle', start: 0, opts: {}, phys: null, move: [0, 0], canvas: document.createElement('canvas'), ghosts: [], flash: 0 };
+      restingActors.set(stage, actor);
+    }
+    const rendered = director.renderEnemy(view.k * view.dpr, stage.enemy.sprite, actor);
+    if (rendered) blitActor(rendered, originX + ENEMY_X, true, { hover: rendered.info.hover, footprint: rendered.info.size.w * 0.3 });
+  }
+
+  function drawEnemy(now) {
+    if (!director.enemyName || director.enemy.gone) return;
+    const rendered = director.renderEnemy(view.k * view.dpr * (1 + director.zoom));
+    if (!rendered) return;
+    const x = stageOriginX() + ENEMY_X;
+    blitActor(rendered, x, true, { hover: rendered.info.hover, footprint: rendered.info.size.w * 0.3 });
+    if (combat && !director.enemy.dying) {
+      const top = -rendered.info.size.y * UNIT * (rendered.info.hover ? 0.9 : 1);
+      drawStatusAuras(ctx, combat.enemy.statuses, x - camera.x - rendered.move[0] * UNIT, FLOOR_Y - camera.y, top, now, director.fx);
+    }
+  }
+
   /** A rounded-rectangle path on the scene context. */
   function roundRect(x, y, w, h, r) {
     ctx.beginPath();
@@ -233,48 +321,66 @@ export function adventureScreen() {
     ctx.closePath();
   }
 
-  function drawInfoBox(x, y, w, name, hp, maxHp, sub, accent, energy = null) {
-    const h = energy == null ? 64 : 88;
+  /**
+   * Battle info box, docked along the bottom of the scene under each
+   * fighter. The bar drains to the shown HP (which only drops when a blow
+   * lands) with a pale chip showing what was just lost.
+   */
+  function drawInfoBox(x, y, w, name, hp, chip, maxHp, sub, accent, energy = null, align = 'left') {
+    const h = energy == null ? 52 : 70;
     ctx.save();
-    // Glassy panel with a coloured rim on the side facing the fighter.
     roundRect(x, y, w, h, 12);
     const bg = ctx.createLinearGradient(0, y, 0, y + h);
-    bg.addColorStop(0, 'rgba(26,34,49,0.92)');
-    bg.addColorStop(1, 'rgba(12,16,24,0.92)');
+    bg.addColorStop(0, 'rgba(22,28,42,0.88)');
+    bg.addColorStop(1, 'rgba(10,13,20,0.9)');
     ctx.fillStyle = bg;
     ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 14;
     ctx.shadowOffsetY = 3;
     ctx.fill();
     ctx.shadowColor = 'transparent';
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(255,236,190,0.16)';
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = 'rgba(255,236,190,0.18)';
     ctx.stroke();
-    roundRect(x, y, 5, h, 3);
+    // Accent edge on the outer side.
+    roundRect(align === 'left' ? x : x + w - 4, y + 8, 4, h - 16, 2);
     ctx.fillStyle = accent;
     ctx.fill();
 
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = '#f1e6c8';
-    ctx.font = `700 17px ${DISPLAY_FONT}`;
-    ctx.fillText(name.length > 24 ? name.slice(0, 23) + '…' : name, x + 16, y + 23);
-
+    ctx.font = `700 15px ${DISPLAY_FONT}`;
+    const title = name.length > 26 ? name.slice(0, 25) + '…' : name;
+    ctx.fillText(title, x + 16, y + 20);
+    ctx.font = `800 11px ${BODY_FONT}`;
+    const hpText = `${Math.ceil(Math.max(0, hp))} / ${maxHp}`;
+    const tw = ctx.measureText(hpText).width;
+    ctx.fillStyle = '#cfd6e0';
+    ctx.fillText(hpText, x + w - 16 - tw, y + 20);
     if (sub) {
-      ctx.font = `800 12px ${BODY_FONT}`;
-      const tw = ctx.measureText(sub).width;
-      roundRect(x + w - 16 - tw - 14, y + 9, tw + 14, 18, 9);
+      ctx.font = `800 10px ${BODY_FONT}`;
+      const sw = ctx.measureText(sub).width;
+      const titleW = (() => { ctx.font = `700 15px ${DISPLAY_FONT}`; return ctx.measureText(title).width; })();
+      roundRect(x + 22 + titleW, y + 8, sw + 12, 16, 8);
       ctx.fillStyle = 'rgba(255,255,255,0.08)';
       ctx.fill();
+      ctx.font = `800 10px ${BODY_FONT}`;
       ctx.fillStyle = accent;
-      ctx.fillText(sub, x + w - 16 - tw - 7, y + 22);
+      ctx.fillText(sub, x + 28 + titleW, y + 20);
     }
 
-    const barY = y + 32;
-    const barW = w - 30;
+    const barY = y + 28;
+    const barW = w - 32;
     const ratio = Math.max(0, Math.min(1, hp / maxHp));
+    const chipRatio = Math.max(ratio, Math.min(1, chip / maxHp));
     roundRect(x + 16, barY, barW, 12, 6);
-    ctx.fillStyle = '#0b1017';
+    ctx.fillStyle = '#070a10';
     ctx.fill();
+    if (chipRatio > ratio) {
+      roundRect(x + 16, barY, Math.max(12, barW * chipRatio), 12, 6);
+      ctx.fillStyle = 'rgba(255,236,200,0.75)';
+      ctx.fill();
+    }
     if (ratio > 0) {
       roundRect(x + 16, barY, Math.max(12, barW * ratio), 12, 6);
       const fill = ctx.createLinearGradient(0, barY, 0, barY + 12);
@@ -283,31 +389,33 @@ export function adventureScreen() {
       fill.addColorStop(1, bottom);
       ctx.fillStyle = fill;
       ctx.fill();
+      // Glassy sheen.
+      roundRect(x + 18, barY + 1.5, Math.max(8, barW * ratio - 4), 3.5, 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fill();
     }
-    ctx.fillStyle = '#cfd6e0';
-    ctx.font = `800 12px ${BODY_FONT}`;
-    ctx.fillText(`${Math.ceil(hp)} / ${maxHp} HP`, x + 16, barY + 27);
 
     if (energy != null) {
       /* Energy is a small integer pool, so discrete pips read far faster than
          a continuous bar — you can count what an ability costs at a glance. */
-      const eY = y + 66;
+      const eY = y + 48;
       ctx.fillStyle = '#f4a63c';
-      ctx.font = `800 12px ${BODY_FONT}`;
+      ctx.font = `800 11px ${BODY_FONT}`;
       ctx.fillText('EN', x + 16, eY + 10);
       const pipW = 7;
       const gap = 2.5;
       for (let i = 0; i < MAX_ENERGY; i++) {
-        const px = x + 42 + i * (pipW + gap);
-        roundRect(px, eY, pipW, 12, 2.5);
+        const px = x + 40 + i * (pipW + gap);
+        roundRect(px, eY, pipW, 11, 2.5);
         ctx.fillStyle = i < energy ? '#f4a63c' : '#1b222c';
         ctx.fill();
         if (i < energy) { ctx.strokeStyle = 'rgba(255,216,138,0.8)'; ctx.lineWidth = 1; ctx.stroke(); }
       }
       ctx.fillStyle = '#f1e6c8';
-      ctx.fillText(String(energy), x + 42 + MAX_ENERGY * (pipW + gap) + 6, eY + 10);
+      ctx.fillText(String(energy), x + 40 + MAX_ENERGY * (pipW + gap) + 6, eY + 10);
     }
     ctx.restore();
+    return h;
   }
 
   function drawStageProp(stage, originX) {
@@ -336,22 +444,37 @@ export function adventureScreen() {
     }
   }
 
+  /** Damage numbers: they pop in, hang, then float away. */
   function drawFloaters(now) {
     ctx.save();
-    ctx.font = `800 22px ${BODY_FONT}`;
     ctx.textAlign = 'center';
     ctx.lineJoin = 'round';
     for (let i = floaters.length - 1; i >= 0; i--) {
       const f = floaters[i];
-      const age = (now - f.born) / 900;
+      const age = (now - f.born) / 1100;
       if (age >= 1) { floaters.splice(i, 1); continue; }
-      ctx.globalAlpha = 1 - age * age;
-      const fy = f.y - age * 46 - camera.y;
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = 'rgba(0,0,0,0.75)';
-      ctx.strokeText(f.text, f.x - camera.x, fy);
-      ctx.fillStyle = f.colour;
-      ctx.fillText(f.text, f.x - camera.x, fy);
+      const pop = age < 0.12 ? 0.6 + (age / 0.12) * 0.7 : age < 0.22 ? 1.3 - ((age - 0.12) / 0.1) * 0.3 : 1;
+      const size = (f.big ? 38 : f.crit ? 34 : f.small ? 19 : 26) * pop;
+      ctx.globalAlpha = age > 0.7 ? 1 - (age - 0.7) / 0.3 : 1;
+      const fx = f.x + f.drift * age * 30 - camera.x;
+      const fy = f.y - age * 54 - camera.y;
+      ctx.font = `900 ${Math.round(size)}px ${BODY_FONT}`;
+      ctx.lineWidth = f.small ? 4 : 6;
+      ctx.strokeStyle = 'rgba(10,8,16,0.85)';
+      ctx.strokeText(f.text, fx, fy);
+      const grad = ctx.createLinearGradient(0, fy - size, 0, fy);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.55, f.colour);
+      grad.addColorStop(1, f.colour);
+      ctx.fillStyle = grad;
+      ctx.fillText(f.text, fx, fy);
+      if (f.label || f.crit) {
+        ctx.font = `900 ${Math.round(12 * pop)}px ${BODY_FONT}`;
+        ctx.lineWidth = 3;
+        ctx.strokeText(f.label || 'CRITICAL', fx, fy - size * 0.95);
+        ctx.fillStyle = f.colour;
+        ctx.fillText(f.label || 'CRITICAL', fx, fy - size * 0.95);
+      }
     }
     ctx.restore();
   }
@@ -370,22 +493,22 @@ export function adventureScreen() {
     band.addColorStop(0.8, 'rgba(8,11,16,0.85)');
     band.addColorStop(1, 'rgba(8,11,16,0)');
     ctx.fillStyle = band;
-    ctx.fillRect(0, 150, view.w, bandH);
+    ctx.fillRect(0, 120, view.w, bandH);
     const rule = ctx.createLinearGradient(0, 0, view.w, 0);
     rule.addColorStop(0, 'rgba(240,199,94,0)');
     rule.addColorStop(0.5, 'rgba(240,199,94,0.85)');
     rule.addColorStop(1, 'rgba(240,199,94,0)');
     ctx.fillStyle = rule;
-    ctx.fillRect(0, 150, view.w, 1.5);
-    ctx.fillRect(0, 150 + bandH - 1.5, view.w, 1.5);
+    ctx.fillRect(0, 120, view.w, 1.5);
+    ctx.fillRect(0, 120 + bandH - 1.5, view.w, 1.5);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f0c75e';
     ctx.font = `700 28px ${DISPLAY_FONT}`;
-    ctx.fillText(banner.text, view.w / 2, 186);
+    ctx.fillText(banner.text, view.w / 2, 156);
     if (banner.sub) {
       ctx.fillStyle = '#b8c2d0';
       ctx.font = `600 15px ${BODY_FONT}`;
-      ctx.fillText(banner.sub, view.w / 2, 212);
+      ctx.fillText(banner.sub, view.w / 2, 182);
     }
     ctx.restore();
   }
@@ -401,10 +524,21 @@ export function adventureScreen() {
   function draw(now) {
     resizeCanvas();
     ensureBackdropResolution();
+    director.setLayout({ playerX: playerWorldX(), enemyX: stageOriginX() + ENEMY_X, floorY: FLOOR_Y });
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(view.k * view.dpr, 0, 0, view.k * view.dpr, 0, 0);
-    drawBackdrop(ctx, backdrop, camera.x, now, view.w, view.h, camera.y);
+
+    // Camera shake and the zoom punch on big hits.
+    const base = view.k * view.dpr;
+    const zoom = 1 + director.zoom;
+    const shakeX = director.shake > 0 ? (Math.random() - 0.5) * 14 * director.shake : 0;
+    const shakeY = director.shake > 0 ? (Math.random() - 0.5) * 8 * director.shake : 0;
+    const focusX = view.w / 2;
+    const focusY = FLOOR_Y - 90;
+    ctx.setTransform(base * zoom, 0, 0, base * zoom,
+      base * (focusX - focusX * zoom + shakeX), base * (focusY - focusY * zoom + shakeY));
+
+    drawBackdrop(ctx, backdrop, camera.x, now, view.w, view.h, camera.y, Math.min(2.5, base));
 
     // The ladder lives one slot past the final stage.
     const ladderWorldX = floorState.stages.length * SCENE_W + SCENE_W / 2;
@@ -412,60 +546,71 @@ export function adventureScreen() {
       drawLadder(ctx, backdrop.palette, ladderWorldX - camera.x, camera.y);
     }
 
-    // Draw the current stage and its neighbour so panning shows both.
+    ctx.save();
+    ctx.translate(-camera.x, -camera.y);
+    director.fx.draw(ctx, director.clock, 'back');
+    ctx.restore();
+
+    // Neighbouring stages show their prop or waiting enemy while panning.
     for (let i = Math.max(0, floorState.index - 1); i <= Math.min(floorState.stages.length - 1, floorState.index + 1); i++) {
       const stage = floorState.stages[i];
       const originX = i * SCENE_W;
       if (Math.abs(originX - camera.x) > SCENE_W * 1.8) continue;
       drawStageProp(stage, originX);
-      if (stage.kind === 'combat' && i === floorState.index && combat) {
-        drawFighter(combat.enemy.sprite, originX + ENEMY_X, 'enemy', now, combat.enemy.hp > 0);
-      } else if (stage.kind === 'combat' && !stage.cleared && stage.enemy.hp > 0) {
-        drawFighter(stage.enemy.sprite, originX + ENEMY_X, 'enemy', now);
-      }
+      if (stage.kind !== 'combat') continue;
+      if (i === floorState.index && director.enemyName) drawEnemy(now);
+      else if (!stage.cleared && stage.enemy.hp > 0 && i !== floorState.index) drawRestingEnemy(stage, originX);
     }
 
-    if (camera.mode === 'climbing') {
-      drawClimbingPlayer(ladderWorldX, now);
-    } else {
-      drawFighter(derived(run).role.sprite, stageOriginX() + PLAYER_X, 'player', now);
-    }
+    drawPlayer(now);
 
-    const stats = derived(run);
-    const boxW = 372;
-    if (combat && combat.enemy.hp > 0 && camera.mode === 'idle') {
-      // Enemy is on the right of the scene, so its box is too.
-      drawInfoBox(view.w - boxW - 26, 22, boxW, combat.enemy.name, combat.enemy.hp, combat.enemy.maxHp,
-        combat.enemy.isBoss ? 'BOSS' : '', combat.enemy.isBoss ? '#f2c14e' : '#c0562e');
-      drawStatusPips(combat.enemy.statuses, view.w - boxW - 26, 92);
-    }
-    if (camera.mode === 'idle') {
-      // Player stands on the left, so its box is top-left, mirroring the enemy's.
-      drawInfoBox(26, 22, boxW, stats.role.name, run.hp, stats.maxHp,
-        `Lv ${run.level}`, '#63c76a', run.energy);
-      drawStatusPips(run.statuses, 26, 118);
-    }
+    ctx.save();
+    ctx.translate(-camera.x, -camera.y);
+    director.drawTrail(ctx);
+    director.fx.draw(ctx, director.clock, 'front');
+    ctx.restore();
 
+    drawForeground(ctx, backdrop, camera.x, view.w, camera.y);
     drawFloaters(now);
+
+    // HUD in plain view space (no shake).
+    ctx.setTransform(base, 0, 0, base, 0, 0);
+    const stats = derived(run);
+    const boxW = Math.min(360, view.w * 0.4);
+    if (camera.mode === 'idle') {
+      const ph = drawInfoBox(18, SCENE_H - 82, boxW, stats.role.name, director.shown.player, director.chip.player, stats.maxHp,
+        `Lv ${run.level}`, '#63c76a', run.energy);
+      drawStatusPips(run.statuses, 18, SCENE_H - 82 - 24);
+      void ph;
+    }
+    if (combat && director.enemyName && !director.enemy.gone && camera.mode === 'idle') {
+      const ex = view.w - boxW - 18;
+      drawInfoBox(ex, SCENE_H - 64, boxW, combat.enemy.name, director.shown.enemy, director.chip.enemy, combat.enemy.maxHp,
+        combat.enemy.isBoss ? 'BOSS' : '', combat.enemy.isBoss ? '#f2c14e' : '#c0562e', null, 'right');
+      drawStatusPips(combat.enemy.statuses, ex, SCENE_H - 64 - 24);
+    }
     drawBanner(now);
+    director.drawCutin(ctx, view.w, view.h, { display: DISPLAY_FONT, body: BODY_FONT });
   }
 
   function drawStatusPips(statuses, x, y) {
     const entries = Object.entries(statuses || {}).filter(([, turns]) => turns > 0);
     ctx.save();
-    ctx.font = `800 12px ${BODY_FONT}`;
+    ctx.font = `800 11px ${BODY_FONT}`;
     let offset = 0;
     for (const [id, turns] of entries) {
       const info = statusInfo(id);
+      const colour = canvasColour(info.colour);
       const label = `${info.name} ${turns}`;
       const w = ctx.measureText(label).width + 14;
       roundRect(x + offset, y, w, 18, 9);
       ctx.fillStyle = 'rgba(10,14,20,0.85)';
       ctx.fill();
-      ctx.strokeStyle = info.colour;
+      ctx.strokeStyle = colour;
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = info.colour;
+      ctx.fillStyle = colour;
+      ctx.textAlign = 'left';
       ctx.fillText(label, x + offset + 7, y + 13);
       offset += w + 7;
     }
@@ -477,10 +622,20 @@ export function adventureScreen() {
      ------------------------------------------------------------ */
 
   function tick(now) {
-    for (const side of ['player', 'enemy']) {
-      fx[side].lunge = Math.max(0, fx[side].lunge - 0.07);
-      fx[side].shake = Math.max(0, fx[side].shake - 0.06);
-      fx[side].flash = Math.max(0, fx[side].flash - 0.07);
+    const dt = now - lastFrame;
+    lastFrame = now;
+    director.update(dt);
+
+    // Adaptive resolution: a second of slow frames lowers the pixel density.
+    if (director.avgDt > 24 && view.dpr > 1) {
+      slowSince ||= now;
+      if (now - slowSince > 1000) {
+        densityCap = Math.max(1, view.dpr - 0.25);
+        slowSince = 0;
+        director.avgDt = 16;
+      }
+    } else {
+      slowSince = 0;
     }
 
     if (camera.mode === 'panning' || camera.mode === 'climbing') {
@@ -496,7 +651,8 @@ export function adventureScreen() {
       }
     }
 
-    draw(now);
+    // One bad frame must never stop the loop.
+    try { draw(now); } catch (err) { console.error(err); }
     raf = requestAnimationFrame(tick);
   }
 
@@ -515,55 +671,26 @@ export function adventureScreen() {
      Combat event playback
      ------------------------------------------------------------ */
 
-  function floater(side, text, colour) {
-    const originX = stageOriginX() + (side === 'player' ? PLAYER_X : ENEMY_X);
-    floaters.push({ x: originX, y: FLOOR_Y - 110, text, colour, born: performance.now() });
+  function floater(side, text, colour, opts = {}) {
+    const [x, y] = side === 'player'
+      ? director.heroCentre()
+      : director.enemyCentre();
+    const top = side === 'player' ? y - 70 : y - Math.min(110, director.enemyTop() * 0.4);
+    floaters.push({ x, y: top, text, colour, born: performance.now(), drift: (Math.random() - 0.5) * 2, ...opts });
   }
 
   function playEvents() {
-    for (const event of drainEvents(combat)) {
-      switch (event.type) {
-        case 'attack': {
-          const attacker = event.side === 'player' ? 'player' : 'enemy';
-          const victim = event.side === 'player' ? 'enemy' : 'player';
-          fx[attacker].lunge = 1;
-          fx[victim].shake = 1;
-          fx[victim].flash = 1;
-          floater(victim, `-${event.amount}${event.crit ? '!' : ''}`, event.crit ? '#f2c14e' : '#ff6b6b');
-          event.crit ? sfx.crit() : (event.side === 'player' ? sfx.hit() : sfx.hurt());
-          break;
-        }
-        case 'heal':
-          floater(event.side, `+${event.amount}`, '#6fd66f');
-          if (event.side === 'player') sfx.heal();
-          break;
-        case 'energy':
-          floater('player', `+${event.amount} EN`, '#f0a13a');
-          break;
-        case 'status-tick':
-          floater(event.side, `-${event.amount}`, statusInfo(event.status).colour);
-          break;
-        case 'blocked':
-          floater('player', 'BLOCK', '#4b9cf0');
-          break;
-        case 'dodged':
-          floater('player', 'DODGE', '#9fd3e6');
-          sfx.select();
-          break;
-        case 'thorns':
-          floater('enemy', `-${event.amount}`, '#f06b2a');
-          fx.enemy.flash = 1;
-          break;
-        case 'revive':
-          floater('player', 'REVIVED', '#f2c14e');
-          toast(`${event.item} saves you.`, 'gold');
-          sfx.levelUp();
-          break;
-        case 'victory': sfx.loot(); break;
-        case 'defeat': sfx.death(); break;
-        default: break;
-      }
+    const events = drainEvents(combat);
+    director.stage(events, battleContext());
+    for (const event of events) {
+      if (event.type === 'revive') toast(`${event.item} saves you.`, 'gold');
     }
+  }
+
+  /** Show `panelFn` once the animations have played out. */
+  function afterScene(panelFn, waiting = '') {
+    setChildren(main, panel(null, el('p', { className: 'small dim center', text: waiting || '…' })));
+    director.whenIdle(panelFn, 300);
   }
 
   /* ------------------------------------------------------------
@@ -574,11 +701,15 @@ export function adventureScreen() {
     const stage = currentStage(run);
     combat = null;
     camera.x = stageCamX();
+    director.play(director.hero, 'idle');
+    director.setPlayerHp(run.hp);
+    director.clearEnemy();
 
     if (!stage) { advance(); return; }
 
     if (stage.kind === 'combat') {
       combat = startCombat(run, stage.enemy);
+      director.setEnemy(stage.enemy.sprite, combat.enemy.hp);
       if (stage.enemy.isBoss) { sfx.boss(); showBanner(stage.enemy.name, stage.enemy.taunt || ''); }
       render();
     } else if (stage.kind === 'treasure') {
@@ -841,8 +972,8 @@ export function adventureScreen() {
         const outcome = continueFromResult(run, combat);
         playEvents();
         saveRun();
-        if (outcome.kind === 'defeat') { renderDefeat(); return; }
-        if (outcome.kind === 'victory') { renderVictory(); return; }
+        if (outcome.kind === 'defeat') { afterScene(renderDefeat); return; }
+        if (outcome.kind === 'victory') { afterScene(renderVictory, 'The blow lands…'); return; }
         render();
       },
       { className: 'btn--primary btn--center mt' });
@@ -869,8 +1000,8 @@ export function adventureScreen() {
           saveRun();
           renderHud();
           if (!outcome) return;
-          if (outcome.kind === 'victory') { renderVictory(); return; }
-          if (outcome.kind === 'defeat') { renderDefeat(); return; }
+          if (outcome.kind === 'victory') { afterScene(renderVictory, 'The blow lands…'); return; }
+          if (outcome.kind === 'defeat') { afterScene(renderDefeat); return; }
           render();
         }, {
           className: entry.usable ? (ability.cost >= 12 ? 'btn--gold' : ability.gain ? 'btn--primary' : '') : '',
@@ -950,8 +1081,8 @@ export function adventureScreen() {
           playEvents();
           saveRun();
           renderHud();
-          if (outcome?.kind === 'victory') { renderVictory(); return; }
-          if (outcome?.kind === 'defeat') { renderDefeat(); return; }
+          if (outcome?.kind === 'victory') { afterScene(renderVictory, 'The blow lands…'); return; }
+          if (outcome?.kind === 'defeat') { afterScene(renderDefeat); return; }
           render();
         }, {
           className: 'btn--sm item-btn',
@@ -1043,6 +1174,8 @@ export function adventureScreen() {
       window.addEventListener('keydown', onKeyDown);
       window.addEventListener('resize', onResize);
       resizeCanvas();
+      // Debug handle for automated checks: the live combat and the director.
+      if (window.SewersOfStudy) window.SewersOfStudy.battle = { get combat() { return combat; }, director };
       showBanner(`Floor ${run.floor}`, floorState.biomeName);
       beginStage();
       raf = requestAnimationFrame(tick);

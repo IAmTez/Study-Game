@@ -6,8 +6,9 @@
    a role (drawn as the hero), a creature, an item icon or a prop. */
 
 import { drawIcon } from './icons.js';
-import { CREATURES, drawCreature, creatureSize } from './creatures.js';
-import { drawHero, HERO_BOUNDS, ROLE_LOOKS } from './hero.js';
+import { CREATURE_ART, drawCreatureAnime } from './anime/creatures.js';
+import { drawAnimeHero, ROLE_STYLE, ANIME_HERO_BOUNDS } from './anime/hero.js';
+import { idlePose, stanceOf } from './anime/hero-anim.js';
 import { gearLooks, STARTER_GEAR } from './gear.js';
 
 export const SPRITE_SIZE = 16;
@@ -18,28 +19,30 @@ export function pixelRatio() {
 }
 
 export function isHero(name) {
-  return !!ROLE_LOOKS[name];
+  return !!ROLE_STYLE[name];
 }
 
 export function isCreature(name) {
-  return !!CREATURES[name];
+  return !!CREATURE_ART[name];
 }
 
 /** The drawing's bounds in its own units. */
 export function artBounds(name) {
-  if (isHero(name)) return HERO_BOUNDS;
-  if (isCreature(name)) return creatureSize(name);
+  if (isHero(name)) return ANIME_HERO_BOUNDS;
+  if (isCreature(name)) return CREATURE_ART[name].size;
   return { x: 0, y: 0, w: ICON_BOX, h: ICON_BOX };
 }
 
 /** Draw `name` in its own units (heroes and creatures stand on y = 0). */
 export function drawArt(ctx, name, opts = {}) {
   if (isHero(name)) {
-    drawHero(ctx, name, opts.gear || gearLooks(opts.equipped || STARTER_GEAR), opts.pose || { t: opts.t || 0 });
+    const gear = opts.gear || gearLooks(opts.equipped || STARTER_GEAR);
+    const t = opts.t || 0;
+    drawAnimeHero(ctx, name, gear, opts.pose || idlePose(stanceOf(gear), t), { now: t });
     return;
   }
   if (isCreature(name)) {
-    drawCreature(ctx, name, opts.t || 0);
+    drawCreatureAnime(ctx, name, opts.anim || { t: opts.t || 0, now: opts.t || 0, wind: 0, strike: 0, hurt: 0, phys: null });
     return;
   }
   if (!drawIcon(ctx, name, opts.look || null)) {
